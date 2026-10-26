@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TemanLansia — Pendampingan Lansia Berkeluarga & Terverifikasi</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS & Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"Space Grotesk"', 'monospace']
+          },
+          colors: {
+            brand: {
+              teal: '#0D9488',
+              'teal-dark': '#115E59',
+              'teal-deep': '#042F2E',
+              'teal-light': '#F0FDFA',
+              cream: '#FAF6F0',
+              'cream-card': '#FFFDF9',
+              accent: '#DC2626',
+              amber: '#D97706'
+            }
+          },
+          boxShadow: {
+            'bento': '0 2px 20px -2px rgba(13, 148, 136, 0.08), 0 1px 6px -1px rgba(0, 0, 0, 0.04)',
+            'bento-hover': '0 20px 30px -10px rgba(13, 148, 136, 0.15), 0 1px 3px 0 rgba(0, 0, 0, 0.05)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { background-color: #FAF6F0; color: #1C1917; }
+    .sos-pulse {
+      animation: pulse-ring 2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+    }
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.65); }
+      70% { box-shadow: 0 0 0 18px rgba(220, 38, 38, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    }
+    #gmapContainer {
+      min-height: 440px;
+      width: 100%;
+      border-radius: 1.5rem;
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 999px; }
+  </style>
+</head>
+<body class="font-sans antialiased selection:bg-teal-200 selection:text-teal-900 min-h-screen flex flex-col">
+
+  <!-- API KEY BAR BANNER (Untuk isi GMaps langsung dari browser) -->
+  <div class="bg-stone-900 text-stone-200 text-xs py-2 px-4 border-b border-stone-800">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+          <i class="fa-solid fa-map-location-dot mr-1"></i> Google Maps Setup
+        </span>
+        <span class="text-stone-300 hidden sm:inline text-[11px]">Masukkan Google Maps API key Anda untuk mengaktifkan peta live:</span>
+      </div>
+      <div class="flex items-center gap-2 w-full sm:w-auto">
+        <input type="text" id="gmapsApiKeyInput" placeholder="Tempel API Key Google Maps..." class="bg-stone-800 text-stone-100 text-[11px] px-3 py-1 rounded-lg border border-stone-700 focus:outline-none focus:border-brand-teal w-full sm:w-64">
+        <button onclick="loadGoogleMapsWithKey()" class="bg-brand-teal hover:bg-brand-teal-dark text-white font-semibold text-[11px] px-3 py-1 rounded-lg transition whitespace-nowrap">
+          Aktifkan Peta
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING SOS BUTTON -->
+  <div class="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+    <div class="hidden md:flex items-center gap-2 bg-white/95 backdrop-blur px-3 py-1.5 rounded-full shadow-lg border border-red-200 text-xs font-semibold text-stone-800">
+      <span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
+      <span>Darurat Medis?</span>
+    </div>
+    <button onclick="toggleSosModal(true)" class="sos-pulse w-16 h-16 rounded-full bg-brand-accent hover:bg-red-700 text-white flex flex-col items-center justify-center shadow-xl transition active:scale-95 focus:outline-none" aria-label="Tombol Darurat SOS">
+      <i class="fa-solid fa-phone-volume text-xl"></i>
+      <span class="text-[10px] font-mono font-bold tracking-widest mt-0.5">SOS</span>
+    </button>
+  </div>
+
+  <!-- NAVIGATION -->
+  <header class="sticky top-0 z-40 bg-[#FAF6F0]/90 backdrop-blur-md border-b border-stone-200/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Brand -->
+        <a href="#" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 rounded-xl bg-brand-teal flex items-center justify-center text-white shadow-md shadow-teal-900/10 transition group-hover:scale-105">
+            <i class="fa-solid fa-heart-pulse text-lg"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xl font-extrabold tracking-tight text-stone-900">Teman<span class="text-brand-teal">Lansia</span></span>
+              <span class="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-teal-100 text-brand-teal-dark font-bold">Resmi</span>
+            </div>
+            <p class="text-[11px] text-stone-500 font-medium">Pendampingan Geriatri Terpadu</p>
+          </div>
+        </a>
+
+        <!-- Desktop Menu -->
+        <nav class="hidden md:flex items-center gap-7 text-xs font-bold uppercase tracking-wider text-stone-600">
+          <a href="#katalog" class="hover:text-brand-teal transition">Cari Pendamping</a>
+          <a href="#gmapSection" class="hover:text-brand-teal transition">Peta Layanan</a>
+          <a href="#transparansi" class="hover:text-brand-teal transition">Rincian Biaya</a>
+          <a href="#live-log" class="hover:text-brand-teal transition">Log Harian</a>
+        </nav>
+
+        <!-- CTA & Status -->
+        <div class="hidden md:flex items-center gap-3">
+          <a href="#katalog" class="inline-flex items-center gap-2 bg-stone-900 hover:bg-brand-teal text-white text-xs font-bold px-5 py-2.5 rounded-xl transition duration-200 shadow-sm">
+            <span>Pesan Shift</span>
+            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button onclick="toggleMobileNav()" class="md:hidden text-stone-700 p-2" aria-label="Toggle menu">
+          <i id="navMenuIcon" class="fa-solid fa-bars text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Dropdown -->
+      <div id="mobileNav" class="hidden md:hidden pb-6 pt-2 border-t border-stone-200 flex flex-col gap-3 text-sm font-semibold">
+        <a href="#katalog" onclick="toggleMobileNav()" class="py-2 text-stone-700 hover:text-brand-teal">Cari Pendamping</a>
+        <a href="#gmapSection" onclick="toggleMobileNav()" class="py-2 text-stone-700 hover:text-brand-teal">Peta Jangkauan</a>
+        <a href="#transparansi" onclick="toggleMobileNav()" class="py-2 text-stone-700 hover:text-brand-teal">Transparansi Biaya</a>
+        <a href="#live-log" onclick="toggleMobileNav()" class="py-2 text-stone-700 hover:text-brand-teal">Live Activity Log</a>
+        <a href="#katalog" onclick="toggleMobileNav()" class="w-full text-center py-2.5 rounded-xl bg-brand-teal text-white font-bold">Pesan Pendamping Sekarang</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION: BENTO / HUMAN TECH STYLE -->
+  <section class="py-12 md:py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Left Editorial Copy -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-stone-200 text-stone-700 text-xs font-semibold shadow-sm">
+            <i class="fa-solid fa-user-check text-brand-teal"></i>
+            <span>Verifikasi KTP Dukcapil, SKCK Mabes, & Sertifikasi Perawat</span>
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl font-extrabold text-stone-900 tracking-tight leading-[1.12]">
+            Keluarga Tenang Bekerja, <br>
+            <span class="text-brand-teal underline decoration-teal-300 decoration-wavy decoration-2 underline-offset-8">Orang Tua Ditemani</span> dengan Hati.
+          </h1>
+
+          <p class="text-stone-600 text-base max-w-xl leading-relaxed font-normal">
+            Bukan perawat dingin yang sekadar datang. Kami menghubungkan lansia dengan pendamping teruji yang mengerti adat kebiasaan, fasih bahasa daerah keluarga, dan disiplin mencatat kondisi fisik harian.
+          </p>
+
+          <!-- Real Verification Matrix Chips -->
+          <div class="flex flex-wrap gap-2 pt-1 text-xs">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-stone-200 text-stone-800 font-medium shadow-sm">
+              <i class="fa-solid fa-address-card text-emerald-600"></i> KTP Asli Terdaftar
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-stone-200 text-stone-800 font-medium shadow-sm">
+              <i class="fa-solid fa-shield-virus text-emerald-600"></i> Bebas Pidana (SKCK)
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-stone-200 text-stone-800 font-medium shadow-sm">
+              <i class="fa-solid fa-stethoscope text-emerald-600"></i> STR / BNSP Geriatri
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-stone-200 text-stone-800 font-medium shadow-sm">
+              <i class="fa-solid fa-money-bill-shield text-emerald-600"></i> Escrow Refund 100%
+            </span>
+          </div>
+
+          <!-- CTAs -->
+          <div class="flex flex-wrap items-center gap-3 pt-2">
+            <a href="#katalog" class="inline-flex items-center gap-2 bg-brand-teal hover:bg-brand-teal-dark text-white font-bold px-6 py-3.5 rounded-xl transition shadow-md shadow-teal-900/15 text-sm">
+              <i class="fa-solid fa-magnifying-glass text-xs"></i>
+              Lihat Daftar Pendamping
+            </a>
+            <a href="#gmapSection" class="inline-flex items-center gap-2 bg-white hover:bg-stone-100 text-stone-800 font-bold px-5 py-3.5 rounded-xl border border-stone-300 transition text-sm">
+              <i class="fa-solid fa-location-crosshairs text-brand-teal text-xs"></i>
+              Cek Radius Terdekat
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Quick Metrics Bento Card -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="bg-white rounded-3xl p-6 border border-stone-200 shadow-bento space-y-5">
+            
+            <div class="flex items-center justify-between pb-4 border-b border-stone-100">
+              <div class="flex items-center gap-2.5">
+                <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span class="text-xs font-bold text-stone-800 tracking-wide">RINGKASAN LAYANAN HARI INI</span>
+              </div>
+              <span class="text-[11px] font-mono text-stone-500">Jakarta & Sekitarnya</span>
+            </div>
+
+            <!-- Mini stats grid -->
+            <div class="grid grid-cols-3 gap-3 text-center">
+              <div class="p-3 rounded-2xl bg-stone-50 border border-stone-100">
+                <span class="text-xl font-bold font-mono text-stone-900">42+</span>
+                <span class="block text-[10px] text-stone-500 font-semibold uppercase tracking-wider mt-0.5">Pendamping Siaga</span>
+              </div>
+              <div class="p-3 rounded-2xl bg-stone-50 border border-stone-100">
+                <span class="text-xl font-bold font-mono text-brand-teal">4.9/5</span>
+                <span class="block text-[10px] text-stone-500 font-semibold uppercase tracking-wider mt-0.5">Kepuasan Keluarga</span>
+              </div>
+              <div class="p-3 rounded-2xl bg-stone-50 border border-stone-100">
+                <span class="text-xl font-bold font-mono text-stone-900">&lt;15m</span>
+                <span class="block text-[10px] text-stone-500 font-semibold uppercase tracking-wider mt-0.5">Respon Booking</span>
+              </div>
+            </div>
+
+            <!-- Real Situation Spotlight -->
+            <div class="p-4 rounded-2xl bg-teal-50/70 border border-teal-100 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-brand-teal-dark uppercase tracking-wider">
+                  <i class="fa-solid fa-quote-left mr-1"></i> Cerita Keluarga
+                </span>
+                <span class="text-[10px] text-stone-500">2 hari lalu</span>
+              </div>
+              <p class="text-xs text-stone-700 italic leading-relaxed">
+                "Papa di Surabaya sempat menolak perawat asing. Tapi waktu Mas Budi datang dan ngobrol bahasa Jawa halus, Papa langsung nyaman dan mau rutin minum obat tensinya lagi."
+              </p>
+              <div class="text-[11px] font-semibold text-stone-800 pt-1">
+                — drg. Cynthia, Putri dari Bpk. Suharjo (78 th)
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SMART SEARCH & FILTER SECTION -->
+  <section id="katalog" class="py-10 bg-white border-y border-stone-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Title -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-brand-teal font-mono">Pencarian Terpadu</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight">Katalog Pendamping Lansia</h2>
+        </div>
+        <p class="text-xs text-stone-500 max-w-md">
+          Filter langsung berdasarkan kota, bahasa ibu orang tua Anda, kualifikasi medis, serta ketersediaan shift harian.
+        </p>
+      </div>
+
+      <!-- Filter Controls Bar -->
+      <div class="bg-[#FAF6F0] p-4 sm:p-5 rounded-2xl border border-stone-200 mb-8 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          
+          <!-- Keyword -->
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-stone-600 mb-1">Cari Nama / Spesialisasi</label>
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-stone-400 text-xs"></i>
+              <input type="text" id="filterKeyword" oninput="applyFilters()" placeholder="Cth: Siti, Stroke, Kateter..." class="w-full pl-8 pr-3 py-2 text-xs rounded-xl bg-white border border-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-teal">
+            </div>
+          </div>
+
+          <!-- Kota -->
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-stone-600 mb-1">Kota / Domisili</label>
+            <select id="filterLocation" onchange="applyFilters()" class="w-full px-3 py-2 text-xs rounded-xl bg-white border border-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-teal">
+              <option value="ALL">Semua Kota</option>
+              <option value="Jakarta">DKI Jakarta</option>
+              <option value="Surabaya">Surabaya</option>
+              <option value="Bandung">Bandung</option>
+              <option value="Medan">Medan</option>
+            </select>
+          </div>
+
+          <!-- Bahasa Daerah -->
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-stone-600 mb-1">Bahasa Daerah</label>
+            <select id="filterLanguage" onchange="applyFilters()" class="w-full px-3 py-2 text-xs rounded-xl bg-white border border-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-teal">
+              <option value="ALL">Semua Bahasa</option>
+              <option value="Jawa">Bahasa Jawa (Ngoko/Krama)</option>
+              <option value="Sunda">Bahasa Sunda</option>
+              <option value="Bugis">Bahasa Bugis</option>
+              <option value="Hokkien">Hokkien / Tiociu</option>
+              <option value="Batak">Bahasa Batak (Toba/Karo)</option>
+            </select>
+          </div>
+
+          <!-- Keahlian -->
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-stone-600 mb-1">Tingkat Keahlian</label>
+            <select id="filterSkill" onchange="applyFilters()" class="w-full px-3 py-2 text-xs rounded-xl bg-white border border-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-teal">
+              <option value="ALL">Semua Kategori</option>
+              <option value="Medis">Tenaga Medis (STR / Ners)</option>
+              <option value="Non-Medis">Caregiver Sahabat Harian</option>
+            </select>
+          </div>
+
+          <!-- Gender & Reset Button -->
+          <div class="flex items-end gap-2">
+            <div class="flex-1">
+              <label class="block text-[11px] font-bold uppercase text-stone-600 mb-1">Gender</label>
+              <select id="filterGender" onchange="applyFilters()" class="w-full px-3 py-2 text-xs rounded-xl bg-white border border-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-teal">
+                <option value="ALL">Semua</option>
+                <option value="Wanita">Wanita</option>
+                <option value="Pria">Pria</option>
+              </select>
+            </div>
+            <button onclick="resetFilters()" class="px-3 py-2 bg-stone-200 hover:bg-stone-300 text-stone-700 text-xs font-bold rounded-xl transition" title="Reset Semua Filter">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Result count tag -->
+        <div class="flex items-center justify-between pt-1 border-t border-stone-200/60 text-xs text-stone-500 font-medium">
+          <span id="resultsCount">Menampilkan 4 pendamping aktif</span>
+          <span class="text-[11px]">Klik kartu untuk menandai lokasi di peta Google di bawah</span>
+        </div>
+      </div>
+
+      <!-- CARDS GRID -->
+      <div id="caregiversGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- No Results State -->
+      <div id="noResults" class="hidden text-center py-16">
+        <div class="w-16 h-16 rounded-full bg-stone-100 flex items-center justify-center mx-auto text-stone-400 text-xl mb-3">
+          <i class="fa-solid fa-user-slash"></i>
+        </div>
+        <h4 class="font-bold text-stone-800 text-sm">Tidak menemukan pendamping yang cocok</h4>
+        <p class="text-xs text-stone-500 mt-1 max-w-sm mx-auto">Coba longgarkan pilihan bahasa daerah atau kota pencarian Anda.</p>
+        <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-brand-teal text-white text-xs font-bold rounded-xl">Reset Filter</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- GOOGLE MAPS INTEGRATION SECTION -->
+  <section id="gmapSection" class="py-14 bg-[#FAF6F0]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-3">
+        <div>
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-stone-900 text-white font-mono text-[10px] font-bold uppercase tracking-wider mb-2">
+            <i class="fa-solid fa-map-pin text-brand-teal"></i> Google Maps Live Coverage
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight">Peta Jangkauan & Posisi Pendamping</h2>
+        </div>
+        <p class="text-xs text-stone-600 max-w-md">
+          Pilih lokasi caregiver di peta untuk memastikan jarak tempuh yang optimal ke kediaman orang tua Anda (&lt; 10 km disarankan untuk respon cepat).
+        </p>
+      </div>
+
+      <!-- Map & Sidebar Split Container -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-white p-4 sm:p-5 rounded-3xl border border-stone-200 shadow-bento">
+        
+        <!-- Interactive Map Container -->
+        <div class="lg:col-span-8 relative rounded-2xl overflow-hidden border border-stone-200 bg-stone-100 flex flex-col justify-center items-center">
+          
+          <!-- Container tempat Google Maps API me-render -->
+          <div id="gmapContainer" class="w-full h-full min-h-[440px]"></div>
+
+          <!-- Fallback Visual Map bila user belum memasukkan API Key -->
+          <div id="gmapFallback" class="absolute inset-0 bg-stone-900/90 text-white flex flex-col items-center justify-center p-6 text-center z-10 transition-opacity">
+            <div class="w-14 h-14 rounded-2xl bg-brand-teal flex items-center justify-center text-white text-2xl mb-3 shadow-lg shadow-teal-900/40">
+              <i class="fa-solid fa-map-location-dot"></i>
+            </div>
+            <h3 class="text-base font-bold text-white">Google Maps Interactive Ready</h3>
+            <p class="text-xs text-stone-300 max-w-md mt-1 leading-relaxed">
+              Komponen Google Maps API telah terpasang di kode. Masukkan Google Maps API Key Anda di kolom hitam di bagian atas layar untuk mengaktifkan peta live dengan marker interaktif.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2 justify-center">
+              <button onclick="document.getElementById('gmapsApiKeyInput').focus()" class="px-4 py-2 bg-brand-teal hover:bg-brand-teal-dark text-white text-xs font-bold rounded-xl transition">
+                <i class="fa-solid fa-key mr-1"></i> Masukkan API Key Sekarang
+              </button>
+              <button onclick="simulateInteractiveMap()" class="px-4 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-semibold rounded-xl border border-stone-700 transition">
+                Gunakan Peta Simulasi OpenMap
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Side: Quick Radius Selector & Caregiver Mini List -->
+        <div class="lg:col-span-4 flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-stone-100">
+              <h4 class="font-bold text-stone-900 text-xs uppercase tracking-wider">Titik Posko Terdekat</h4>
+              <span class="text-[11px] font-mono text-brand-teal font-bold" id="mapStatusText">4 Titik Siaga</span>
+            </div>
+
+            <!-- Mini List of plotted caregivers -->
+            <div class="mt-3 space-y-2.5 max-h-[340px] overflow-y-auto pr-1 custom-scrollbar" id="mapCaregiversList">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <div class="p-3 bg-stone-50 border border-stone-200 rounded-2xl text-xs text-stone-600 space-y-1.5">
+            <div class="font-bold text-stone-800 flex items-center gap-1.5">
+              <i class="fa-solid fa-circle-info text-brand-teal"></i> Ketentuan Jarak & Transportasi
+            </div>
+            <p class="text-[11px] text-stone-500 leading-snug">
+              Bebas biaya transport untuk radius s.d 5 KM dari titik tinggal pendamping. Di atas 5 KM dikenakan biaya riil ojek online / taksi sesuai struk.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TRANSPARANSI BIAYA (INCLUDE VS EXCLUDE) -->
+  <section id="transparansi" class="py-14 bg-white border-t border-stone-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="max-w-2xl mb-10">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-brand-teal font-mono">Kejujuran Finansial</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight">Rincian Komponen Biaya Layanan</h2>
+        <p class="text-xs text-stone-600 mt-1">
+          Tidak ada tagihan mendadak di akhir shift. Berikut batasan jelas apa yang masuk dalam tarif per shift dan apa yang menjadi biaya terpisah.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
+        
+        <!-- Card 1: SUDAH TERMASUK -->
+        <div class="bg-teal-50/40 rounded-3xl p-6 sm:p-7 border border-teal-200/80 shadow-sm relative">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-2xl bg-brand-teal text-white flex items-center justify-center font-bold text-base">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-stone-900 text-base">Sudah Termasuk (Included)</h3>
+              <p class="text-[11px] text-stone-500">Tercakup dalam tarif per shift tanpa biaya tambahan</p>
+            </div>
+          </div>
+
+          <ul class="space-y-3.5 text-xs text-stone-700">
+            <li class="flex items-start gap-2.5">
+              <i class="fa-solid fa-circle-check text-brand-teal mt-0.5 text-sm"></i>
+              <div>
+                <strong class="text-stone-900 font-semibold">Laporan Digital Real-Time:</strong>
+                <span class="text-stone-600"> Foto aktivitas, waktu makan, dan catatan mood dikirim via WhatsApp keluarga.</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i class="fa-solid fa-circle-check text-brand-teal mt-0.5 text-sm"></i>
+              <div>
+                <strong class="text-stone-900 font-semibold">Pemeriksaan Tanda Vital Standar:</strong>
+                <span class="text-stone-600"> Tensi darah digital, denyut nadi, suhu badan, dan saturasi oksigen (SpO2).</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i class="fa-solid fa-circle-check text-brand-teal mt-0.5 text-sm"></i>
+              <div>
+                <strong class="text-stone-900 font-semibold">Disiplin Pengingat & Pemberian Obat:</strong>
+                <span class="text-stone-600"> Dosis tepat sesuai etiket dokter dengan pencatatan jam minum.</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i class="fa-solid fa-circle-check text-brand-teal mt-0.5 text-sm"></i>
+              <div>
+                <strong class="text-stone-900 font-semibold">Pendampingan Mobilitas & Personal Hygiene:</strong>
+                <span class="text-stone-600"> Membantu jalan pagi, mandi duduk aman, dan ganti pakaian lansia.</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i class="fa-solid fa-circle-check text-brand-teal mt-0.5 text-sm"></i>
+              <div>
+                <strong class="text-stone-900 font-semibold">Garansi Penggantian Pendamping:</strong>
+                <span class="text-stone-600"> Bebas ganti tenaga jika pendamping berhalangan atau kurang cocok secara karakter.</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Card 2: BIAYA TERPISAH -->
+        <div class="bg-stone-50 rounded-3xl p-6 sm:p-7 border border-stone-200 shadow-sm relative">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-2xl bg-stone-200 text-stone-700 flex items-center justify-center font-bold text-base">
+              <i class="fa-solid fa-receipt"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-stone-900 text-base">Biaya Terpisah (Excluded)</h3>
+              <p class="text-[11px] text-stone-500">Ditanggung keluarga sesuai kebutuhan riil di lapangan</p>
+            </div>
+          </div>
+
+          <ul class="space-y-3.5 text-xs text-stone-700">
+            <li class="flex items-start gap-2.5">
+              <i class="fa-solid fa-arrow-right-long text-amber-600 mt-0.5 text-sm"></i>
+              <div>
+                <strong class="text-stone-900 font-semibold">Transportasi Antar-Jemput RS / Luar Radius:</strong>
+                <span class="text-stone-600"> Tiket taksi online/ambulans jika mengantar kontrol ke rumah sakit.</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i class="fa-solid fa-arrow-right-long text-amber-600 mt-0.5 text-sm"></i>
+              <div>
+                <strong class="text-stone-900 font-semibold">Bahan Medis Habis Pakai (BMHP):</strong>
+                <span class="text-stone-600"> Kateter steril, selang NGT, kasa steril, perlak, dan strip cek gula darah.</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i class="fa-solid fa-arrow-right-long text-amber-600 mt-0.5 text-sm"></i>
+              <div>
+                <strong class="text-stone-900 font-semibold">Tindakan Invasif Berisiko Tinggi:</strong>
+                <span class="text-stone-600"> Pemasangan infus obat keras (harus dalam pengawasan dokter spesialis).</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i class="fa-solid fa-arrow-right-long text-amber-600 mt-0.5 text-sm"></i>
+              <div>
+                <strong class="text-stone-900 font-semibold">Makan Caregiver (Shift >12 Jam / Full Day):</strong>
+                <span class="text-stone-600"> Disiapkan oleh tuan rumah atau penggantian uang makan Rp 25.000 / kali makan.</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- LIVE PREVIEW DAILY ACTIVITY LOG -->
+  <section id="live-log" class="py-14 bg-[#FAF6F0] border-t border-stone-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- Left Explanatory Info -->
+        <div class="lg:col-span-5 space-y-4">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-brand-teal font-mono">Buku Catatan Digital</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight">
+            Seperti Sedang Duduk Menemani Mereka Sendiri
+          </h2>
+          <p class="text-xs text-stone-600 leading-relaxed">
+            Tidak ada lagi rasa cemas bertanya-tanya: <em>"Apakah Mama sudah makan? Berapa tensinya tadi pagi?"</em> Sistem otomatis mencatat dan menyinkronkan setiap kejadian penting ke handphone Anda.
+          </p>
+
+          <div class="pt-2">
+            <button onclick="simulateAddLog()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold transition">
+              <i class="fa-solid fa-plus-circle text-teal-400"></i>
+              Simulasikan Log Baru Masuk
+            </button>
+            <p class="text-[11px] text-stone-500 mt-1.5">Klik untuk melihat bagaimana laporan baru masuk secara instan.</p>
+          </div>
+        </div>
+
+        <!-- Right: Mobile Screen Simulator -->
+        <div class="lg:col-span-7">
+          <div class="bg-white rounded-3xl p-5 border border-stone-200 shadow-bento max-w-xl mx-auto">
+            
+            <!-- App Header Simulator -->
+            <div class="flex items-center justify-between pb-3.5 border-b border-stone-100">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-brand-teal text-white flex items-center justify-center text-xs font-bold">
+                  TL
+                </div>
+                <div>
+                  <h4 class="text-xs font-bold text-stone-900">Buku Rawat Lansia</h4>
+                  <p class="text-[10px] text-stone-500">Ibu Sudarmi (72 th) &bull; Didampingi: Siti Rahayu, S.Kep</p>
+                </div>
+              </div>
+              <span class="inline-flex items-center gap-1 text-[10px] font-semibold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Terkoneksi WA
+              </span>
+            </div>
+
+            <!-- Activity Stream Items -->
+            <div id="activityStream" class="mt-4 space-y-3 max-h-[380px] overflow-y-auto pr-1 custom-scrollbar">
+              
+              <!-- Log 1: Tensi -->
+              <div class="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 text-xs space-y-2">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono font-bold text-stone-800 text-[11px]">08:30 WIB</span>
+                    <span class="px-2 py-0.5 rounded bg-teal-100 text-teal-800 font-semibold text-[10px]">Pemeriksaan Vital</span>
+                  </div>
+                  <span class="text-[10px] text-stone-400">Pagi</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-center">
+                  <div class="bg-white p-2 rounded-xl border border-stone-100">
+                    <span class="text-[10px] text-stone-400 block">Tekanan Darah</span>
+                    <span class="font-bold text-brand-teal font-mono text-xs">124 / 82 mmHg</span>
+                  </div>
+                  <div class="bg-white p-2 rounded-xl border border-stone-100">
+                    <span class="text-[10px] text-stone-400 block">Saturasi O2 / Nadi</span>
+                    <span class="font-bold text-stone-800 font-mono text-xs">98% &bull; 76 bpm</span>
+                  </div>
+                </div>
+                <p class="text-[11px] text-stone-600">Ibu dalam kondisi fit, sempat jalan santai 10 menit di halaman depan.</p>
+              </div>
+
+              <!-- Log 2: Makan & Obat -->
+              <div class="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 text-xs space-y-2">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono font-bold text-stone-800 text-[11px]">09:00 WIB</span>
+                    <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold text-[10px]">Obat & Sarapan</span>
+                  </div>
+                  <i class="fa-solid fa-circle-check text-emerald-600 text-xs"></i>
+                </div>
+                <p class="text-[11px] text-stone-700">Makan bubur oatmeal pisang habis 1 mangkok. Obat tensi (Amlodipine 5mg) telah diminum.</p>
+              </div>
+
+              <!-- Log 3: Dokumentasi Foto -->
+              <div class="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 text-xs space-y-2">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono font-bold text-stone-800 text-[11px]">10:15 WIB</span>
+                    <span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-semibold text-[10px]">Dokumentasi Santai</span>
+                  </div>
+                  <span class="text-[10px] text-stone-400">Taman Rumah</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <img src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=160&auto=format&fit=crop&q=80" alt="Lansia Bahagia" class="w-14 h-14 rounded-xl object-cover ring-1 ring-stone-300">
+                  <p class="text-[11px] text-stone-600">Ibu membaca majalah dan berbincang dalam bahasa Jawa halus mengenai masa sekolah beliau dulu.</p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-stone-900 text-stone-400 text-xs py-10 mt-auto border-t border-stone-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+      
+      <div class="space-y-3">
+        <div class="flex items-center gap-2 text-white font-extrabold text-base">
+          <i class="fa-solid fa-heart-pulse text-brand-teal"></i> TemanLansia
+        </div>
+        <p class="text-[11px] text-stone-400 leading-relaxed">
+          Platform pendamping harian lansia terverifikasi berbasis kearifan lokal bahasa daerah dan laporan digital keluarga.
+        </p>
+      </div>
+
+      <div>
+        <h5 class="text-stone-200 font-bold uppercase tracking-wider text-[11px] mb-2.5">Menu Cepat</h5>
+        <ul class="space-y-1.5 text-[11px]">
+          <li><a href="#katalog" class="hover:text-white transition">Daftar Pendamping</a></li>
+          <li><a href="#gmapSection" class="hover:text-white transition">Peta Jangkauan</a></li>
+          <li><a href="#transparansi" class="hover:text-white transition">Rincian Komponen Biaya</a></li>
+          <li><a href="#live-log" class="hover:text-white transition">Simulasi Log Harian</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-stone-200 font-bold uppercase tracking-wider text-[11px] mb-2.5">Verifikasi Standar</h5>
+        <ul class="space-y-1.5 text-[11px]">
+          <li>KTP & Dukcapil Match</li>
+          <li>Bebas Pidana Kepolisian</li>
+          <li>Sertifikasi BCLS & Geriatri</li>
+          <li>Pelatihan Komunikasi Bahasa Daerah</li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="text-stone-200 font-bold uppercase tracking-wider text-[11px] mb-2.5">Jalur Darurat 24 Jam</h5>
+        <p class="text-white font-mono font-bold text-xs">Hotline: (021) 7890-5522</p>
+        <p class="text-stone-400 text-[11px]">Ambulans Nasional Bebas Pulsa: 119</p>
+        <button onclick="toggleSosModal(true)" class="mt-3 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-[10px] transition">
+          Buka Panggilan SOS
+        </button>
+      </div>
+
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-4 border-t border-stone-800 text-center text-[10px] text-stone-500">
+      &copy; 2026 TemanLansia Indonesia &bull; Purwarupa Ekspo Proyek Sekolah.
+    </div>
+  </footer>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- MODAL DETAIL PROFIL & RESUME MEDIS -->
+  <div id="profileModal" class="fixed inset-0 z-50 hidden bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-200 relative animate-in fade-in duration-150">
+      
+      <div class="sticky top-0 bg-white/95 backdrop-blur px-5 py-4 border-b border-stone-200 flex items-center justify-between z-10">
+        <h3 class="font-bold text-stone-900 text-sm flex items-center gap-2">
+          <i class="fa-solid fa-address-card text-brand-teal"></i>
+          Profil & Rekam Jejak Pendamping
+        </h3>
+        <button onclick="closeProfileModal()" class="w-7 h-7 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-5" id="modalProfileContent">
+        <!-- Injected by JS -->
+      </div>
+
+      <div class="sticky bottom-0 bg-stone-50 px-5 py-3.5 border-t border-stone-200 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] text-stone-500 block">Tarif Layanan</span>
+          <span id="modalProfilePrice" class="text-sm font-extrabold text-brand-teal">Rp 280.000 / shift</span>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="closeProfileModal()" class="px-3 py-1.5 border border-stone-300 text-stone-700 font-semibold text-xs rounded-xl hover:bg-stone-100">Tutup</button>
+          <button id="modalBookBtn" class="px-4 py-1.5 bg-brand-teal hover:bg-brand-teal-dark text-white font-bold text-xs rounded-xl shadow-sm">Pesan Jadwal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE 3-STEP BOOKING MODAL -->
+  <div id="bookingModal" class="fixed inset-0 z-50 hidden bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-stone-200 relative">
+      
+      <!-- Stepper Header -->
+      <div class="sticky top-0 bg-white/95 backdrop-blur px-5 py-4 border-b border-stone-200 z-10">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-bold text-stone-900 text-sm">Pemesanan Pendamping Lansia</h3>
+          <button onclick="closeBookingModal()" class="w-7 h-7 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center transition">
+            <i class="fa-solid fa-xmark text-xs"></i>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 text-center text-[11px]">
+          <div id="stepTab1" class="py-1.5 border-b-2 border-brand-teal text-brand-teal font-bold">1. Tanggal & Shift</div>
+          <div id="stepTab2" class="py-1.5 border-b-2 border-stone-200 text-stone-400 font-medium">2. Data Lansia</div>
+          <div id="stepTab3" class="py-1.5 border-b-2 border-stone-200 text-stone-400 font-medium">3. Rincian & Bayar</div>
+        </div>
+      </div>
+
+      <!-- Form Body -->
+      <form id="bookingForm" onsubmit="handleBookingSubmit(event)" class="p-5">
+        
+        <!-- Summary selected caregiver -->
+        <div class="mb-4 p-3 bg-stone-50 border border-stone-200 rounded-2xl flex items-center gap-3">
+          <img id="bookingCaregiverImg" src="" alt="Caregiver" class="w-10 h-10 rounded-xl object-cover ring-1 ring-stone-300">
+          <div>
+            <h4 id="bookingCaregiverName" class="text-xs font-bold text-stone-900">Nama Pendamping</h4>
+            <span id="bookingCaregiverRate" class="text-[11px] font-mono text-brand-teal font-semibold">Rp 280.000 / shift</span>
+          </div>
+        </div>
+
+        <!-- STEP 1: SHIFT & TANGGAL -->
+        <div id="stepContent1" class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Tanggal Mulai Pendampingan</label>
+            <input type="date" id="bookDate" required class="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-teal">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1.5">Pilih Waktu Shift</label>
+            <div class="grid grid-cols-3 gap-2">
+              <label class="cursor-pointer border-2 border-brand-teal bg-teal-50/40 p-2.5 rounded-xl flex flex-col justify-between shift-option text-center" onclick="selectShift(this, 'Shift Pagi (07:00 - 15:00)', 1.0)">
+                <span class="font-bold text-xs text-stone-900">Pagi</span>
+                <span class="text-[10px] text-stone-500">07:00 - 15:00</span>
+                <span class="text-[10px] font-bold text-brand-teal mt-1">1x Tarif</span>
+              </label>
+
+              <label class="cursor-pointer border-2 border-stone-200 hover:border-teal-300 p-2.5 rounded-xl flex flex-col justify-between shift-option text-center" onclick="selectShift(this, 'Shift Sore (13:00 - 21:00)', 1.0)">
+                <span class="font-bold text-xs text-stone-900">Sore</span>
+                <span class="text-[10px] text-stone-500">13:00 - 21:00</span>
+                <span class="text-[10px] font-bold text-brand-teal mt-1">1x Tarif</span>
+              </label>
+
+              <label class="cursor-pointer border-2 border-stone-200 hover:border-teal-300 p-2.5 rounded-xl flex flex-col justify-between shift-option text-center" onclick="selectShift(this, 'Full Day Menginap (24 Jam)', 2.2)">
+                <span class="font-bold text-xs text-stone-900">24 Jam</span>
+                <span class="text-[10px] text-stone-500">Siaga Malam</span>
+                <span class="text-[10px] font-bold text-brand-teal mt-1">2.2x Tarif</span>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Durasi Paket</label>
+            <select id="bookDurationDays" onchange="calculateBookingCost()" class="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 bg-white focus:outline-none focus:ring-2 focus:ring-brand-teal">
+              <option value="1">1 Hari Kunjungan</option>
+              <option value="3">3 Hari Berturut-turut</option>
+              <option value="7">Paket Mingguan (7 Hari) - Diskon 5%</option>
+              <option value="30">Paket Bulanan (30 Hari) - Diskon 12%</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- STEP 2: DATA LANSIA -->
+        <div id="stepContent2" class="space-y-3 hidden">
+          <div class="grid grid-cols-3 gap-2">
+            <div class="col-span-2">
+              <label class="block text-xs font-bold text-stone-700 mb-1">Nama Lansia</label>
+              <input type="text" id="elderName" placeholder="Cth: Ibu Siti Aminah" class="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-teal">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1">Usia</label>
+              <input type="number" id="elderAge" placeholder="72" class="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-teal">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Kondisi Fisik / Mobilitas</label>
+            <select id="elderMobility" class="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 bg-white">
+              <option value="Mandiri">Bisa Jalan Mandiri (Perlu Teman & Pengawasan)</option>
+              <option value="Tongkat">Menggunakan Tongkat / Walker</option>
+              <option value="KursiRoda">Menggunakan Kursi Roda</option>
+              <option value="Bedridden">Tirah Baring Penuh (Bedridden)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Riwayat Medis & Alergi Obat</label>
+            <textarea id="elderNotes" rows="2" placeholder="Cth: Riwayat hipertensi, alergi penisilin, suka diajak bicara bahasa Jawa halus." class="w-full px-3 py-2 text-xs rounded-xl border border-stone-300"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Alamat Penjemputan / Rumah</label>
+            <input type="text" id="elderAddress" placeholder="Jalan, No Rumah, Kelurahan, Kota" class="w-full px-3 py-2 text-xs rounded-xl border border-stone-300">
+          </div>
+        </div>
+
+        <!-- STEP 3: RINCIAN & METODE BAYAR -->
+        <div id="stepContent3" class="space-y-3.5 hidden">
+          <div class="bg-stone-50 p-3.5 rounded-2xl border border-stone-200 text-xs space-y-1.5">
+            <div class="flex justify-between text-stone-600">
+              <span>Lansia:</span>
+              <strong class="text-stone-900" id="summaryElderName">-</strong>
+            </div>
+            <div class="flex justify-between text-stone-600">
+              <span>Shift:</span>
+              <strong class="text-stone-900" id="summaryShift">-</strong>
+            </div>
+            <div class="flex justify-between text-stone-600">
+              <span>Durasi:</span>
+              <strong class="text-stone-900" id="summaryDays">-</strong>
+            </div>
+            <div class="border-t border-stone-200 pt-1.5 flex justify-between text-stone-600">
+              <span>Subtotal Shift:</span>
+              <span id="summarySubtotal" class="font-mono">Rp 0</span>
+            </div>
+            <div class="flex justify-between text-stone-600">
+              <span>Biaya Layanan & Asuransi:</span>
+              <span class="font-mono text-emerald-600">Rp 15.000</span>
+            </div>
+            <div class="border-t border-stone-200 pt-1.5 flex justify-between font-bold text-stone-900 text-sm">
+              <span>Total Tagihan:</span>
+              <span id="summaryTotal" class="font-mono text-brand-teal">Rp 0</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1.5">Pilih Saluran Pembayaran</label>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <label class="flex items-center gap-2 p-2 rounded-xl border border-stone-200 cursor-pointer hover:border-brand-teal">
+                <input type="radio" name="paymentMethod" value="BCA Virtual Account" checked>
+                <span>BCA VA</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded-xl border border-stone-200 cursor-pointer hover:border-brand-teal">
+                <input type="radio" name="paymentMethod" value="Mandiri VA">
+                <span>Mandiri VA</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded-xl border border-stone-200 cursor-pointer hover:border-brand-teal">
+                <input type="radio" name="paymentMethod" value="QRIS Instan">
+                <span>QRIS Instant</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded-xl border border-stone-200 cursor-pointer hover:border-brand-teal">
+                <input type="radio" name="paymentMethod" value="Kartu Kredit">
+                <span>Kartu Kredit</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="p-2.5 bg-teal-50 border border-teal-200 rounded-xl text-[11px] text-teal-800">
+            <i class="fa-solid fa-lock text-brand-teal mr-1"></i> Dana disimpan aman di sistem escrow TemanLansia sampai shift selesai.
+          </div>
+        </div>
+
+        <!-- Buttons Nav Stepper -->
+        <div class="mt-5 pt-3 border-t border-stone-200 flex justify-between items-center">
+          <button type="button" id="prevStepBtn" onclick="navigateStep(-1)" class="hidden px-3.5 py-1.5 border border-stone-300 text-stone-600 font-bold text-xs rounded-xl hover:bg-stone-100">
+            Kembali
+          </button>
+          
+          <div class="ml-auto flex gap-2">
+            <button type="button" id="nextStepBtn" onclick="navigateStep(1)" class="px-4 py-2 bg-brand-teal hover:bg-brand-teal-dark text-white font-bold text-xs rounded-xl transition">
+              Lanjut Isi Data Lansia &rarr;
+            </button>
+            <button type="submit" id="submitOrderBtn" class="hidden px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition">
+              Konfirmasi & Bayar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL DARURAT SOS -->
+  <div id="sosModal" class="fixed inset-0 z-50 hidden bg-red-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border-2 border-red-500 text-stone-900 animate-in zoom-in-95">
+      <div class="text-center space-y-2">
+        <div class="w-14 h-14 rounded-full bg-red-100 text-brand-accent flex items-center justify-center mx-auto text-xl font-black">
+          <i class="fa-solid fa-truck-medical"></i>
+        </div>
+        <h3 class="text-lg font-extrabold text-red-600">Jalur Cepat Bantuan Darurat</h3>
+        <p class="text-xs text-stone-600 leading-relaxed">
+          Gunakan kontak langsung di bawah ini jika lansia membutuhkan penanganan medis segera.
+        </p>
+      </div>
+
+      <div class="mt-5 space-y-2.5">
+        <a href="tel:119" class="w-full flex items-center justify-between p-3 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl transition">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-phone-flip text-red-600"></i>
+            <div class="text-left">
+              <p class="text-xs font-bold text-stone-900">Ambulans Darurat Nasional</p>
+              <p class="text-[10px] text-stone-500">Kemenkes RI</p>
+            </div>
+          </div>
+          <span class="text-base font-mono font-black text-red-600">119</span>
+        </a>
+
+        <a href="tel:02178905522" class="w-full flex items-center justify-between p-3 bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-xl transition">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-headset text-brand-teal"></i>
+            <div class="text-left">
+              <p class="text-xs font-bold text-stone-900">Dispatcher TemanLansia 24 Jam</p>
+              <p class="text-[10px] text-stone-500">Koordinasi caregiver pengganti darurat</p>
+            </div>
+          </div>
+          <span class="text-xs font-mono font-bold text-brand-teal">021-7890-5522</span>
+        </a>
+      </div>
+
+      <button onclick="toggleSosModal(false)" class="mt-5 w-full py-2 text-xs font-bold text-stone-600 hover:text-stone-900 bg-stone-100 rounded-xl transition">
+        Tutup
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <script>
+    // DATA SAMPLE CAREGIVER DENGAN KOORDINAT GMAPS NYATA
+    const caregiversData = [
+      {
+        id: 1,
+        name: "Siti Rahayu, S.Kep",
+        age: 32,
+        gender: "Wanita",
+        location: "Jakarta",
+        areaDetail: "Tebet, Jakarta Selatan",
+        coords: { lat: -6.2297, lng: 106.8559 },
+        skillType: "Medis",
+        languages: ["Jawa", "Sunda"],
+        rating: 4.9,
+        reviewsCount: 128,
+        pricePerShift: 280000,
+        photoUrl: "https://images.unsplash.com/photo-1594824813627-7204fef5a153?w=500&auto=format&fit=crop&q=80",
+        tagline: "Perawat Ners Lansia Geriatri & Pasca-Stroke",
+        bio: "Lulusan S1 Keperawatan dengan STR aktif. Terbiasa mendampingi lansia pasca-stroke, pemantauan tensi rutin, fisioterapi gerak ringan, dan ramah berbincang bahasa Jawa krama.",
+        skills: ["Injeksi Insulin Mandiri", "Perawatan Luka Bed-Sore", "Pemantauan Tensi Darah", "Bahasa Krama Inggil"],
+        certifications: ["STR Perawat Aktif (Kemenkes)", "Sertifikasi BCLS", "SKCK Polda Metro"]
+      },
+      {
+        id: 2,
+        name: "Budi Santoso",
+        age: 40,
+        gender: "Pria",
+        location: "Surabaya",
+        areaDetail: "Gubeng, Surabaya Pusat",
+        coords: { lat: -7.2756, lng: 112.7538 },
+        skillType: "Non-Medis",
+        languages: ["Jawa", "Hokkien"],
+        rating: 4.8,
+        reviewsCount: 94,
+        pricePerShift: 220000,
+        photoUrl: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500&auto=format&fit=crop&q=80",
+        tagline: "Sahabat Harian Lansia Pria & Terapi Gerak",
+        bio: "Sabar dan bertenaga kuat untuk mendampingi lansia pria jalan santai di taman, latihan gerak sendi, serta mengerti percakapan santai Hokkien dan Jawa Suroboyoan.",
+        skills: ["Bantuan Kursi Roda & Mobilitas", "Senam Persendian Lansia", "Bilingual Hokkien-Jawa", "Kawan Catur & Asah Otak"],
+        certifications: ["Caregiver BNSP Level 3", "Pertolongan Pertama PMI", "SKCK Polrestabes"]
+      },
+      {
+        id: 3,
+        name: "Dewi Sartika, Amd.Keb",
+        age: 28,
+        gender: "Wanita",
+        location: "Bandung",
+        areaDetail: "Dago, Bandung Utara",
+        coords: { lat: -6.8833, lng: 107.6167 },
+        skillType: "Medis",
+        languages: ["Sunda", "Batak"],
+        rating: 5.0,
+        reviewsCount: 76,
+        pricePerShift: 260000,
+        photoUrl: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500&auto=format&fit=crop&q=80",
+        tagline: "Bidan Pendamping Demensia & Nutrisi Rendah Garam",
+        bio: "Berpengalaman 5 tahun merawat oma dengan demensia ringan. Pendengar yang setia, mampu meredakan kecemasan lansia lewat sapaan Sunda yang halus dan pengaturan menu bergizi.",
+        skills: ["Stimulasi Kognitif Lansia", "Menu Diet Rendah Natrium", "Manajemen Higienitas", "Sapaan Santun Sunda"],
+        certifications: ["Ijazah Kebidanan Terdaftar", "Geriatric Care BNSP", "SKCK Polda Jabar"]
+      },
+      {
+        id: 4,
+        name: "Andi Tenriwali",
+        age: 35,
+        gender: "Wanita",
+        location: "Medan",
+        areaDetail: "Medan Baru, Kota Medan",
+        coords: { lat: 3.5852, lng: 98.6675 },
+        skillType: "Non-Medis",
+        languages: ["Bugis", "Batak"],
+        rating: 4.9,
+        reviewsCount: 88,
+        pricePerShift: 210000,
+        photoUrl: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=500&auto=format&fit=crop&q=80",
+        tagline: "Caregiver Sahabat Hati & Pendamping Ibadah",
+        bio: "Berjiwa hangat dan penuh empati. Fokus menemani opa/oma yang kerap merasa kesepian di rumah, membacakan buku, menemani ibadah, serta menguasai percakapan bahasa Batak dan Bugis.",
+        skills: ["Teman Cerita & Doa", "Memasak Makanan Lembut", "Bilingual Bugis-Batak", "Pengawasan Obat Terjadwal"],
+        certifications: ["Pelatihan Elderly Emotional Care", "K3 Rumah Tangga", "SKCK Terverifikasi"]
+      }
+    ];
+
+    // STATE MANAGEMENT
+    let currentCaregiver = caregiversData[0];
+    let bookingStep = 1;
+    let selectedShiftTitle = "Shift Pagi (07:00 - 15:00)";
+    let shiftMultiplier = 1.0;
+
+    // GOOGLE MAPS STATE
+    let googleMap = null;
+    let mapMarkers = [];
+
+    // Helper Rupiah
+    function formatRupiah(num) {
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+    }
+
+    // RENDER DAFTAR PENDAMPING (KATALOG)
+    function renderCaregivers(list) {
+      const grid = document.getElementById('caregiversGrid');
+      const noResults = document.getElementById('noResults');
+      const counter = document.getElementById('resultsCount');
+
+      grid.innerHTML = '';
+      counter.innerText = `Menampilkan ${list.length} pendamping aktif`;
+
+      if (list.length === 0) {
+        noResults.classList.remove('hidden');
+        renderMapCaregiverMiniList([]);
+        return;
+      }
+      noResults.classList.add('hidden');
+
+      list.forEach(item => {
+        const isMed = item.skillType === 'Medis';
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-3xl p-4 sm:p-5 border border-stone-200/90 shadow-sm hover:shadow-bento hover:-translate-y-1 transition duration-200 flex flex-col justify-between cursor-pointer group";
+        
+        // Klik card untuk mengarahkan peta ke koordinat pendamping
+        card.onclick = (e) => {
+          if (e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
+            focusMapOnCaregiver(item.id);
+          }
+        };
+
+        const langBadges = item.languages.map(l => 
+          `<span class="text-[10px] bg-stone-100 text-stone-700 px-2 py-0.5 rounded font-medium">
+            <i class="fa-solid fa-comment-dots text-[9px] text-teal-600 mr-1"></i>${l}
+          </span>`
+        ).join('');
+
+        card.innerHTML = `
+          <div>
+            <div class="relative mb-3.5">
+              <img src="${item.photoUrl}" alt="${item.name}" class="w-full h-44 object-cover rounded-2xl">
+              <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold shadow ${isMed ? 'bg-teal-800 text-white' : 'bg-stone-800 text-white'}">
+                ${isMed ? '<i class="fa-solid fa-stethoscope mr-1"></i> Medis' : '<i class="fa-solid fa-hand-holding-heart mr-1"></i> Sahabat Harian'}
+              </span>
+              <span class="absolute bottom-2.5 right-2.5 bg-white/95 backdrop-blur px-2 py-0.5 rounded-lg text-[10px] font-bold text-stone-800 shadow-sm">
+                <i class="fa-solid fa-location-dot text-brand-teal mr-1"></i> ${item.location}
+              </span>
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-stone-900 text-sm">${item.name}</h3>
+                <span class="text-xs text-stone-400 font-semibold">${item.age} th</span>
+              </div>
+              <p class="text-xs text-brand-teal font-medium line-clamp-1">${item.tagline}</p>
+              
+              <div class="flex items-center gap-1.5 text-xs text-stone-500 pt-1">
+                <span class="text-amber-500 font-bold"><i class="fa-solid fa-star"></i> ${item.rating}</span>
+                <span>(${item.reviewsCount} review)</span>
+                <span class="text-emerald-600 font-semibold ml-auto text-[11px]"><i class="fa-solid fa-shield-check"></i> SKCK</span>
+              </div>
+
+              <div class="pt-2">
+                <span class="text-[10px] uppercase font-bold text-stone-400 block mb-1">Bahasa Daerah:</span>
+                <div class="flex flex-wrap gap-1">${langBadges}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-stone-100">
+            <div class="flex items-baseline justify-between mb-3">
+              <span class="text-[10px] text-stone-400 font-mono">Tarif Shift</span>
+              <div>
+                <span class="text-sm font-extrabold text-stone-900">${formatRupiah(item.pricePerShift)}</span>
+                <span class="text-[10px] text-stone-500">/shift</span>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="openProfileModal(${item.id})" class="w-full py-1.5 rounded-xl border border-stone-200 hover:bg-stone-50 text-stone-700 text-xs font-bold transition">
+                Profil & CV
+              </button>
+              <button onclick="startBookingFlow(${item.id})" class="w-full py-1.5 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white text-xs font-bold transition shadow-sm">
+                Pesan
+              </button>
+            </div>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+
+      renderMapCaregiverMiniList(list);
+      updateMapMarkers(list);
+    }
+
+    // RENDER SIDEBAR LIST PETA
+    function renderMapCaregiverMiniList(list) {
+      const container = document.getElementById('mapCaregiversList');
+      const statusText = document.getElementById('mapStatusText');
+      container.innerHTML = '';
+      statusText.innerText = `${list.length} Titik Siaga`;
+
+      if (list.length === 0) {
+        container.innerHTML = `<p class="text-xs text-stone-400 text-center py-4">Tidak ada pendamping di area filter ini.</p>`;
+        return;
+      }
+
+      list.forEach(item => {
+        const row = document.createElement('div');
+        row.className = "p-2.5 rounded-xl border border-stone-200 hover:border-brand-teal bg-white hover:bg-teal-50/40 transition cursor-pointer flex items-center justify-between text-xs";
+        row.onclick = () => focusMapOnCaregiver(item.id);
+
+        row.innerHTML = `
+          <div class="flex items-center gap-2.5">
+            <img src="${item.photoUrl}" alt="${item.name}" class="w-9 h-9 rounded-lg object-cover">
+            <div>
+              <p class="font-bold text-stone-900">${item.name}</p>
+              <p class="text-[10px] text-stone-500"><i class="fa-solid fa-map-pin text-brand-teal"></i> ${item.areaDetail}</p>
+            </div>
+          </div>
+          <button onclick="event.stopPropagation(); startBookingFlow(${item.id})" class="px-2.5 py-1 bg-stone-900 hover:bg-brand-teal text-white text-[10px] font-bold rounded-lg transition">
+            Pilih
+          </button>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    // FILTER LOGIC
+    function applyFilters() {
+      const kw = document.getElementById('filterKeyword').value.toLowerCase().trim();
+      const loc = document.getElementById('filterLocation').value;
+      const lang = document.getElementById('filterLanguage').value;
+      const skill = document.getElementById('filterSkill').value;
+      const gender = document.getElementById('filterGender').value;
+
+      const filtered = caregiversData.filter(item => {
+        const matchKw = item.name.toLowerCase().includes(kw) || 
+                        item.tagline.toLowerCase().includes(kw) || 
+                        item.bio.toLowerCase().includes(kw) ||
+                        item.skills.some(s => s.toLowerCase().includes(kw));
+        const matchLoc = (loc === 'ALL') || (item.location === loc);
+        const matchLang = (lang === 'ALL') || (item.languages.includes(lang));
+        const matchSkill = (skill === 'ALL') || (item.skillType === skill);
+        const matchGender = (gender === 'ALL') || (item.gender === gender);
+
+        return matchKw && matchLoc && matchLang && matchSkill && matchGender;
+      });
+
+      renderCaregivers(filtered);
+    }
+
+    function resetFilters() {
+      document.getElementById('filterKeyword').value = '';
+      document.getElementById('filterLocation').value = 'ALL';
+      document.getElementById('filterLanguage').value = 'ALL';
+      document.getElementById('filterSkill').value = 'ALL';
+      document.getElementById('filterGender').value = 'ALL';
+      applyFilters();
+    }
+
+    // ==================== GOOGLE MAPS API INTEGRATION ====================
+    function loadGoogleMapsWithKey() {
+      const input = document.getElementById('gmapsApiKeyInput');
+      const apiKey = input.value.trim();
+
+      if (!apiKey) {
+        alert('Silakan masukkan Google Maps API Key Anda terlebih dahulu.');
+        return;
+      }
+
+      // Hide fallback banner
+      document.getElementById('gmapFallback').classList.add('hidden');
+
+      // Check if script already exists
+      const existingScript = document.getElementById('gmapsScriptTag');
+      if (existingScript) existingScript.remove();
+
+      // Dynamically load Google Maps script
+      const script = document.createElement('script');
+      script.id = 'gmapsScriptTag';
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initGoogleMap`;
+      script.async = true;
+      script.defer = true;
+      script.onerror = () => {
+        alert('Gagal memuat Google Maps. Periksa apakah API Key Anda valid dan mengizinkan Maps JavaScript API.');
+        document.getElementById('gmapFallback').classList.remove('hidden');
+      };
+      document.head.appendChild(script);
+    }
+
+    // Callback resmi Google Maps
+    window.initGoogleMap = function() {
+      const mapDiv = document.getElementById('gmapContainer');
+      document.getElementById('gmapFallback').classList.add('hidden');
+
+      // Center default di Indonesia (Jawa / Jakarta)
+      const defaultCenter = { lat: -6.2088, lng: 106.8456 };
+
+      googleMap = new google.maps.Map(mapDiv, {
+        zoom: 11,
+        center: defaultCenter,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: true,
+        styles: [
+          { featureType: "poi", elementType: "labels", stylers: [{ visibility: "off" }] }
+        ]
+      });
+
+      updateMapMarkers(caregiversData);
+    };
+
+    function updateMapMarkers(list) {
+      if (!googleMap || typeof google === 'undefined' || !google.maps) return;
+
+      // Clear existing markers
+      mapMarkers.forEach(m => m.setMap(null));
+      mapMarkers = [];
+
+      const bounds = new google.maps.LatLngBounds();
+
+      list.forEach(caregiver => {
+        const marker = new google.maps.Marker({
+          position: caregiver.coords,
+          map: googleMap,
+          title: caregiver.name,
+          animation: google.maps.Animation.DROP
+        });
+
+        const infoWindow = new google.maps.InfoWindow({
+          content: `
+            <div style="font-family: sans-serif; padding: 4px; max-width: 200px;">
+              <strong style="font-size: 13px; color: #1C1917;">${caregiver.name}</strong>
+              <p style="font-size: 11px; color: #0D9488; margin: 2px 0;">${caregiver.tagline}</p>
+              <p style="font-size: 11px; color: #666;">${caregiver.areaDetail}</p>
+              <div style="margin-top: 6px;">
+                <button onclick="startBookingFlow(${caregiver.id})" style="background:#0D9488; color:#fff; border:none; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold; cursor:pointer;">
+                  Pesan (${formatRupiah(caregiver.pricePerShift)})
+                </button>
+              </div>
+            </div>
+          `
+        });
+
+        marker.addListener('click', () => {
+          infoWindow.open(googleMap, marker);
+        });
+
+        marker.caregiverId = caregiver.id;
+        marker.infoWindow = infoWindow;
+        mapMarkers.push(marker);
+        bounds.extend(caregiver.coords);
+      });
+
+      if (list.length > 0) {
+        googleMap.fitBounds(bounds);
+        if (list.length === 1) googleMap.setZoom(13);
+      }
+    }
+
+    function focusMapOnCaregiver(id) {
+      const caregiver = caregiversData.find(c => c.id === id);
+      if (!caregiver) return;
+
+      // Scroll ke section map
+      document.getElementById('gmapSection').scrollIntoView({ behavior: 'smooth' });
+
+      if (googleMap && typeof google !== 'undefined') {
+        googleMap.panTo(caregiver.coords);
+        googleMap.setZoom(14);
+        const targetMarker = mapMarkers.find(m => m.caregiverId === id);
+        if (targetMarker) {
+          targetMarker.infoWindow.open(googleMap, targetMarker);
+        }
+      } else {
+        // Jika belum ada GMaps live, beri pesan visual
+        alert(`Lokasi ${caregiver.name}:\n${caregiver.areaDetail} (${caregiver.location})\nKoordinat: Lat ${caregiver.coords.lat}, Lng ${caregiver.coords.lng}`);
+      }
+    }
+
+    // SIMULASI PETA INTERAKTIF BILA USER INGIN LIHAT LANGSUNG TANPA API KEY
+    function simulateInteractiveMap() {
+      const container = document.getElementById('gmapContainer');
+      document.getElementById('gmapFallback').classList.add('hidden');
+      
+      // Menggunakan OpenStreetMap iframe sebagai fallback live visual
+      container.innerHTML = `
+        <div class="relative w-full h-full min-h-[440px]">
+          <iframe 
+            width="100%" 
+            height="100%" 
+            style="min-height:440px; border:0; border-radius:1rem;" 
+            src="https://www.openstreetmap.org/export/embed.html?bbox=106.75%2C-6.35%2C106.95%2C-6.15&amp;layer=mapnik" 
+            loading="lazy">
+          </iframe>
+          <div class="absolute bottom-3 left-3 bg-white/95 backdrop-blur px-3 py-1.5 rounded-xl border border-stone-200 text-[10px] font-bold text-stone-800 shadow">
+            <i class="fa-solid fa-map text-brand-teal mr-1"></i> Preview Peta Wilayah Jabodetabek
+          </div>
+        </div>
+      `;
+    }
+
+    // ==================== MODAL PROFIL & RESUME ====================
+    function openProfileModal(id) {
+      const item = caregiversData.find(c => c.id === id);
+      if (!item) return;
+
+      currentCaregiver = item;
+      document.getElementById('modalProfilePrice').innerText = `${formatRupiah(item.pricePerShift)} / shift`;
+      document.getElementById('modalBookBtn').onclick = () => {
+        closeProfileModal();
+        startBookingFlow(item.id);
+      };
+
+      const container = document.getElementById('modalProfileContent');
+      container.innerHTML = `
+        <div class="flex items-start gap-4">
+          <img src="${item.photoUrl}" alt="${item.name}" class="w-20 h-20 rounded-2xl object-cover ring-2 ring-brand-teal shadow">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-extrabold text-stone-900 text-base">${item.name}</h4>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-100 text-brand-teal-dark">${item.age} th</span>
+            </div>
+            <p class="text-xs font-semibold text-brand-teal">${item.tagline}</p>
+            <p class="text-xs text-stone-500"><i class="fa-solid fa-map-pin text-stone-400"></i> ${item.areaDetail} &bull; ${item.gender}</p>
+          </div>
+        </div>
+
+        <div>
+          <h5 class="text-[11px] font-bold uppercase tracking-wider text-stone-400 mb-1.5">Ringkasan Pengalaman</h5>
+          <p class="text-xs text-stone-700 leading-relaxed bg-stone-50 p-3 rounded-2xl border border-stone-200">${item.bio}</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div>
+            <h5 class="text-[11px] font-bold uppercase tracking-wider text-stone-400 mb-1.5">Keahlian Medis & Asuhan</h5>
+            <ul class="space-y-1 text-stone-700">
+              ${item.skills.map(s => `<li class="flex items-center gap-1.5"><i class="fa-solid fa-check text-emerald-600 text-[10px]"></i> ${s}</li>`).join('')}
+            </ul>
+          </div>
+          <div>
+            <h5 class="text-[11px] font-bold uppercase tracking-wider text-stone-400 mb-1.5">Legalitas & Sertifikat</h5>
+            <ul class="space-y-1 text-stone-700">
+              ${item.certifications.map(c => `<li class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-brand-teal text-[10px]"></i> ${c}</li>`).join('')}
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-3 bg-teal-50 border border-teal-200 rounded-2xl flex items-center justify-between text-xs">
+          <div>
+            <span class="font-bold text-teal-900 block">Bahasa Daerah Percakapan:</span>
+            <span class="text-teal-700">${item.languages.join(', ')}</span>
+          </div>
+          <i class="fa-solid fa-comments text-brand-teal text-lg"></i>
+        </div>
+      `;
+
+      document.getElementById('profileModal').classList.remove('hidden');
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profileModal').classList.add('hidden');
+    }
+
+    // ==================== 3-STEP BOOKING FLOW ====================
+    function startBookingFlow(caregiverId) {
+      const item = caregiversData.find(c => c.id === caregiverId);
+      if (item) currentCaregiver = item;
+
+      document.getElementById('bookingCaregiverImg').src = currentCaregiver.photoUrl;
+      document.getElementById('bookingCaregiverName').innerText = currentCaregiver.name;
+      document.getElementById('bookingCaregiverRate').innerText = `${formatRupiah(currentCaregiver.pricePerShift)} / shift`;
+
+      // Set tanggal default besok
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      document.getElementById('bookDate').value = tomorrow.toISOString().split('T')[0];
+
+      bookingStep = 1;
+      updateStepperView();
+      calculateBookingCost();
+      document.getElementById('bookingModal').classList.remove('hidden');
+    }
+
+    function closeBookingModal() {
+      document.getElementById('bookingModal').classList.add('hidden');
+    }
+
+    function selectShift(element, shiftName, multiplier) {
+      document.querySelectorAll('.shift-option').forEach(el => {
+        el.classList.remove('border-brand-teal', 'bg-teal-50/40');
+        el.classList.add('border-stone-200');
+      });
+      element.classList.add('border-brand-teal', 'bg-teal-50/40');
+      element.classList.remove('border-stone-200');
+      selectedShiftTitle = shiftName;
+      shiftMultiplier = multiplier;
+      calculateBookingCost();
+    }
+
+    function calculateBookingCost() {
+      const days = parseInt(document.getElementById('bookDurationDays').value || 1);
+      const base = currentCaregiver.pricePerShift;
+      let subtotal = base * shiftMultiplier * days;
+
+      // Diskon paket
+      if (days === 7) subtotal *= 0.95;
+      if (days === 30) subtotal *= 0.88;
+
+      const fee = 15000;
+      const total = subtotal + fee;
+
+      document.getElementById('summaryElderName').innerText = document.getElementById('elderName').value || "Belum diisi";
+      document.getElementById('summaryShift').innerText = selectedShiftTitle;
+      document.getElementById('summaryDays').innerText = `${days} Hari`;
+      document.getElementById('summarySubtotal').innerText = formatRupiah(subtotal);
+      document.getElementById('summaryTotal').innerText = formatRupiah(total);
+    }
+
+    function navigateStep(direction) {
+      if (direction === 1) {
+        if (bookingStep === 1) {
+          if (!document.getElementById('bookDate').value) {
+            alert('Silakan pilih tanggal pendampingan.');
+            return;
+          }
+        } else if (bookingStep === 2) {
+          if (!document.getElementById('elderName').value || !document.getElementById('elderAge').value) {
+            alert('Mohon isi nama dan usia lansia.');
+            return;
+          }
+          calculateBookingCost();
+        }
+      }
+
+      bookingStep += direction;
+      updateStepperView();
+    }
+
+    function updateStepperView() {
+      document.getElementById('stepContent1').classList.toggle('hidden', bookingStep !== 1);
+      document.getElementById('stepContent2').classList.toggle('hidden', bookingStep !== 2);
+      document.getElementById('stepContent3').classList.toggle('hidden', bookingStep !== 3);
+
+      document.getElementById('prevStepBtn').classList.toggle('hidden', bookingStep === 1);
+      document.getElementById('nextStepBtn').classList.toggle('hidden', bookingStep === 3);
+      document.getElementById('submitOrderBtn').classList.toggle('hidden', bookingStep !== 3);
+
+      for (let i = 1; i <= 3; i++) {
+        const tab = document.getElementById(`stepTab${i}`);
+        if (i === bookingStep) {
+          tab.className = "py-1.5 border-b-2 border-brand-teal text-brand-teal font-bold";
+        } else if (i < bookingStep) {
+          tab.className = "py-1.5 border-b-2 border-emerald-600 text-emerald-600 font-bold";
+        } else {
+          tab.className = "py-1.5 border-b-2 border-stone-200 text-stone-400 font-medium";
+        }
+      }
+    }
+
+    function handleBookingSubmit(e) {
+      e.preventDefault();
+      const elder = document.getElementById('elderName').value;
+      const method = document.querySelector('input[name="paymentMethod"]:checked').value;
+      alert(`Pemesanan Berhasil!\n\nPendamping: ${currentCaregiver.name}\nUntuk: ${elder}\nPembayaran: ${method}\n\nInstruksi transfer telah dikirimkan.`);
+      closeBookingModal();
+      document.getElementById('bookingForm').reset();
+    }
+
+    // SIMULASI LOG AKTIVITAS MASUK
+    function simulateAddLog() {
+      const stream = document.getElementById('activityStream');
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+
+      const samples = [
+        {
+          badge: "Camilan Siang",
+          color: "bg-teal-100 text-teal-800",
+          text: "Ibu menghabiskan sepiring buah pepaya potong segar dan segelas air putih hangat."
+        },
+        {
+          badge: "Terapi Gerak",
+          color: "bg-blue-100 text-blue-800",
+          text: "Latihan rentang gerak jari tangan dan peregangan kaki ringan selama 15 menit tanpa keluhan nyeri."
+        },
+        {
+          badge: "Istirahat Siang",
+          color: "bg-purple-100 text-purple-800",
+          text: "Ibu beristirahat tidur siang dengan nyaman di kamar setelah dibantu membersihkan wajah."
+        }
+      ];
+
+      const chosen = samples[Math.floor(Math.random() * samples.length)];
+      const card = document.createElement('div');
+      card.className = "p-3.5 rounded-2xl bg-teal-50/70 border border-teal-300 text-xs space-y-1.5 animate-in fade-in slide-in-from-top-2";
+      card.innerHTML = `
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-mono font-bold text-stone-800 text-[11px]">${timeStr}</span>
+            <span class="px-2 py-0.5 rounded ${chosen.color} font-semibold text-[10px]">${chosen.badge}</span>
+          </div>
+          <span class="text-[10px] text-emerald-600 font-bold"><i class="fa-solid fa-bolt"></i> Baru Saja</span>
+        </div>
+        <p class="text-[11px] text-stone-700">${chosen.text}</p>
+      `;
+
+      stream.insertBefore(card, stream.firstChild);
+    }
+
+    // SOS & NAV TOGGLES
+    function toggleSosModal(show) {
+      document.getElementById('sosModal').classList.toggle('hidden', !show);
+    }
+
+    function toggleMobileNav() {
+      const nav = document.getElementById('mobileNav');
+      const icon = document.getElementById('navMenuIcon');
+      nav.classList.toggle('hidden');
+      if (nav.classList.contains('hidden')) {
+        icon.className = "fa-solid fa-bars text-lg";
+      } else {
+        icon.className = "fa-solid fa-xmark text-lg";
+      }
+    }
+
+    // INITIAL LOAD
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCaregivers(caregiversData);
+    });
+  </script>
+</body>
+</html>
