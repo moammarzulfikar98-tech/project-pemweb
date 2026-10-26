@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TemanLansia - Pendampingan & Elderly Companion Harian</title>
+  <meta name="description" content="TemanLansia menghubungkan keluarga dengan pendamping lansia terverifikasi KTP & SKCK.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#F0FDFA', 100: '#CCFBF1', 200: '#99F6E4', 300: '#5EEAD4', 400: '#2DD4BF', 500: '#14B8A6', DEFAULT: '#0D9488', 600: '#0D9488', 700: '#0F766E', 800: '#115E59', 900: '#134E4A' },
+            cream: { DEFAULT: '#FAF6F0', dark: '#F1E9DC' },
+            sos: { DEFAULT: '#DC2626', dark: '#B91C1C', light: '#FEE2E2' }
+          },
+          fontFamily: {
+            sans: ['Nunito', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            serif: ['Fraunces', 'ui-serif', 'Georgia', 'serif']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { background-color: #FAF6F0; color: #1F2937; }
+    .sos-pulse { position: relative; }
+    .sos-pulse::before, .sos-pulse::after {
+      content: ''; position: absolute; inset: 0; border-radius: 9999px; background: rgba(220, 38, 38, 0.55);
+      z-index: -1; animation: sosRing 2s ease-out infinite;
+    }
+    .sos-pulse::after { animation-delay: 1s; }
+    @keyframes sosRing { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(2.1); opacity: 0; } }
+    .fade-in { animation: fadeIn .35s ease both; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .modal-panel { animation: popIn .25s ease both; }
+    @keyframes popIn { from { opacity: 0; transform: scale(.96) translateY(12px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .shift-card input:checked + div { border-color: #0D9488; background: #F0FDFA; box-shadow: 0 0 0 3px rgba(13,148,136,.15); }
+    .pay-card input:checked + div { border-color: #0D9488; background: #F0FDFA; box-shadow: 0 0 0 3px rgba(13,148,136,.15); }
+    .log-new { animation: slideLog .5s ease both; }
+    @keyframes slideLog { from { opacity: 0; transform: translateX(-16px); background: #CCFBF1; } to { opacity: 1; transform: translateX(0); } }
+    .hero-blob { background: radial-gradient(circle at 30% 30%, #99F6E4 0%, transparent 60%), radial-gradient(circle at 80% 70%, #FDE68A 0%, transparent 55%); }
+    input:focus, select:focus, textarea:focus { outline: none; }
+    body.modal-open { overflow: hidden; }
+  </style>
+</head>
+<body class="font-sans antialiased">
+
+  <!-- ===================== NAVBAR ===================== -->
+  <header class="sticky top-0 z-40 bg-cream/90 backdrop-blur border-b border-cream-dark">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="#beranda" class="flex items-center gap-2">
+        <span class="w-10 h-10 rounded-xl bg-brand text-white flex items-center justify-center text-lg shadow"><i class="fa-solid fa-hand-holding-heart"></i></span>
+        <span class="font-serif font-bold text-xl text-brand-800">Teman<span class="text-brand">Lansia</span></span>
+      </a>
+      <div class="hidden md:flex items-center gap-7 text-sm font-semibold text-gray-700">
+        <a href="#beranda" class="hover:text-brand transition">Beranda</a>
+        <a href="#cari" class="hover:text-brand transition">Cari Pendamping</a>
+        <a href="#biaya" class="hover:text-brand transition">Transparansi Biaya</a>
+        <a href="#laporan" class="hover:text-brand transition">Laporan Harian</a>
+        <a href="#kontak" class="hover:text-brand transition">Bantuan</a>
+      </div>
+      <div class="hidden md:flex items-center gap-3">
+        <button onclick="openAuth('masuk')" class="px-4 py-2 text-sm font-bold text-brand-700 hover:bg-brand-50 rounded-lg transition">Masuk</button>
+        <button onclick="openAuth('daftar')" class="px-5 py-2 text-sm font-bold text-white bg-brand hover:bg-brand-700 rounded-lg shadow transition">Daftar</button>
+      </div>
+      <button id="menuBtn" class="md:hidden w-10 h-10 rounded-lg hover:bg-cream-dark flex items-center justify-center text-gray-700" aria-label="Buka menu">
+        <i class="fa-solid fa-bars text-lg"></i>
+      </button>
+    </nav>
+    <div id="mobileMenu" class="hidden md:hidden border-t border-cream-dark bg-cream px-4 py-4 space-y-1 text-sm font-semibold">
+      <a href="#beranda" class="block py-2 px-2 rounded hover:bg-cream-dark">Beranda</a>
+      <a href="#cari" class="block py-2 px-2 rounded hover:bg-cream-dark">Cari Pendamping</a>
+      <a href="#biaya" class="block py-2 px-2 rounded hover:bg-cream-dark">Transparansi Biaya</a>
+      <a href="#laporan" class="block py-2 px-2 rounded hover:bg-cream-dark">Laporan Harian</a>
+      <a href="#kontak" class="block py-2 px-2 rounded hover:bg-cream-dark">Bantuan</a>
+      <div class="flex gap-2 pt-3">
+        <button onclick="openAuth('masuk')" class="flex-1 py-2.5 rounded-lg border border-brand text-brand-700 font-bold">Masuk</button>
+        <button onclick="openAuth('daftar')" class="flex-1 py-2.5 rounded-lg bg-brand text-white font-bold">Daftar</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== FLOATING SOS ===================== -->
+  <button id="sosFab" onclick="openSOS()" class="fixed bottom-5 right-5 z-40 w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-full bg-sos hover:bg-sos-dark text-white shadow-2xl sos-pulse flex flex-col items-center justify-center transition" aria-label="Tombol Darurat SOS">
+    <i class="fa-solid fa-triangle-exclamation text-lg sm:text-xl"></i>
+    <span class="text-[11px] font-extrabold tracking-wider leading-none mt-0.5">SOS</span>
+  </button>
+
+  <main>
+    <!-- ===================== HERO ===================== -->
+    <section id="beranda" class="relative overflow-hidden">
+      <div class="absolute inset-0 hero-blob opacity-40 pointer-events-none"></div>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 lg:pt-20 lg:pb-24 grid lg:grid-cols-2 gap-12 items-center">
+        <div class="fade-in">
+          <div class="inline-flex flex-wrap items-center gap-2 mb-5">
+            <span class="inline-flex items-center gap-1.5 bg-white border border-brand-200 text-brand-700 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm"><i class="fa-solid fa-id-card"></i> KTP Terverifikasi</span>
+            <span class="inline-flex items-center gap-1.5 bg-white border border-brand-200 text-brand-700 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm"><i class="fa-solid fa-shield-halved"></i> SKCK Bersih</span>
+            <span class="inline-flex items-center gap-1.5 bg-white border border-brand-200 text-brand-700 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm"><i class="fa-solid fa-user-nurse"></i> Sertifikasi Dicek</span>
+          </div>
+          <h1 class="font-serif font-extrabold text-4xl sm:text-5xl lg:text-[3.4rem] leading-tight text-brand-900">
+            Saat Anda Sibuk Bekerja, <span class="text-brand">Ada Teman</span> yang Menjaga Ayah & Ibu dengan Sepenuh Hati.
+          </h1>
+          <p class="mt-5 text-lg text-gray-600 leading-relaxed max-w-xl">
+            TemanLansia menghubungkan keluarga dengan pendamping lansia yang telah diverifikasi, berbicara dalam bahasa daerah orang tua Anda, dan melaporkan kabar mereka setiap hari langsung ke ponsel Anda.
+          </p>
+          <div class="mt-8 flex flex-col sm:flex-row gap-3">
+            <a href="#cari" class="inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand-700 text-white font-bold px-7 py-4 rounded-xl shadow-lg transition text-base">
+              <i class="fa-solid fa-magnifying-glass"></i> Cari Pendamping Sekarang
+            </a>
+            <a href="#laporan" class="inline-flex items-center justify-center gap-2 bg-white hover:bg-brand-50 text-brand-700 border border-brand-200 font-bold px-7 py-4 rounded-xl transition text-base">
+              <i class="fa-solid fa-play-circle"></i> Lihat Contoh Laporan
+            </a>
+          </div>
+          <div class="mt-8 flex flex-wrap items-center gap-6 text-sm text-gray-600">
+            <div class="flex items-center gap-2"><span class="text-2xl font-serif font-bold text-brand-800">1.200+</span><span class="leading-tight">pendamping<br>terverifikasi</span></div>
+            <div class="w-px h-9 bg-gray-300 hidden sm:block"></div>
+            <div class="flex items-center gap-2"><span class="text-2xl font-serif font-bold text-brand-800">4.8<i class="fa-solid fa-star text-amber-400 text-lg ml-1"></i></span><span class="leading-tight">rating rata-rata<br>dari keluarga</span></div>
+            <div class="w-px h-9 bg-gray-300 hidden sm:block"></div>
+            <div class="flex items-center gap-2"><span class="text-2xl font-serif font-bold text-brand-800">24/7</span><span class="leading-tight">dukungan<br>darurat</span></div>
+          </div>
+        </div>
+
+        <div class="relative fade-in">
+          <div class="relative bg-white rounded-3xl shadow-2xl p-6 border border-cream-dark">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-300 to-brand-600 flex items-center justify-center text-white text-3xl"><i class="fa-solid fa-heart-pulse"></i></div>
+              <div>
+                <p class="text-xs font-bold text-brand uppercase tracking-wider">Kabar Hari Ini</p>
+                <p class="font-serif font-bold text-lg text-brand-900">Eyang Sutirah, 78 th</p>
+              </div>
+              <span class="ml-auto inline-flex items-center gap-1 text-xs font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full"><span class="w-2 h-2 bg-green-500 rounded-full"></span> Baik</span>
+            </div>
+            <div class="mt-5 grid grid-cols-3 gap-3 text-center">
+              <div class="bg-cream rounded-xl py-3"><p class="text-[11px] text-gray-500 font-semibold">Tensi</p><p class="font-bold text-brand-800">128/82</p></div>
+              <div class="bg-cream rounded-xl py-3"><p class="text-[11px] text-gray-500 font-semibold">Makan</p><p class="font-bold text-brand-800">Habis</p></div>
+              <div class="bg-cream rounded-xl py-3"><p class="text-[11px] text-gray-500 font-semibold">Obat</p><p class="font-bold text-brand-800">2/3</p></div>
+            </div>
+            <div class="mt-4 bg-brand-50 border border-brand-100 rounded-xl p-4 text-sm text-brand-900 leading-relaxed">
+              <i class="fa-solid fa-quote-left text-brand-300 mr-1"></i>Eyang tadi pagi senam ringan di teras dan bercerita tentang masa mudanya. Sangat ceria hari ini.
+              <p class="mt-2 text-xs text-brand-700 font-bold">- Bu Siti, Pendamping</p>
+            </div>
+          </div>
+          <div class="absolute -top-5 -right-3 sm:-right-6 bg-white shadow-xl rounded-2xl px-4 py-3 flex items-center gap-3 border border-cream-dark">
+            <span class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center"><i class="fa-solid fa-bell"></i></span>
+            <div><p class="text-xs text-gray-500 font-semibold">Pengingat obat</p><p class="text-sm font-bold text-gray-800">Amlodipine - 12.00</p></div>
+          </div>
+          <div class="absolute -bottom-5 -left-3 sm:-left-6 bg-white shadow-xl rounded-2xl px-4 py-3 flex items-center gap-3 border border-cream-dark">
+            <span class="w-10 h-10 rounded-full bg-brand-100 text-brand flex items-center justify-center"><i class="fa-solid fa-camera"></i></span>
+            <div><p class="text-xs text-gray-500 font-semibold">Foto kegiatan</p><p class="text-sm font-bold text-gray-800">3 foto baru dikirim</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SMART FILTER ===================== -->
+    <section id="cari" class="py-14 bg-white border-y border-cream-dark">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-8">
+          <p class="text-brand font-bold text-sm uppercase tracking-wider">Temukan Pendamping</p>
+          <h2 class="font-serif font-bold text-3xl sm:text-4xl text-brand-900 mt-2">Cocokkan dengan bahasa, kebutuhan, dan hati orang tua Anda</h2>
+        </div>
+
+        <div class="bg-cream rounded-2xl border border-cream-dark p-4 sm:p-6 shadow-sm">
+          <div class="relative mb-4">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input id="fSearch" type="text" placeholder="Cari nama pendamping atau keahlian (contoh: demensia, stroke)..." class="w-full bg-white border border-gray-200 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl pl-11 pr-4 py-3.5 text-base">
+          </div>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5"><i class="fa-solid fa-location-dot text-brand mr-1"></i> Lokasi</label>
+              <select id="fLokasi" class="w-full bg-white border border-gray-200 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl px-3 py-3 text-sm font-semibold">
+                <option value="">Semua Lokasi</option>
+                <option>Jakarta</option><option>Bandung</option><option>Yogyakarta</option><option>Makassar</option><option>Medan</option><option>Surabaya</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5"><i class="fa-solid fa-language text-brand mr-1"></i> Bahasa Daerah</label>
+              <select id="fBahasa" class="w-full bg-white border border-gray-200 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl px-3 py-3 text-sm font-semibold">
+                <option value="">Semua Bahasa</option>
+                <option>Jawa</option><option>Sunda</option><option>Bugis</option><option>Hokkien</option><option>Batak</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5"><i class="fa-solid fa-stethoscope text-brand mr-1"></i> Jenis Keahlian</label>
+              <select id="fKeahlian" class="w-full bg-white border border-gray-200 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl px-3 py-3 text-sm font-semibold">
+                <option value="">Medis & Non-Medis</option>
+                <option>Medis</option><option>Non-Medis</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5"><i class="fa-solid fa-venus-mars text-brand mr-1"></i> Gender</label>
+              <select id="fGender" class="w-full bg-white border border-gray-200 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl px-3 py-3 text-sm font-semibold">
+                <option value="">Semua Gender</option>
+                <option value="Perempuan">Perempuan</option><option value="Laki-laki">Laki-laki</option>
+              </select>
+            </div>
+            <div class="flex items-end">
+              <button id="fReset" class="w-full bg-white hover:bg-brand-50 border border-brand-200 text-brand-700 font-bold rounded-xl px-3 py-3 text-sm transition"><i class="fa-solid fa-rotate-left mr-1"></i> Reset Filter</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== KATALOG ===================== -->
+    <section id="katalog" class="py-14">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <p id="resultCount" class="text-gray-700 font-semibold"></p>
+          <div class="flex items-center gap-2 text-sm">
+            <label for="fSort" class="font-semibold text-gray-600">Urutkan:</label>
+            <select id="fSort" class="bg-white border border-gray-200 focus:border-brand rounded-lg px-3 py-2 font-semibold">
+              <option value="rating">Rating Tertinggi</option>
+              <option value="harga-asc">Harga Terendah</option>
+              <option value="harga-desc">Harga Tertinggi</option>
+              <option value="pengalaman">Pengalaman Terlama</option>
+            </select>
+          </div>
+        </div>
+        <div id="catalog" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+        <div id="emptyState" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300">
+          <div class="w-20 h-20 mx-auto rounded-full bg-brand-50 text-brand flex items-center justify-center text-3xl mb-4"><i class="fa-solid fa-user-magnifying-glass"></i></div>
+          <h3 class="font-serif font-bold text-xl text-brand-900">Belum ada pendamping yang cocok</h3>
+          <p class="text-gray-600 mt-2 max-w-md mx-auto">Coba longgarkan satu atau dua filter. Tim kami juga siap mencarikan pendamping secara manual untuk Anda.</p>
+          <button onclick="resetFilters()" class="mt-5 bg-brand hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl transition">Tampilkan Semua Pendamping</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TRANSPARANSI BIAYA ===================== -->
+    <section id="biaya" class="py-16 bg-white border-y border-cream-dark">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <p class="text-brand font-bold text-sm uppercase tracking-wider">Transparansi Biaya</p>
+          <h2 class="font-serif font-bold text-3xl sm:text-4xl text-brand-900 mt-2">Tidak ada biaya tersembunyi. Semuanya jelas sejak awal.</h2>
+          <p class="text-gray-600 mt-3">Harga per shift sudah mencakup layanan inti. Biaya di luar itu dicatat terpisah dan hanya dibayar bila benar-benar terjadi.</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          <div class="rounded-2xl border-2 border-brand-200 bg-brand-50/50 p-6 sm:p-8">
+            <div class="flex items-center gap-3 mb-5">
+              <span class="w-12 h-12 rounded-xl bg-brand text-white flex items-center justify-center text-xl"><i class="fa-solid fa-circle-check"></i></span>
+              <div><h3 class="font-serif font-bold text-xl text-brand-900">Sudah Termasuk</h3><p class="text-sm text-brand-700 font-semibold">Dalam harga per shift</p></div>
+            </div>
+            <ul class="space-y-3.5 text-gray-800">
+              <li class="flex gap-3"><i class="fa-solid fa-check text-brand mt-1"></i><span><b>Laporan harian digital</b> berisi jam makan, tensi, mood, dan foto kegiatan.</span></li>
+              <li class="flex gap-3"><i class="fa-solid fa-check text-brand mt-1"></i><span><b>Pengingat & pendampingan minum obat</b> sesuai resep dokter.</span></li>
+              <li class="flex gap-3"><i class="fa-solid fa-check text-brand mt-1"></i><span><b>Bantuan aktivitas harian:</b> mandi, makan, berpindah, dan kebersihan diri.</span></li>
+              <li class="flex gap-3"><i class="fa-solid fa-check text-brand mt-1"></i><span><b>Teman ngobrol & stimulasi</b> sesuai bahasa daerah dan minat lansia.</span></li>
+              <li class="flex gap-3"><i class="fa-solid fa-check text-brand mt-1"></i><span><b>Dukungan koordinator 24/7</b> dan tombol SOS terhubung keluarga.</span></li>
+              <li class="flex gap-3"><i class="fa-solid fa-check text-brand mt-1"></i><span><b>Asuransi kecelakaan kerja</b> pendamping selama shift berlangsung.</span></li>
+            </ul>
+          </div>
+          <div class="rounded-2xl border-2 border-amber-200 bg-amber-50/60 p-6 sm:p-8">
+            <div class="flex items-center gap-3 mb-5">
+              <span class="w-12 h-12 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xl"><i class="fa-solid fa-receipt"></i></span>
+              <div><h3 class="font-serif font-bold text-xl text-amber-900">Dibayar Terpisah</h3><p class="text-sm text-amber-700 font-semibold">Hanya jika terjadi, dengan bukti</p></div>
+            </div>
+            <ul class="space-y-3.5 text-gray-800">
+              <li class="flex gap-3"><i class="fa-solid fa-plus text-amber-600 mt-1"></i><span><b>Transportasi pendamping</b> bila lokasi di luar radius 10 km dari domisili.</span></li>
+              <li class="flex gap-3"><i class="fa-solid fa-plus text-amber-600 mt-1"></i><span><b>Biaya medis & rumah sakit:</b> konsultasi, obat, tindakan, dan rawat inap.</span></li>
+              <li class="flex gap-3"><i class="fa-solid fa-plus text-amber-600 mt-1"></i><span><b>Kebutuhan habis pakai:</b> popok dewasa, kasa, dan perlengkapan perawatan.</span></li>
+              <li class="flex gap-3"><i class="fa-solid fa-plus text-amber-600 mt-1"></i><span><b>Makan pendamping</b> bila shift menginap (opsional, sesuai kesepakatan).</span></li>
+              <li class="flex gap-3"><i class="fa-solid fa-plus text-amber-600 mt-1"></i><span><b>Lembur di atas 8 jam</b> dihitung per jam dan dikonfirmasi lebih dulu.</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="max-w-5xl mx-auto mt-6 flex items-start gap-3 bg-cream rounded-xl border border-cream-dark p-4 text-sm text-gray-700">
+          <i class="fa-solid fa-lock text-brand mt-0.5"></i>
+          <p><b>Pembayaran aman via rekening bersama (escrow).</b> Dana baru diteruskan ke pendamping setelah shift selesai dan laporan harian dikirim. Tidak puas? Ajukan keluhan dalam 24 jam.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== DAILY ACTIVITY LOG ===================== -->
+    <section id="laporan" class="py-16 overflow-hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <span class="inline-flex items-center gap-2 bg-brand text-white text-xs font-bold px-3 py-1.5 rounded-full"><i class="fa-solid fa-wand-magic-sparkles"></i> Fitur Unggulan</span>
+          <h2 class="font-serif font-bold text-3xl sm:text-4xl text-brand-900 mt-4">Tenang di kantor, karena Anda melihat kabar orang tua <span class="text-brand">hari ini juga.</span></h2>
+          <p class="text-gray-600 mt-4 leading-relaxed">Setiap pendamping mengisi Daily Activity Log langsung dari ponsel: jam makan, tekanan darah, obat yang sudah diminum, hingga foto kegiatan. Keluarga menerima notifikasi seketika, tanpa perlu menelepon berkali-kali.</p>
+          <ul class="mt-6 space-y-3 text-gray-700">
+            <li class="flex gap-3"><span class="w-8 h-8 rounded-lg bg-brand-100 text-brand flex items-center justify-center shrink-0"><i class="fa-solid fa-utensils"></i></span><span class="pt-1">Catatan makan & minum lengkap dengan porsi yang dihabiskan.</span></li>
+            <li class="flex gap-3"><span class="w-8 h-8 rounded-lg bg-brand-100 text-brand flex items-center justify-center shrink-0"><i class="fa-solid fa-heart-pulse"></i></span><span class="pt-1">Tensi, gula darah, dan suhu tubuh dengan grafik tren.</span></li>
+            <li class="flex gap-3"><span class="w-8 h-8 rounded-lg bg-brand-100 text-brand flex items-center justify-center shrink-0"><i class="fa-solid fa-pills"></i></span><span class="pt-1">Ceklis obat yang dikonfirmasi pendamping saat diminum.</span></li>
+            <li class="flex gap-3"><span class="w-8 h-8 rounded-lg bg-brand-100 text-brand flex items-center justify-center shrink-0"><i class="fa-solid fa-camera"></i></span><span class="pt-1">Foto kegiatan agar Anda ikut merasakan hari mereka.</span></li>
+          </ul>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <button id="simulateBtn" class="bg-brand hover:bg-brand-700 text-white font-bold px-6 py-3.5 rounded-xl shadow transition"><i class="fa-solid fa-bolt mr-2"></i>Simulasikan Update Baru</button>
+            <button id="resetLogBtn" class="bg-white hover:bg-brand-50 border border-brand-200 text-brand-700 font-bold px-6 py-3.5 rounded-xl transition"><i class="fa-solid fa-rotate-left mr-2"></i>Ulangi Simulasi</button>
+          </div>
+          <p class="text-sm text-gray-500 mt-3">Klik tombol untuk melihat laporan masuk secara langsung. Anda juga bisa mengetuk ceklis obat pada ponsel di samping.</p>
+        </div>
+
+        <div class="flex justify-center">
+          <div class="relative w-full max-w-[370px]">
+            <div class="bg-gray-900 rounded-[2.6rem] p-3 shadow-2xl">
+              <div class="bg-cream rounded-[2.1rem] overflow-hidden relative">
+                <div class="bg-brand text-white px-5 pt-5 pb-4">
+                  <div class="flex items-center justify-between text-[11px] font-semibold opacity-90"><span id="phoneClock">09.41</span><span><i class="fa-solid fa-signal mr-1"></i><i class="fa-solid fa-battery-three-quarters"></i></span></div>
+                  <div class="mt-3 flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center text-lg"><i class="fa-solid fa-person-cane"></i></div>
+                    <div class="flex-1 min-w-0">
+                      <p class="font-serif font-bold leading-tight">Eyang Sutirah</p>
+                      <p class="text-xs text-brand-100">Didampingi Bu Siti • Shift Pagi</p>
+                    </div>
+                    <span class="text-[10px] font-bold bg-white/20 rounded-full px-2 py-1">LIVE</span>
+                  </div>
+                  <p class="text-[11px] mt-3 text-brand-100" id="logDate"></p>
+                </div>
+
+                <div class="px-4 pt-4">
+                  <div class="grid grid-cols-3 gap-2">
+                    <div class="bg-white rounded-xl p-2.5 text-center border border-cream-dark">
+                      <p class="text-[10px] text-gray-500 font-bold">TENSI</p>
+                      <p id="statBP" class="font-bold text-brand-800 text-sm">128/82</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-2.5 text-center border border-cream-dark">
+                      <p class="text-[10px] text-gray-500 font-bold">NADI</p>
+                      <p id="statPulse" class="font-bold text-brand-800 text-sm">76 bpm</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-2.5 text-center border border-cream-dark">
+                      <p class="text-[10px] text-gray-500 font-bold">MOOD</p>
+                      <p id="statMood" class="text-lg leading-none mt-0.5">&#128522;</p>
+                    </div>
+                  </div>
+                  <div class="mt-3 bg-white rounded-xl p-3 border border-cream-dark">
+                    <div class="flex items-center justify-between mb-2">
+                      <p class="text-[11px] font-bold text-gray-600">Tren Sistolik 5 Hari</p>
+                      <span class="text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">Stabil</span>
+                    </div>
+                    <div id="bpChart" class="flex items-end gap-2 h-14"></div>
+                  </div>
+                  <div class="mt-3 bg-white rounded-xl p-3 border border-cream-dark">
+                    <p class="text-[11px] font-bold text-gray-600 mb-2"><i class="fa-solid fa-pills text-brand mr-1"></i> Ceklis Obat Hari Ini</p>
+                    <div id="medList" class="space-y-1.5"></div>
+                  </div>
+                </div>
+
+                <div class="px-4 pt-4 pb-5">
+                  <p class="text-[11px] font-bold text-gray-600 mb-2">Linimasa Aktivitas</p>
+                  <div id="logTimeline" class="space-y-2.5 max-h-72 overflow-y-auto no-scrollbar pr-0.5"></div>
+                </div>
+              </div>
+            </div>
+            <div id="logToast" class="hidden absolute -top-4 left-1/2 -translate-x-1/2 bg-white shadow-xl border border-brand-100 rounded-xl px-4 py-2.5 text-xs font-bold text-brand-800 whitespace-nowrap z-10">
+              <i class="fa-solid fa-bell text-amber-500 mr-1"></i><span id="logToastText"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CARA KERJA ===================== -->
+    <section class="py-16 bg-brand-900 text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <p class="text-brand-300 font-bold text-sm uppercase tracking-wider">Cara Kerja</p>
+          <h2 class="font-serif font-bold text-3xl sm:text-4xl mt-2">Tiga langkah menuju ketenangan keluarga</h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="bg-white/10 rounded-2xl p-6 border border-white/10">
+            <span class="w-12 h-12 rounded-xl bg-brand-400 text-brand-900 font-extrabold text-xl flex items-center justify-center mb-4">1</span>
+            <h3 class="font-serif font-bold text-xl mb-2">Pilih pendamping</h3>
+            <p class="text-brand-100 text-sm leading-relaxed">Saring berdasarkan bahasa daerah, keahlian medis, lokasi, dan gender. Baca profil serta ulasan keluarga lain.</p>
+          </div>
+          <div class="bg-white/10 rounded-2xl p-6 border border-white/10">
+            <span class="w-12 h-12 rounded-xl bg-brand-400 text-brand-900 font-extrabold text-xl flex items-center justify-center mb-4">2</span>
+            <h3 class="font-serif font-bold text-xl mb-2">Atur jadwal & data lansia</h3>
+            <p class="text-brand-100 text-sm leading-relaxed">Tentukan tanggal dan shift, lalu isi kondisi kesehatan, alergi, serta kebiasaan yang perlu diketahui pendamping.</p>
+          </div>
+          <div class="bg-white/10 rounded-2xl p-6 border border-white/10">
+            <span class="w-12 h-12 rounded-xl bg-brand-400 text-brand-900 font-extrabold text-xl flex items-center justify-center mb-4">3</span>
+            <h3 class="font-serif font-bold text-xl mb-2">Pantau lewat laporan harian</h3>
+            <p class="text-brand-100 text-sm leading-relaxed">Terima kabar real-time di ponsel Anda. Dana dilepas ke pendamping hanya setelah shift selesai.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer id="kontak" class="bg-gray-900 text-gray-300 pt-12 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-8">
+        <div class="md:col-span-2">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-10 h-10 rounded-xl bg-brand text-white flex items-center justify-center"><i class="fa-solid fa-hand-holding-heart"></i></span>
+            <span class="font-serif font-bold text-xl text-white">TemanLansia</span>
+          </div>
+          <p class="text-sm leading-relaxed max-w-md">Pendampingan dan elderly companion harian yang terverifikasi, hangat, dan transparan untuk orang tua tercinta.</p>
+        </div>
+        <div>
+          <h4 class="text-white font-bold mb-3">Layanan</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#cari" class="hover:text-white">Cari Pendamping</a></li>
+            <li><a href="#biaya" class="hover:text-white">Transparansi Biaya</a></li>
+            <li><a href="#laporan" class="hover:text-white">Laporan Harian</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold mb-3">Hubungi Kami</h4>
+          <ul class="space-y-2 text-sm">
+            <li><i class="fa-solid fa-phone mr-2 text-brand-400"></i>0800-1500-777 (24 jam)</li>
+            <li><i class="fa-brands fa-whatsapp mr-2 text-brand-400"></i>0812-3456-7890</li>
+            <li><i class="fa-solid fa-envelope mr-2 text-brand-400"></i>halo@temanlansia.id</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-8 pt-6 text-xs text-gray-500 flex flex-col sm:flex-row justify-between gap-2">
+        <p>&copy; 2026 TemanLansia. Prototype untuk keperluan demonstrasi.</p>
+        <p>Seluruh data pendamping pada halaman ini adalah contoh fiktif.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================== MODAL: DETAIL PROFIL ===================== -->
+  <div id="detailModal" class="hidden fixed inset-0 z-50 bg-black/60 overflow-y-auto" onclick="if(event.target===this)closeModal('detailModal')">
+    <div class="min-h-full flex items-center justify-center p-3 sm:p-6">
+      <div class="modal-panel bg-white rounded-3xl w-full max-w-3xl shadow-2xl relative">
+        <button onclick="closeModal('detailModal')" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 hover:bg-gray-100 shadow flex items-center justify-center z-10" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+        <div id="detailContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL: BOOKING ===================== -->
+  <div id="bookingModal" class="hidden fixed inset-0 z-50 bg-black/60 overflow-y-auto" onclick="if(event.target===this)closeModal('bookingModal')">
+    <div class="min-h-full flex items-center justify-center p-3 sm:p-6">
+      <div class="modal-panel bg-white rounded-3xl w-full max-w-2xl shadow-2xl relative">
+        <div class="px-5 sm:px-8 pt-6 pb-4 border-b border-gray-100">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="text-xs font-bold text-brand uppercase tracking-wider">Pemesanan Pendamping</p>
+              <h3 id="bkTitle" class="font-serif font-bold text-xl text-brand-900"></h3>
+            </div>
+            <button onclick="closeModal('bookingModal')" class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center shrink-0" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <div class="mt-5 flex items-center" id="stepper"></div>
+        </div>
+
+        <div class="px-5 sm:px-8 py-6" id="bkBody"></div>
+
+        <div class="px-5 sm:px-8 py-4 border-t border-gray-100 bg-gray-50 rounded-b-3xl flex items-center justify-between gap-3" id="bkFooter">
+          <button id="bkBack" class="px-5 py-3 rounded-xl font-bold text-gray-700 hover:bg-gray-200 transition"><i class="fa-solid fa-arrow-left mr-2"></i>Kembali</button>
+          <button id="bkNext" class="px-7 py-3 rounded-xl font-bold text-white bg-brand hover:bg-brand-700 shadow transition">Lanjut <i class="fa-solid fa-arrow-right ml-2"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL: SOS ===================== -->
+  <div id="sosModal" class="hidden fixed inset-0 z-[60] bg-black/70 overflow-y-auto" onclick="if(event.target===this)closeSOS()">
+    <div class="min-h-full flex items-center justify-center p-4">
+      <div class="modal-panel bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
+        <div class="bg-sos text-white px-6 py-5 flex items-center gap-4">
+          <span class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center text-2xl"><i class="fa-solid fa-triangle-exclamation"></i></span>
+          <div>
+            <h3 class="font-serif font-bold text-xl leading-tight">Bantuan Darurat</h3>
+            <p class="text-sm text-red-100">Pilih tindakan yang paling sesuai.</p>
+          </div>
+          <button onclick="closeSOS()" class="ml-auto w-9 h-9 rounded-full hover:bg-white/20 flex items-center justify-center" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="sosBody" class="p-6">
+          <div class="space-y-3">
+            <button onclick="startSOSCountdown()" class="w-full flex items-center gap-4 bg-sos hover:bg-sos-dark text-white rounded-2xl p-4 text-left transition shadow">
+              <span class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-xl"><i class="fa-solid fa-tower-broadcast"></i></span>
+              <span><b class="block">Kirim Sinyal Darurat</b><span class="text-xs text-red-100">Beri tahu keluarga, koordinator, dan pendamping sekaligus</span></span>
+            </button>
+            <a href="tel:119" class="w-full flex items-center gap-4 bg-sos-light hover:bg-red-200 text-sos-dark rounded-2xl p-4 transition">
+              <span class="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-xl"><i class="fa-solid fa-truck-medical"></i></span>
+              <span><b class="block">Panggil Ambulans (119)</b><span class="text-xs">Layanan gawat darurat nasional</span></span>
+            </a>
+            <a href="tel:08001500777" class="w-full flex items-center gap-4 bg-brand-50 hover:bg-brand-100 text-brand-800 rounded-2xl p-4 transition">
+              <span class="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-xl"><i class="fa-solid fa-headset"></i></span>
+              <span><b class="block">Koordinator TemanLansia</b><span class="text-xs">0800-1500-777, siaga 24 jam</span></span>
+            </a>
+          </div>
+          <p class="text-xs text-gray-500 mt-4 leading-relaxed">Prototype: tombol di atas hanya mensimulasikan alur. Pada layanan sebenarnya, lokasi pendamping dan data medis ringkas lansia ikut terkirim.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL: AUTH ===================== -->
+  <div id="authModal" class="hidden fixed inset-0 z-50 bg-black/60 overflow-y-auto" onclick="if(event.target===this)closeModal('authModal')">
+    <div class="min-h-full flex items-center justify-center p-4">
+      <div class="modal-panel bg-white rounded-3xl w-full max-w-md shadow-2xl relative p-6 sm:p-8">
+        <button onclick="closeModal('authModal')" class="absolute top-4 right-4 w-9 h-9 rounded-full hover:bg-gray-100 flex items-center justify-center" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+        <div class="text-center mb-5">
+          <span class="w-14 h-14 mx-auto rounded-2xl bg-brand text-white flex items-center justify-center text-2xl mb-3"><i class="fa-solid fa-hand-holding-heart"></i></span>
+          <h3 id="authTitle" class="font-serif font-bold text-2xl text-brand-900"></h3>
+        </div>
+        <div class="flex bg-cream rounded-xl p-1 mb-5">
+          <button id="tabMasuk" onclick="openAuth('masuk')" class="flex-1 py-2.5 rounded-lg text-sm font-bold transition">Masuk</button>
+          <button id="tabDaftar" onclick="openAuth('daftar')" class="flex-1 py-2.5 rounded-lg text-sm font-bold transition">Daftar</button>
+        </div>
+        <form id="authForm" class="space-y-3" novalidate>
+          <div id="authNameWrap" class="hidden">
+            <label class="block text-xs font-bold text-gray-600 mb-1">Nama Lengkap</label>
+            <input id="authName" type="text" class="w-full border border-gray-200 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl px-4 py-3" placeholder="Nama Anda">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-600 mb-1">Email atau Nomor WhatsApp</label>
+            <input id="authId" type="text" class="w-full border border-gray-200 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl px-4 py-3" placeholder="nama@email.com">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-600 mb-1">Kata Sandi</label>
+            <input id="authPass" type="password" class="w-full border border-gray-200 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl px-4 py-3" placeholder="Minimal 6 karakter">
+          </div>
+          <p id="authError" class="hidden text-sm text-sos font-semibold"></p>
+          <button type="submit" id="authSubmit" class="w-full bg-brand hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl shadow transition"></button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TOAST ===================== -->
+  <div id="toast" class="hidden fixed bottom-24 left-1/2 -translate-x-1/2 z-[70] bg-gray-900 text-white text-sm font-semibold px-5 py-3 rounded-xl shadow-xl max-w-[90vw] text-center"></div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    /* ============================================================
+       DATA PENDAMPING
+    ============================================================ */
+    var CAREGIVERS = [
+      {
+        id: 1, nama: 'Siti Rahayu', usia: 38, gender: 'Perempuan', lokasi: 'Yogyakarta',
+        bahasa: ['Jawa', 'Indonesia'], jenis: 'Medis', sertifikasi: 'Perawat Terdaftar (STR)',
+        rating: 4.9, ulasan: 128, harga: 180000, pengalaman: 9, foto: 'https://i.pravatar.cc/400?img=47',
+        bio: 'Perawat geriatri dengan pengalaman merawat lansia pasca-stroke dan hipertensi. Dikenal sabar dan hangat, terbiasa mendampingi dengan bahasa Jawa halus (krama) agar lansia merasa dihormati.',
+        keahlian: ['Perawatan pasca-stroke', 'Hipertensi & diabetes', 'Perawatan luka', 'Mobilisasi & terapi ringan'],
+        cv: [
+          { periode: '2020 - Sekarang', peran: 'Perawat Pendamping Lansia Mandiri', tempat: 'TemanLansia, Yogyakarta' },
+          { periode: '2016 - 2020', peran: 'Perawat Pelaksana Bangsal Penyakit Dalam', tempat: 'RS Swasta, Sleman' },
+          { periode: '2013 - 2016', peran: 'Perawat Home Care', tempat: 'Klinik Pratama, Bantul' }
+        ],
+        sertifikat: ['STR Perawat (aktif s.d. 2029)', 'Pelatihan BHD / CPR', 'Pelatihan Perawatan Lansia Geriatri']
+      },
+      {
+        id: 2, nama: 'Asep Suryana', usia: 42, gender: 'Laki-laki', lokasi: 'Bandung',
+        bahasa: ['Sunda', 'Indonesia'], jenis: 'Non-Medis', sertifikasi: 'Caregiver Bersertifikat BNSP',
+        rating: 4.8, ulasan: 96, harga: 120000, pengalaman: 7, foto: 'https://i.pravatar.cc/400?img=12',
+        bio: 'Caregiver yang kuat secara fisik dan lembut dalam sikap. Cocok untuk lansia yang butuh bantuan berpindah, jalan pagi, dan teman bercerita. Fasih berbahasa Sunda dan gemar mengajak ngobrol soal kampung halaman.',
+        keahlian: ['Bantuan berpindah & transfer', 'Teman jalan pagi', 'Perawatan diri harian', 'Pendamping lansia pria'],
+        cv: [
+          { periode: '2019 - Sekarang', peran: 'Caregiver Lansia Harian', tempat: 'TemanLansia, Bandung' },
+          { periode: '2015 - 2019', peran: 'Caregiver Panti Wreda', tempat: 'Panti Werdha, Lembang' }
+        ],
+        sertifikat: ['Sertifikasi Kompetensi Caregiver BNSP', 'Pelatihan Pertolongan Pertama', 'Pelatihan Teknik Angkat & Pindah Aman']
+      },
+      {
+        id: 3, nama: 'Andi Baso Mappa', usia: 35, gender: 'Laki-laki', lokasi: 'Makassar',
+        bahasa: ['Bugis', 'Indonesia'], jenis: 'Medis', sertifikasi: 'Ners & Fisioterapi Dasar',
+        rating: 4.7, ulasan: 64, harga: 200000, pengalaman: 8, foto: 'https://i.pravatar.cc/400?img=33',
+        bio: 'Ners dengan keahlian fisioterapi dasar untuk lansia dengan keterbatasan gerak dan nyeri sendi. Menyampaikan edukasi kesehatan dalam bahasa Bugis agar mudah dipahami lansia dan keluarga.',
+        keahlian: ['Latihan gerak & fisioterapi dasar', 'Nyeri sendi & osteoporosis', 'Pemantauan tanda vital', 'Edukasi keluarga'],
+        cv: [
+          { periode: '2021 - Sekarang', peran: 'Ners Pendamping Lansia', tempat: 'TemanLansia, Makassar' },
+          { periode: '2017 - 2021', peran: 'Perawat Unit Rehabilitasi Medik', tempat: 'RS Pendidikan, Makassar' }
+        ],
+        sertifikat: ['STR Ners (aktif s.d. 2028)', 'Pelatihan Fisioterapi Dasar Geriatri', 'Pelatihan BHD / CPR']
+      },
+      {
+        id: 4, nama: 'Linda Tan (Lie Mei Ling)', usia: 45, gender: 'Perempuan', lokasi: 'Jakarta',
+        bahasa: ['Hokkien', 'Indonesia'], jenis: 'Medis', sertifikasi: 'Perawat Geriatri Spesialis',
+        rating: 4.9, ulasan: 142, harga: 220000, pengalaman: 14, foto: 'https://i.pravatar.cc/400?img=44',
+        bio: 'Perawat geriatri senior yang memahami kebiasaan, makanan, dan tradisi keluarga Tionghoa. Berbicara Hokkien dengan lansia sehingga mereka merasa dekat dan tidak kesepian. Berpengalaman dengan demensia dan Alzheimer.',
+        keahlian: ['Demensia & Alzheimer', 'Manajemen obat kompleks', 'Perawatan paliatif ringan', 'Pendampingan nutrisi'],
+        cv: [
+          { periode: '2018 - Sekarang', peran: 'Perawat Geriatri Mandiri', tempat: 'TemanLansia, Jakarta' },
+          { periode: '2012 - 2018', peran: 'Kepala Perawat Unit Geriatri', tempat: 'RS Swasta, Jakarta Barat' },
+          { periode: '2010 - 2012', peran: 'Perawat Pelaksana', tempat: 'RS Swasta, Jakarta Utara' }
+        ],
+        sertifikat: ['STR Perawat (aktif s.d. 2030)', 'Sertifikat Spesialis Keperawatan Gerontik', 'Pelatihan Perawatan Demensia', 'Pelatihan BHD / CPR']
+      },
+      {
+        id: 5, nama: 'Rospita Sihombing', usia: 40, gender: 'Perempuan', lokasi: 'Medan',
+        bahasa: ['Batak', 'Indonesia'], jenis: 'Non-Medis', sertifikasi: 'Caregiver Bersertifikat',
+        rating: 4.8, ulasan: 77, harga: 130000, pengalaman: 6, foto: 'https://i.pravatar.cc/400?img=49',
+        bio: 'Pendamping yang ceria dan tegas menjaga rutinitas. Mahir memasak menu sehat rendah garam dan menemani lansia beribadah serta bersosialisasi. Berbicara bahasa Batak Toba sehari-hari.',
+        keahlian: ['Menyiapkan makanan sehat', 'Pendampingan ibadah & sosial', 'Pengingat obat', 'Kebersihan diri harian'],
+        cv: [
+          { periode: '2020 - Sekarang', peran: 'Caregiver Lansia Harian', tempat: 'TemanLansia, Medan' },
+          { periode: '2016 - 2020', peran: 'Asisten Perawat Rumah Jompo', tempat: 'Panti Jompo Kasih, Medan' }
+        ],
+        sertifikat: ['Sertifikat Caregiver Lansia (LPK)', 'Pelatihan Gizi Lansia', 'Pelatihan Pertolongan Pertama']
+      },
+      {
+        id: 6, nama: 'Dewi Lestari', usia: 33, gender: 'Perempuan', lokasi: 'Surabaya',
+        bahasa: ['Jawa', 'Sunda', 'Indonesia'], jenis: 'Non-Medis', sertifikasi: 'Terapis Stimulasi Kognitif',
+        rating: 4.6, ulasan: 51, harga: 150000, pengalaman: 5, foto: 'https://i.pravatar.cc/400?img=45',
+        bio: 'Pendamping dengan latar psikologi yang fokus pada stimulasi kognitif, permainan memori, dan aktivitas kreatif untuk lansia dengan gejala pikun ringan. Fasih berbahasa Jawa dan Sunda.',
+        keahlian: ['Stimulasi kognitif & memori', 'Aktivitas kreatif & musik', 'Pendampingan pikun ringan', 'Teman ngobrol & rekreasi'],
+        cv: [
+          { periode: '2021 - Sekarang', peran: 'Pendamping Stimulasi Kognitif', tempat: 'TemanLansia, Surabaya' },
+          { periode: '2019 - 2021', peran: 'Asisten Psikolog Komunitas Lansia', tempat: 'Yayasan Lansia Ceria, Surabaya' }
+        ],
+        sertifikat: ['Sarjana Psikologi', 'Pelatihan Terapi Reminiscence', 'Pelatihan Pertolongan Pertama']
+      }
+    ];
+
+    var SHIFTS = {
+      pagi:  { label: 'Shift Pagi',  jam: '07.00 - 14.00', mult: 1,    ikon: 'fa-sun' },
+      siang: { label: 'Shift Siang', jam: '14.00 - 21.00', mult: 1,    ikon: 'fa-cloud-sun' },
+      malam: { label: 'Shift Malam', jam: '21.00 - 07.00', mult: 1.25, ikon: 'fa-moon' },
+      penuh: { label: 'Seharian Penuh', jam: '07.00 - 21.00', mult: 1.8, ikon: 'fa-calendar-day' }
+    };
+
+    var PAYMENTS = [
+      { id: 'qris',    nama: 'QRIS',            ket: 'Semua e-wallet & mobile banking', ikon: 'fa-qrcode' },
+      { id: 'va-bca',  nama: 'Virtual Account BCA',     ket: 'Transfer 24 jam, verifikasi otomatis', ikon: 'fa-building-columns' },
+      { id: 'va-mdr',  nama: 'Virtual Account Mandiri', ket: 'Transfer 24 jam, verifikasi otomatis', ikon: 'fa-building-columns' },
+      { id: 'gopay',   nama: 'GoPay / OVO / DANA',      ket: 'Bayar langsung dari aplikasi', ikon: 'fa-wallet' },
+      { id: 'kartu',   nama: 'Kartu Kredit / Debit',    ket: 'Visa, Mastercard, JCB', ikon: 'fa-credit-card' }
+    ];
+
+    function rp(n) { return 'Rp' + Math.round(n).toLocaleString('id-ID'); }
+    function $(id) { return document.getElementById(id); }
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+    function getCaregiver(id) { return CAREGIVERS.filter(function (c) { return c.id === id; })[0]; }
+    function avatarFallback(name) {
+      return 'https://ui-avatars.com/api/?size=400&background=0D9488&color=fff&bold=true&name=' + encodeURIComponent(name);
+    }
+
+    /* ============================================================
+       TOAST & MODAL HELPERS
+    ============================================================ */
+    var toastTimer = null;
+    function showToast(msg) {
+      var t = $('toast');
+      t.textContent = msg;
+      t.classList.remove('hidden');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { t.classList.add('hidden'); }, 3200);
+    }
+    function openModal(id) {
+      $(id).classList.remove('hidden');
+      document.body.classList.add('modal-open');
+    }
+    function closeModal(id) {
+      $(id).classList.add('hidden');
+      var anyOpen = ['detailModal', 'bookingModal', 'sosModal', 'authModal'].some(function (m) {
+        return !$(m).classList.contains('hidden');
+      });
+      if (!anyOpen) document.body.classList.remove('modal-open');
+    }
+    window.closeModal = closeModal;
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        ['authModal', 'sosModal', 'bookingModal', 'detailModal'].forEach(function (m) {
+          if (!$(m).classList.contains('hidden')) {
+            if (m === 'sosModal') closeSOS(); else closeModal(m);
+          }
+        });
+      }
+    });
+
+    /* ============================================================
+       NAVBAR MOBILE
+    ============================================================ */
+    $('menuBtn').addEventListener('click', function () {
+      $('mobileMenu').classList.toggle('hidden');
+    });
+    document.querySelectorAll('#mobileMenu a').forEach(function (a) {
+      a.addEventListener('click', function () { $('mobileMenu').classList.add('hidden'); });
+    });
+
+    /* ============================================================
+       KATALOG & FILTER
+    ============================================================ */
+    function starsHTML(r) {
+      var out = '';
+      for (var i = 1; i <= 5; i++) {
+        if (r >= i) out += '<i class="fa-solid fa-star"></i>';
+        else if (r >= i - 0.5) out += '<i class="fa-solid fa-star-half-stroke"></i>';
+        else out += '<i class="fa-regular fa-star"></i>';
+      }
+      return out;
+    }
+
+    function cardHTML(c) {
+      var langs = c.bahasa.map(function (b) {
+        var daerah = b !== 'Indonesia';
+        return '<span class="text-xs font-bold px-2.5 py-1 rounded-full ' +
+          (daerah ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-600') + '">' + esc(b) + '</span>';
+      }).join('');
+      var jenisCls = c.jenis === 'Medis' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-purple-50 text-purple-700 border-purple-200';
+      var jenisIcon = c.jenis === 'Medis' ? 'fa-user-nurse' : 'fa-hands-holding-child';
+      return '' +
+        '<article class="fade-in bg-white rounded-2xl border border-cream-dark shadow-sm hover:shadow-xl transition overflow-hidden flex flex-col">' +
+          '<div class="h-20 bg-gradient-to-r from-brand-600 to-brand-400 relative">' +
+            '<span class="absolute top-3 right-3 inline-flex items-center gap-1 text-[11px] font-bold bg-white/95 text-brand-700 px-2.5 py-1 rounded-full"><i class="fa-solid fa-circle-check"></i> Terverifikasi</span>' +
+          '</div>' +
+          '<div class="px-5 pb-5 -mt-10 flex-1 flex flex-col">' +
+            '<img src="' + c.foto + '" alt="Foto ' + esc(c.nama) + '" loading="lazy" onerror="this.onerror=null;this.src=\'' + avatarFallback(c.nama) + '\'" class="w-20 h-20 rounded-full border-4 border-white object-cover shadow bg-brand-100">' +
+            '<div class="mt-3 flex items-start justify-between gap-2">' +
+              '<div class="min-w-0">' +
+                '<h3 class="font-serif font-bold text-lg text-brand-900 leading-tight">' + esc(c.nama) + '</h3>' +
+                '<p class="text-sm text-gray-500 font-semibold">' + c.usia + ' tahun &bull; ' + esc(c.gender) + '</p>' +
+              '</div>' +
+              '<span class="shrink-0 inline-flex items-center gap-1 text-xs font-bold border px-2.5 py-1 rounded-full ' + jenisCls + '"><i class="fa-solid ' + jenisIcon + '"></i>' + esc(c.jenis) + '</span>' +
+            '</div>' +
+            '<p class="mt-2 text-sm text-gray-700 font-semibold"><i class="fa-solid fa-award text-brand mr-1.5"></i>' + esc(c.sertifikasi) + '</p>' +
+            '<p class="mt-1 text-sm text-gray-500"><i class="fa-solid fa-location-dot text-brand mr-1.5"></i>' + esc(c.lokasi) + ' &bull; ' + c.pengalaman + ' th pengalaman</p>' +
+            '<div class="mt-3 flex items-center gap-2 text-sm">' +
+              '<span class="text-amber-400 text-xs">' + starsHTML(c.rating) + '</span>' +
+              '<b class="text-gray-800">' + c.rating.toFixed(1) + '</b><span class="text-gray-500">(' + c.ulasan + ' ulasan)</span>' +
+            '</div>' +
+            '<div class="mt-3 flex flex-wrap gap-1.5">' + langs + '</div>' +
+            '<div class="mt-4 pt-4 border-t border-gray-100 flex items-end justify-between">' +
+              '<div><p class="text-xs text-gray-500 font-semibold">Mulai dari</p><p class="font-serif font-bold text-xl text-brand-800">' + rp(c.harga) + '<span class="text-sm font-sans font-semibold text-gray-500"> / shift</span></p></div>' +
+            '</div>' +
+            '<div class="mt-4 grid grid-cols-2 gap-2.5 mt-auto pt-1">' +
+              '<button data-detail="' + c.id + '" class="py-3 rounded-xl border border-brand-200 text-brand-700 hover:bg-brand-50 font-bold text-sm transition">Detail Profil</button>' +
+              '<button data-book="' + c.id + '" class="py-3 rounded-xl bg-brand hover:bg-brand-700 text-white font-bold text-sm shadow transition">Pesan</button>' +
+            '</div>' +
+          '</div>' +
+        '</article>';
+    }
+
+    function getFiltered() {
+      var q = $('fSearch').value.trim().toLowerCase();
+      var lokasi = $('fLokasi').value;
+      var bahasa = $('fBahasa').value;
+      var keahlian = $('fKeahlian').value;
+      var gender = $('fGender').value;
+      var sort = $('fSort').value;
+
+      var list = CAREGIVERS.filter(function (c) {
+        if (lokasi && c.lokasi !== lokasi) return false;
+        if (bahasa && c.bahasa.indexOf(bahasa) === -1) return false;
+        if (keahlian && c.jenis !== keahlian) return false;
+        if (gender && c.gender !== gender) return false;
+        if (q) {
+          var hay = (c.nama + ' ' + c.sertifikasi + ' ' + c.keahlian.join(' ') + ' ' + c.bio + ' ' + c.lokasi + ' ' + c.bahasa.join(' ')).toLowerCase();
+          if (hay.indexOf(q) === -1) return false;
+        }
+        return true;
+      });
+
+      list.sort(function (a, b) {
+        if (sort === 'harga-asc') return a.harga - b.harga;
+        if (sort === 'harga-desc') return b.harga - a.harga;
+        if (sort === 'pengalaman') return b.pengalaman - a.pengalaman;
+        return b.rating - a.rating || b.ulasan - a.ulasan;
+      });
+      return list;
+    }
+
+    function renderCatalog() {
+      var list = getFiltered();
+      var box = $('catalog');
+      box.innerHTML = list.map(cardHTML).join('');
+      $('emptyState').classList.toggle('hidden', list.length !== 0);
+      box.classList.toggle('hidden', list.length === 0);
+      $('resultCount').innerHTML = list.length === 0
+        ? 'Tidak ada pendamping ditemukan'
+        : 'Menampilkan <b class="text-brand-800">' + list.length + '</b> dari ' + CAREGIVERS.length + ' pendamping terverifikasi';
+    }
+
+    function resetFilters() {
+      ['fSearch', 'fLokasi', 'fBahasa', 'fKeahlian', 'fGender'].forEach(function (id) { $(id).value = ''; });
+      $('fSort').value = 'rating';
+      renderCatalog();
+    }
+    window.resetFilters = resetFilters;
+
+    ['fLokasi', 'fBahasa', 'fKeahlian', 'fGender', 'fSort'].forEach(function (id) {
+      $(id).addEventListener('change', renderCatalog);
+    });
+    $('fSearch').addEventListener('input', renderCatalog);
+    $('fReset').addEventListener('click', resetFilters);
+
+    $('catalog').addEventListener('click', function (e) {
+      var d = e.target.closest('[data-detail]');
+      var b = e.target.closest('[data-book]');
+      if (d) openDetail(parseInt(d.getAttribute('data-detail'), 10));
+      if (b) openBooking(parseInt(b.getAttribute('data-book'), 10));
+    });
+
+    /* ============================================================
+       MODAL DETAIL PROFIL
+    ============================================================ */
+    function openDetail(id) {
+      var c = getCaregiver(id);
+      if (!c) return;
+      var cv = c.cv.map(function (r) {
+        return '<li class="relative pl-6 pb-4 last:pb-0 border-l-2 border-brand-200 ml-1.5">' +
+          '<span class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-brand border-2 border-white"></span>' +
+          '<p class="text-xs font-bold text-brand">' + esc(r.periode) + '</p>' +
+          '<p class="font-bold text-gray-800">' + esc(r.peran) + '</p>' +
+          '<p class="text-sm text-gray-500">' + esc(r.tempat) + '</p></li>';
+      }).join('');
+      var skills = c.keahlian.map(function (k) {
+        return '<span class="text-xs font-bold bg-brand-50 text-brand-700 border border-brand-100 px-3 py-1.5 rounded-full">' + esc(k) + '</span>';
+      }).join('');
+      var langs = c.bahasa.map(function (b) {
+        return '<span class="text-xs font-bold bg-amber-100 text-amber-800 px-3 py-1.5 rounded-full">' + esc(b) + '</span>';
+      }).join('');
+      var certs = c.sertifikat.map(function (s) {
+        return '<div class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl p-3">' +
+          '<span class="w-10 h-10 rounded-lg bg-brand-50 text-brand flex items-center justify-center shrink-0"><i class="fa-solid fa-file-circle-check"></i></span>' +
+          '<div class="min-w-0"><p class="text-sm font-bold text-gray-800 leading-tight">' + esc(s) + '</p><p class="text-[11px] text-green-700 font-bold mt-0.5"><i class="fa-solid fa-circle-check mr-1"></i>Dokumen dicek tim TemanLansia</p></div></div>';
+      }).join('');
+
+      var html = '' +
+        '<div class="rounded-t-3xl bg-gradient-to-r from-brand-700 to-brand-400 h-28 sm:h-32"></div>' +
+        '<div class="px-5 sm:px-8 pb-8 -mt-14">' +
+          '<div class="flex flex-col sm:flex-row sm:items-end gap-4">' +
+            '<img src="' + c.foto + '" alt="Foto ' + esc(c.nama) + '" onerror="this.onerror=null;this.src=\'' + avatarFallback(c.nama) + '\'" class="w-28 h-28 rounded-full border-4 border-white object-cover shadow-lg bg-brand-100">' +
+            '<div class="flex-1 pb-1">' +
+              '<h3 class="font-serif font-bold text-2xl text-brand-900">' + esc(c.nama) + '</h3>' +
+              '<p class="text-gray-600 font-semibold">' + esc(c.sertifikasi) + ' &bull; ' + c.usia + ' th &bull; ' + esc(c.lokasi) + '</p>' +
+              '<p class="text-sm mt-1"><span class="text-amber-400 text-xs">' + starsHTML(c.rating) + '</span> <b>' + c.rating.toFixed(1) + '</b> <span class="text-gray-500">(' + c.ulasan + ' ulasan)</span></p>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="mt-6 grid sm:grid-cols-2 gap-6">' +
+            '<div>' +
+              '<h4 class="font-serif font-bold text-lg text-brand-900 mb-2"><i class="fa-solid fa-user mr-2 text-brand"></i>Tentang</h4>' +
+              '<p class="text-sm text-gray-700 leading-relaxed">' + esc(c.bio) + '</p>' +
+              '<h4 class="font-bold text-sm text-gray-700 mt-4 mb-2">Bahasa</h4><div class="flex flex-wrap gap-2">' + langs + '</div>' +
+              '<h4 class="font-bold text-sm text-gray-700 mt-4 mb-2">Keahlian</h4><div class="flex flex-wrap gap-2">' + skills + '</div>' +
+            '</div>' +
+            '<div>' +
+              '<h4 class="font-serif font-bold text-lg text-brand-900 mb-3"><i class="fa-solid fa-briefcase-medical mr-2 text-brand"></i>CV Ringkas &amp; Resume Medis</h4>' +
+              '<ul>' + cv + '</ul>' +
+              '<div class="mt-4 grid grid-cols-3 gap-2 text-center">' +
+                '<div class="bg-cream rounded-xl py-2.5"><p class="font-bold text-brand-800">' + c.pengalaman + ' th</p><p class="text-[11px] text-gray-500 font-semibold">Pengalaman</p></div>' +
+                '<div class="bg-cream rounded-xl py-2.5"><p class="font-bold text-brand-800">' + (c.ulasan * 3 + 40) + '</p><p class="text-[11px] text-gray-500 font-semibold">Shift selesai</p></div>' +
+                '<div class="bg-cream rounded-xl py-2.5"><p class="font-bold text-brand-800">98%</p><p class="text-[11px] text-gray-500 font-semibold">Tepat waktu</p></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="mt-7">' +
+            '<h4 class="font-serif font-bold text-lg text-brand-900 mb-3"><i class="fa-solid fa-id-card-clip mr-2 text-brand"></i>Dokumen Terverifikasi</h4>' +
+            '<div class="grid sm:grid-cols-2 gap-3">' +
+              '<div class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl p-3"><span class="w-10 h-10 rounded-lg bg-green-50 text-green-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-id-card"></i></span><div><p class="text-sm font-bold text-gray-800 leading-tight">KTP (NIK tersamarkan)</p><p class="text-[11px] text-green-700 font-bold mt-0.5"><i class="fa-solid fa-circle-check mr-1"></i>Cocok dengan data Dukcapil</p></div></div>' +
+              '<div class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl p-3"><span class="w-10 h-10 rounded-lg bg-green-50 text-green-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-shield-halved"></i></span><div><p class="text-sm font-bold text-gray-800 leading-tight">SKCK Kepolisian</p><p class="text-[11px] text-green-700 font-bold mt-0.5"><i class="fa-solid fa-circle-check mr-1"></i>Tidak ada catatan kriminal</p></div></div>' +
+              certs +
+            '</div>' +
+          '</div>' +
+
+          '<div class="mt-7 grid sm:grid-cols-2 gap-4">' +
+            '<div class="rounded-2xl border-2 border-brand-200 bg-brand-50/60 p-5">' +
+              '<h4 class="font-bold text-brand-900 mb-3"><i class="fa-solid fa-circle-check text-brand mr-2"></i>Include (sudah termasuk)</h4>' +
+              '<ul class="space-y-2 text-sm text-gray-800">' +
+                '<li><i class="fa-solid fa-check text-brand mr-2"></i>Laporan harian digital</li>' +
+                '<li><i class="fa-solid fa-check text-brand mr-2"></i>Pengingat &amp; pendampingan obat</li>' +
+                '<li><i class="fa-solid fa-check text-brand mr-2"></i>Bantuan aktivitas harian</li>' +
+                '<li><i class="fa-solid fa-check text-brand mr-2"></i>Dukungan koordinator 24/7</li>' +
+              '</ul>' +
+            '</div>' +
+            '<div class="rounded-2xl border-2 border-amber-200 bg-amber-50/70 p-5">' +
+              '<h4 class="font-bold text-amber-900 mb-3"><i class="fa-solid fa-receipt text-amber-600 mr-2"></i>Exclude (dibayar terpisah)</h4>' +
+              '<ul class="space-y-2 text-sm text-gray-800">' +
+                '<li><i class="fa-solid fa-plus text-amber-600 mr-2"></i>Transportasi di luar radius 10 km</li>' +
+                '<li><i class="fa-solid fa-plus text-amber-600 mr-2"></i>Biaya medis &amp; rumah sakit</li>' +
+                '<li><i class="fa-solid fa-plus text-amber-600 mr-2"></i>Perlengkapan habis pakai</li>' +
+                '<li><i class="fa-solid fa-plus text-amber-600 mr-2"></i>Lembur di atas 8 jam</li>' +
+              '</ul>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="mt-7 flex flex-col sm:flex-row items-center justify-between gap-4 bg-cream rounded-2xl p-5 border border-cream-dark">' +
+            '<div><p class="text-xs text-gray-500 font-semibold">Tarif per shift</p><p class="font-serif font-bold text-2xl text-brand-800">' + rp(c.harga) + '</p></div>' +
+            '<div class="flex gap-3 w-full sm:w-auto">' +
+              '<button onclick="closeModal(\'detailModal\')" class="flex-1 sm:flex-none px-5 py-3 rounded-xl border border-gray-300 font-bold text-gray-700 hover:bg-white transition">Tutup</button>' +
+              '<button onclick="closeModal(\'detailModal\');openBooking(' + c.id + ')" class="flex-1 sm:flex-none px-7 py-3 rounded-xl bg-brand hover:bg-brand-700 text-white font-bold shadow transition">Pesan Sekarang</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      $('detailContent').innerHTML = html;
+      openModal('detailModal');
+      $('detailModal').scrollTop = 0;
+    }
+    window.openDetail = openDetail;
+
+    /* ============================================================
+       BOOKING STEPPER
+    ============================================================ */
+    var booking = null;
+    var bkStep = 1;
+
+    function todayISO(offset) {
+      var d = new Date();
+      d.setDate(d.getDate() + (offset || 0));
+      var m = String(d.getMonth() + 1).padStart(2, '0');
+      var day = String(d.getDate()).padStart(2, '0');
+      return d.getFullYear() + '-' + m + '-' + day;
+    }
+    function fmtDate(iso) {
+      if (!iso) return '-';
+      var p = iso.split('-');
+      var d = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+      return d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function openBooking(id) {
+      var c = getCaregiver(id);
+      if (!c) return;
+      booking = {
+        caregiver: c,
+        tanggal: todayISO(1),
+        hari: 1,
+        shift: 'pagi',
+        namaLansia: '', usiaLansia: '', hubungan: '', alamat: '',
+        kondisi: '', alergi: '', catatan: '', kontak: '',
+        bayar: 'qris',
+        done: false, kode: ''
+      };
+      bkStep = 1;
+      $('bkTitle').textContent = 'Bersama ' + c.nama;
+      renderBooking();
+      openModal('bookingModal');
+      $('bookingModal').scrollTop = 0;
+    }
+    window.openBooking = openBooking;
+
+    function calcPrice() {
+      var c = booking.caregiver;
+      var shift = SHIFTS[booking.shift];
+      var perHari = c.harga * shift.mult;
+      var subtotal = perHari * booking.hari;
+      var layanan = subtotal * 0.05;
+      var asuransi = 5000 * booking.hari;
+      return { perHari: perHari, subtotal: subtotal, layanan: layanan, asuransi: asuransi, total: subtotal + layanan + asuransi };
+    }
+
+    function renderStepper() {
+      var labels = ['Jadwal', 'Data Lansia', 'Ringkasan'];
+      var html = '';
+      for (var i = 1; i <= 3; i++) {
+        var active = bkStep === i, done = bkStep > i || booking.done;
+        var circle = done
+          ? '<span class="w-9 h-9 rounded-full bg-brand text-white flex items-center justify-center text-sm"><i class="fa-solid fa-check"></i></span>'
+          : '<span class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-extrabold ' + (active ? 'bg-brand text-white ring-4 ring-brand-100' : 'bg-gray-200 text-gray-500') + '">' + i + '</span>';
+        html += '<div class="flex items-center gap-2 ' + (i < 3 ? 'flex-1' : '') + '">' + circle +
+          '<span class="text-xs sm:text-sm font-bold ' + (active || done ? 'text-brand-800' : 'text-gray-400') + '">' + labels[i - 1] + '</span>' +
+          (i < 3 ? '<span class="flex-1 h-0.5 mx-1 rounded ' + (bkStep > i || booking.done ? 'bg-brand' : 'bg-gray-200') + '"></span>' : '') + '</div>';
+      }
+      $('stepper').innerHTML = html;
+    }
+
+    function fieldErr(msg) {
+      return '<p class="text-xs text-sos font-semibold mt-1">' + msg + '</p>';
+    }
+
+    function renderBooking() {
+      renderStepper();
+      var c = booking.caregiver, body = '';
+      $('bkFooter').classList.remove('hidden');
+
+      if (booking.done) {
+        $('bkFooter').classList.add('hidden');
+        var p = calcPrice();
+        $('bkBody').innerHTML =
+          '<div class="text-center py-4 fade-in">' +
+            '<div class="w-20 h-20 mx-auto rounded-full bg-green-100 text-green-600 flex items-center justify-center text-4xl mb-4"><i class="fa-solid fa-circle-check"></i></div>' +
+            '<h3 class="font-serif font-bold text-2xl text-brand-900">Pemesanan Berhasil Dibuat</h3>' +
+            '<p class="text-gray-600 mt-2 max-w-md mx-auto">' + esc(c.nama) + ' akan mengonfirmasi dalam 30 menit. Instruksi pembayaran sudah dikirim ke kontak Anda.</p>' +
+            '<div class="mt-5 inline-block bg-cream border border-cream-dark rounded-2xl px-6 py-4 text-left">' +
+              '<p class="text-xs text-gray-500 font-semibold">Kode Pemesanan</p>' +
+              '<p class="font-mono font-extrabold text-xl text-brand-800 tracking-wider">' + booking.kode + '</p>' +
+              '<p class="text-sm text-gray-600 mt-2">' + fmtDate(booking.tanggal) + '</p>' +
+              '<p class="text-sm text-gray-600">' + SHIFTS[booking.shift].label + ' &bull; ' + booking.hari + ' hari</p>' +
+              '<p class="font-bold text-brand-800 mt-2">Total ' + rp(p.total) + '</p>' +
+            '</div>' +
+            '<div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">' +
+              '<a href="#laporan" onclick="closeModal(\'bookingModal\')" class="px-6 py-3 rounded-xl bg-brand text-white font-bold hover:bg-brand-700 transition">Lihat Contoh Laporan Harian</a>' +
+              '<button onclick="closeModal(\'bookingModal\')" class="px-6 py-3 rounded-xl border border-gray-300 font-bold text-gray-700 hover:bg-gray-50 transition">Selesai</button>' +
+            '</div>' +
+          '</div>';
+        return;
+      }
+
+      if (bkStep === 1) {
+        var shiftsHTML = Object.keys(SHIFTS).map(function (k) {
+          var s = SHIFTS[k];
+          return '<label class="shift-card cursor-pointer block"><input type="radio" name="shift" value="' + k + '" class="sr-only"' + (booking.shift === k ? ' checked' : '') + '>' +
+            '<div class="border-2 border-gray-200 rounded-2xl p-4 h-full transition hover:border-brand-300">' +
+              '<div class="flex items-center gap-3"><span class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center"><i class="fa-solid ' + s.ikon + '"></i></span>' +
+              '<div><p class="font-bold text-gray-800 leading-tight">' + s.label + '</p><p class="text-xs text-gray-500 font-semibold">' + s.jam + '</p></div></div>' +
+              '<p class="mt-3 font-bold text-brand-800">' + rp(c.harga * s.mult) + '<span class="text-xs text-gray-500 font-semibold"> / hari</span></p>' +
+              (s.mult > 1 ? '<p class="text-[11px] text-amber-700 font-bold mt-0.5">' + (k === 'malam' ? '+25% tarif malam' : 'Paket hemat 2 shift') + '</p>' : '') +
+            '</div></label>';
+        }).join('');
+
+        body = '<div class="fade-in space-y-6">' +
+          '<div><h4 class="font-serif font-bold text-lg text-brand-900 mb-1">Langkah 1: Pilih Tanggal &amp; Shift</h4><p class="text-sm text-gray-600">Tentukan kapan pendamping mulai bertugas dan berapa hari.</p></div>' +
+          '<div class="grid sm:grid-cols-2 gap-4">' +
+            '<div><label class="block text-sm font-bold text-gray-700 mb-1.5">Tanggal Mulai</label>' +
+              '<input id="bkTanggal" type="date" min="' + todayISO(0) + '" value="' + booking.tanggal + '" class="w-full border border-gray-300 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl px-4 py-3 font-semibold">' +
+              '<p id="errTanggal" class="hidden text-xs text-sos font-semibold mt-1">Pilih tanggal hari ini atau setelahnya.</p></div>' +
+            '<div><label class="block text-sm font-bold text-gray-700 mb-1.5">Durasi (hari berturut-turut)</label>' +
+              '<div class="flex items-center border border-gray-300 rounded-xl overflow-hidden">' +
+                '<button type="button" id="hariMin" class="w-12 h-12 text-lg font-bold text-brand-700 hover:bg-brand-50">&minus;</button>' +
+                '<input id="bkHari" type="number" min="1" max="30" value="' + booking.hari + '" class="flex-1 text-center font-extrabold text-lg py-3 border-x border-gray-200 min-w-0">' +
+                '<button type="button" id="hariPlus" class="w-12 h-12 text-lg font-bold text-brand-700 hover:bg-brand-50">+</button>' +
+              '</div><p class="text-xs text-gray-500 mt-1">Maksimal 30 hari per pemesanan.</p></div>' +
+          '</div>' +
+          '<div><label class="block text-sm font-bold text-gray-700 mb-2">Pilih Shift</label><div class="grid sm:grid-cols-2 gap-3">' + shiftsHTML + '</div></div>' +
+          '<div class="bg-brand-50 border border-brand-100 rounded-xl p-4 flex items-center justify-between"><span class="text-sm font-semibold text-brand-800">Perkiraan biaya layanan</span><b id="estPrice" class="font-serif text-xl text-brand-800">' + rp(calcPrice().subtotal) + '</b></div>' +
+        '</div>';
+        $('bkBody').innerHTML = body;
+        $('bkBack').classList.add('invisible');
+        $('bkNext').innerHTML = 'Lanjut <i class="fa-solid fa-arrow-right ml-2"></i>';
+
+        $('bkTanggal').addEventListener('change', function () { booking.tanggal = this.value; });
+        function setHari(v) {
+          v = Math.max(1, Math.min(30, parseInt(v, 10) || 1));
+          booking.hari = v;
+          $('bkHari').value = v;
+          $('estPrice').textContent = rp(calcPrice().subtotal);
+        }
+        $('hariMin').addEventListener('click', function () { setHari(booking.hari - 1); });
+        $('hariPlus').addEventListener('click', function () { setHari(booking.hari + 1); });
+        $('bkHari').addEventListener('input', function () { setHari(this.value); });
+        document.querySelectorAll('input[name="shift"]').forEach(function (r) {
+          r.addEventListener('change', function () {
+            booking.shift = this.value;
+            $('estPrice').textContent = rp(calcPrice().subtotal);
+          });
+        });
+      }
+
+      if (bkStep === 2) {
+        body = '<div class="fade-in space-y-4">' +
+          '<div><h4 class="font-serif font-bold text-lg text-brand-900 mb-1">Langkah 2: Data Lansia &amp; Catatan Khusus</h4><p class="text-sm text-gray-600">Informasi ini membantu pendamping menyiapkan perawatan yang tepat dan aman.</p></div>' +
+          '<div class="grid sm:grid-cols-2 gap-4">' +
+            '<div><label class="block text-sm font-bold text-gray-700 mb-1.5">Nama Lansia <span class="text-sos">*</span></label>' +
+              '<input id="fNamaL" type="text" value="' + esc(booking.namaLansia) + '" placeholder="Contoh: Ibu Sutirah" class="w-full border border-gray-300 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl px-4 py-3"><p id="eNamaL" class="hidden text-xs text-sos font-semibold mt-1">Nama lansia wajib diisi.</p></div>' +
+            '<div><label class="block text-sm font-bold text-gray-700 mb-1.5">Usia <span class="text-sos">*</span></label>' +
+              '<input id="fUsiaL" type="number" min="50" max="120" value="' + esc(booking.usiaLansia) + '" placeholder="Contoh: 78" class="w-full border border-gray-300 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl px-4 py-3"><p id="eUsiaL" class="hidden text-xs text-sos font-semibold mt-1">Isi usia antara 50 - 120 tahun.</p></div>' +
+          '</div>' +
+          '<div class="grid sm:grid-cols-2 gap-4">' +
+            '<div><label class="block text-sm font-bold text-gray-700 mb-1.5">Hubungan dengan Anda</label>' +
+              '<select id="fHub" class="w-full border border-gray-300 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl px-4 py-3">' +
+                ['Ibu', 'Ayah', 'Mertua', 'Kakek / Nenek', 'Kerabat lain'].map(function (h) { return '<option' + (booking.hubungan === h ? ' selected' : '') + '>' + h + '</option>'; }).join('') +
+              '</select></div>' +
+            '<div><label class="block text-sm font-bold text-gray-700 mb-1.5">WhatsApp Penanggung Jawab <span class="text-sos">*</span></label>' +
+              '<input id="fKontak" type="tel" value="' + esc(booking.kontak) + '" placeholder="08xxxxxxxxxx" class="w-full border border-gray-300 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl px-4 py-3"><p id="eKontak" class="hidden text-xs text-sos font-semibold mt-1">Masukkan nomor WhatsApp yang valid (10 - 14 digit).</p></div>' +
+          '</div>' +
+          '<div><label class="block text-sm font-bold text-gray-700 mb-1.5">Alamat Pendampingan <span class="text-sos">*</span></label>' +
+            '<textarea id="fAlamat" rows="2" placeholder="Alamat lengkap, patokan, dan lantai/kamar bila ada" class="w-full border border-gray-300 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl px-4 py-3">' + esc(booking.alamat) + '</textarea><p id="eAlamat" class="hidden text-xs text-sos font-semibold mt-1">Alamat wajib diisi.</p></div>' +
+          '<div><label class="block text-sm font-bold text-gray-700 mb-1.5">Kondisi Kesehatan &amp; Obat Rutin</label>' +
+            '<textarea id="fKondisi" rows="2" placeholder="Contoh: hipertensi, diabetes tipe 2, pasca-stroke 2024. Obat: amlodipine 5 mg pagi" class="w-full border border-gray-300 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl px-4 py-3">' + esc(booking.kondisi) + '</textarea></div>' +
+          '<div class="rounded-xl border-2 border-red-200 bg-red-50/60 p-4">' +
+            '<label class="block text-sm font-bold text-sos-dark mb-1.5"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i>Alergi (obat / makanan)</label>' +
+            '<input id="fAlergi" type="text" value="' + esc(booking.alergi) + '" placeholder="Contoh: alergi penisilin, seafood. Kosongkan bila tidak ada" class="w-full bg-white border border-red-200 focus:border-sos focus:ring-2 focus:ring-red-200 rounded-xl px-4 py-3">' +
+          '</div>' +
+          '<div><label class="block text-sm font-bold text-gray-700 mb-1.5">Catatan Khusus untuk Pendamping</label>' +
+            '<textarea id="fCatatan" rows="2" placeholder="Kebiasaan, makanan favorit, hal yang perlu dihindari, jam tidur siang, dll." class="w-full border border-gray-300 focus:border-brand focus:ring-2 focus:ring-brand-200 rounded-xl px-4 py-3">' + esc(booking.catatan) + '</textarea></div>' +
+        '</div>';
+        $('bkBody').innerHTML = body;
+        $('bkBack').classList.remove('invisible');
+        $('bkNext').innerHTML = 'Lanjut <i class="fa-solid fa-arrow-right ml-2"></i>';
+      }
+
+      if (bkStep === 3) {
+        var pr = calcPrice();
+        var payHTML = PAYMENTS.map(function (m) {
+          return '<label class="pay-card cursor-pointer block"><input type="radio" name="bayar" value="' + m.id + '" class="sr-only"' + (booking.bayar === m.id ? ' checked' : '') + '>' +
+            '<div class="border-2 border-gray-200 rounded-xl p-3.5 flex items-center gap-3 transition hover:border-brand-300">' +
+              '<span class="w-10 h-10 rounded-lg bg-brand-50 text-brand flex items-center justify-center shrink-0"><i class="fa-solid ' + m.ikon + '"></i></span>' +
+              '<div class="min-w-0"><p class="font-bold text-gray-800 text-sm leading-tight">' + m.nama + '</p><p class="text-xs text-gray-500">' + m.ket + '</p></div>' +
+            '</div></label>';
+        }).join('');
+
+        body = '<div class="fade-in space-y-5">' +
+          '<div><h4 class="font-serif font-bold text-lg text-brand-900 mb-1">Langkah 3: Ringkasan &amp; Pembayaran</h4><p class="text-sm text-gray-600">Periksa kembali sebelum membayar. Rincian di bawah sudah final.</p></div>' +
+          '<div class="flex items-center gap-4 bg-cream rounded-2xl p-4 border border-cream-dark">' +
+            '<img src="' + c.foto + '" alt="" onerror="this.onerror=null;this.src=\'' + avatarFallback(c.nama) + '\'" class="w-14 h-14 rounded-full object-cover bg-brand-100">' +
+            '<div class="min-w-0"><p class="font-bold text-brand-900 leading-tight">' + esc(c.nama) + '</p><p class="text-sm text-gray-600">' + esc(c.sertifikasi) + '</p></div>' +
+          '</div>' +
+          '<dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm bg-white border border-gray-200 rounded-2xl p-4">' +
+            '<div><dt class="text-xs text-gray-500 font-semibold">Tanggal Mulai</dt><dd class="font-bold text-gray-800">' + fmtDate(booking.tanggal) + '</dd></div>' +
+            '<div><dt class="text-xs text-gray-500 font-semibold">Durasi &amp; Shift</dt><dd class="font-bold text-gray-800">' + booking.hari + ' hari &bull; ' + SHIFTS[booking.shift].label + '</dd></div>' +
+            '<div><dt class="text-xs text-gray-500 font-semibold">Jam Bertugas</dt><dd class="font-bold text-gray-800">' + SHIFTS[booking.shift].jam + '</dd></div>' +
+            '<div><dt class="text-xs text-gray-500 font-semibold">Lansia</dt><dd class="font-bold text-gray-800">' + esc(booking.namaLansia) + ' (' + esc(booking.usiaLansia) + ' th)</dd></div>' +
+            '<div class="col-span-2"><dt class="text-xs text-gray-500 font-semibold">Alamat</dt><dd class="font-bold text-gray-800">' + esc(booking.alamat) + '</dd></div>' +
+            '<div class="col-span-2"><dt class="text-xs text-gray-500 font-semibold">Alergi &amp; Catatan</dt><dd class="font-bold text-gray-800">' + (booking.alergi ? '<span class="text-sos">Alergi: ' + esc(booking.alergi) + '</span>' : 'Tidak ada alergi dilaporkan') + (booking.catatan ? '<br><span class="font-semibold text-gray-600">' + esc(booking.catatan) + '</span>' : '') + '</dd></div>' +
+          '</dl>' +
+          '<div class="bg-white border border-gray-200 rounded-2xl p-4 text-sm">' +
+            '<p class="font-bold text-gray-800 mb-3">Rincian Biaya</p>' +
+            '<div class="space-y-2">' +
+              '<div class="flex justify-between"><span class="text-gray-600">' + rp(pr.perHari) + ' &times; ' + booking.hari + ' hari</span><b>' + rp(pr.subtotal) + '</b></div>' +
+              '<div class="flex justify-between"><span class="text-gray-600">Biaya layanan platform (5%)</span><b>' + rp(pr.layanan) + '</b></div>' +
+              '<div class="flex justify-between"><span class="text-gray-600">Asuransi pendamping (Rp5.000 / hari)</span><b>' + rp(pr.asuransi) + '</b></div>' +
+              '<div class="flex justify-between pt-3 mt-1 border-t border-dashed border-gray-300 text-base"><span class="font-bold text-brand-900">Total Dibayar Sekarang</span><b class="font-serif text-xl text-brand-800">' + rp(pr.total) + '</b></div>' +
+            '</div>' +
+            '<p class="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-3 mt-3"><i class="fa-solid fa-circle-info mr-1.5"></i>Tidak termasuk: transportasi di luar radius, biaya medis RS, perlengkapan habis pakai. Biaya tersebut ditagih terpisah dengan bukti.</p>' +
+          '</div>' +
+          '<div><p class="font-bold text-gray-800 mb-2 text-sm">Metode Pembayaran</p><div class="grid sm:grid-cols-2 gap-2.5">' + payHTML + '</div></div>' +
+          '<div class="flex items-start gap-3 bg-brand-50 border border-brand-100 rounded-xl p-4 text-sm text-brand-900"><i class="fa-solid fa-lock text-brand mt-0.5"></i><p>Dana ditahan di rekening bersama dan baru diteruskan ke pendamping setelah shift selesai &amp; laporan harian terkirim. Pembatalan gratis hingga 24 jam sebelum jadwal mulai.</p></div>' +
+          '<label class="flex items-start gap-3 text-sm text-gray-700 cursor-pointer"><input id="fSetuju" type="checkbox" class="mt-1 w-4 h-4 accent-teal-600"><span>Saya menyetujui <b>Syarat &amp; Ketentuan</b> serta kebijakan pembatalan TemanLansia.</span></label>' +
+          '<p id="eSetuju" class="hidden text-xs text-sos font-semibold -mt-3">Centang persetujuan untuk melanjutkan pembayaran.</p>' +
+        '</div>';
+        $('bkBody').innerHTML = body;
+        $('bkBack').classList.remove('invisible');
+        $('bkNext').innerHTML = '<i class="fa-solid fa-lock mr-2"></i>Bayar ' + rp(pr.total);
+        document.querySelectorAll('input[name="bayar"]').forEach(function (r) {
+          r.addEventListener('change', function () { booking.bayar = this.value; });
+        });
+      }
+    }
+
+    function show(id, on) { var el = $(id); if (el) el.classList.toggle('hidden', !on); }
+
+    function validateStep(step) {
+      if (step === 1) {
+        var ok = true;
+        var min = todayISO(0);
+        var okDate = !!booking.tanggal && booking.tanggal >= min;
+        show('errTanggal', !okDate);
+        if (!okDate) ok = false;
+        return ok;
+      }
+      if (step === 2) {
+        booking.namaLansia = $('fNamaL').value.trim();
+        booking.usiaLansia = $('fUsiaL').value.trim();
+        booking.hubungan = $('fHub').value;
+        booking.kontak = $('fKontak').value.replace(/[\s\-]/g, '');
+        booking.alamat = $('fAlamat').value.trim();
+        booking.kondisi = $('fKondisi').value.trim();
+        booking.alergi = $('fAlergi').value.trim();
+        booking.catatan = $('fCatatan').value.trim();
+        var v1 = booking.namaLansia.length >= 2;
+        var u = parseInt(booking.usiaLansia, 10);
+        var v2 = !isNaN(u) && u >= 50 && u <= 120;
+        var v3 = /^(\+62|62|0)8[0-9]{8,12}$/.test(booking.kontak);
+        var v4 = booking.alamat.length >= 8;
+        show('eNamaL', !v1); show('eUsiaL', !v2); show('eKontak', !v3); show('eAlamat', !v4);
+        return v1 && v2 && v3 && v4;
+      }
+      if (step === 3) {
+        var agreed = $('fSetuju').checked;
+        show('eSetuju', !agreed);
+        return agreed;
+      }
+      return true;
+    }
+
+    function genCode() {
+      var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', s = '';
+      for (var i = 0; i < 6; i++) s += chars.charAt(Math.floor(Math.random() * chars.length));
+      return 'TL-' + s;
+    }
+
+    $('bkNext').addEventListener('click', function () {
+      if (!booking || booking.done) return;
+      if (!validateStep(bkStep)) {
+        showToast('Mohon lengkapi data yang ditandai merah.');
+        return;
+      }
+      if (bkStep < 3) {
+        bkStep++;
+        renderBooking();
+        $('bookingModal').scrollTop = 0;
+      } else {
+        var btn = $('bkNext');
+        btn.disabled = true;
+        btn.classList.add('opacity-70', 'cursor-not-allowed');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Memproses...';
+        setTimeout(function () {
+          booking.done = true;
+          booking.kode = genCode();
+          btn.disabled = false;
+          btn.classList.remove('opacity-70', 'cursor-not-allowed');
+          renderBooking();
+          $('bookingModal').scrollTop = 0;
+        }, 1200);
+      }
+    });
+    $('bkBack').addEventListener('click', function () {
+      if (!booking || booking.done || bkStep <= 1) return;
+      if (bkStep === 2) {
+        booking.namaLansia = $('fNamaL').value.trim();
+        booking.usiaLansia = $('fUsiaL').value.trim();
+        booking.hubungan = $('fHub').value;
+        booking.kontak = $('fKontak').value.trim();
+        booking.alamat = $('fAlamat').value.trim();
+        booking.kondisi = $('fKondisi').value.trim();
+        booking.alergi = $('fAlergi').value.trim();
+        booking.catatan = $('fCatatan').value.trim();
+      }
+      bkStep--;
+      renderBooking();
+    });
+
+    /* ============================================================
+       SOS
+    ============================================================ */
+    var sosTimer = null;
+    var sosBodyDefault = $('sosBody').innerHTML;
+
+    function openSOS() {
+      clearInterval(sosTimer);
+      $('sosBody').innerHTML = sosBodyDefault;
+      openModal('sosModal');
+    }
+    function closeSOS() {
+      clearInterval(sosTimer);
+      closeModal('sosModal');
+    }
+    function startSOSCountdown() {
+      var n = 5;
+      function paint() {
+        $('sosBody').innerHTML =
+          '<div class="text-center py-2">' +
+            '<p class="text-sm font-bold text-gray-600">Sinyal darurat akan dikirim dalam</p>' +
+            '<div class="w-28 h-28 mx-auto my-4 rounded-full bg-sos-light text-sos flex items-center justify-center font-serif font-extrabold text-6xl border-4 border-sos">' + n + '</div>' +
+            '<p class="text-sm text-gray-600">Keluarga, koordinator, dan pendamping akan menerima lokasi &amp; ringkasan kondisi.</p>' +
+            '<button id="sosCancel" class="mt-5 w-full py-3.5 rounded-xl border-2 border-gray-300 font-bold text-gray-700 hover:bg-gray-50 transition">Batalkan</button>' +
+          '</div>';
+        $('sosCancel').addEventListener('click', function () { clearInterval(sosTimer); openSOS(); showToast('Sinyal darurat dibatalkan.'); });
+      }
+      paint();
+      sosTimer = setInterval(function () {
+        n--;
+        if (n <= 0) {
+          clearInterval(sosTimer);
+          $('sosBody').innerHTML =
+            '<div class="text-center py-2 fade-in">' +
+              '<div class="w-20 h-20 mx-auto rounded-full bg-green-100 text-green-600 flex items-center justify-center text-4xl mb-3"><i class="fa-solid fa-paper-plane"></i></div>' +
+              '<h4 class="font-serif font-bold text-xl text-brand-900">Sinyal Darurat Terkirim</h4>' +
+              '<ul class="text-sm text-left mt-4 space-y-2 bg-cream rounded-xl p-4">' +
+                '<li><i class="fa-solid fa-circle-check text-green-600 mr-2"></i>Keluarga utama diberi tahu</li>' +
+                '<li><i class="fa-solid fa-circle-check text-green-600 mr-2"></i>Koordinator TemanLansia menelepon Anda dalam 1 menit</li>' +
+                '<li><i class="fa-solid fa-circle-check text-green-600 mr-2"></i>Lokasi pendamping dibagikan</li>' +
+              '</ul>' +
+              '<p class="text-xs text-gray-500 mt-3">Ini hanya simulasi prototype. Pada kondisi nyata, segera hubungi 119.</p>' +
+              '<button onclick="closeSOS()" class="mt-4 w-full py-3.5 rounded-xl bg-brand text-white font-bold hover:bg-brand-700 transition">Tutup</button>' +
+            '</div>';
+        } else { paint(); }
+      }, 1000);
+    }
+    window.openSOS = openSOS; window.closeSOS = closeSOS; window.startSOSCountdown = startSOSCountdown;
+
+    /* ============================================================
+       AUTH (SIMULASI)
+    ============================================================ */
+    function openAuth(mode) {
+      var daftar = mode === 'daftar';
+      $('authTitle').textContent = daftar ? 'Buat Akun TemanLansia' : 'Selamat Datang Kembali';
+      $('authSubmit').textContent = daftar ? 'Daftar Sekarang' : 'Masuk';
+      $('authNameWrap').classList.toggle('hidden', !daftar);
+      $('tabMasuk').className = 'flex-1 py-2.5 rounded-lg text-sm font-bold transition ' + (!daftar ? 'bg-white shadow text-brand-800' : 'text-gray-500');
+      $('tabDaftar').className = 'flex-1 py-2.5 rounded-lg text-sm font-bold transition ' + (daftar ? 'bg-white shadow text-brand-800' : 'text-gray-500');
+      $('authForm').setAttribute('data-mode', mode);
+      $('authError').classList.add('hidden');
+      $('mobileMenu').classList.add('hidden');
+      openModal('authModal');
+    }
+    window.openAuth = openAuth;
+
+    $('authForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var mode = this.getAttribute('data-mode');
+      var id = $('authId').value.trim();
+      var pass = $('authPass').value;
+      var name = $('authName').value.trim();
+      var err = '';
+      var validId = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(id) || /^(\+62|62|0)8[0-9]{8,12}$/.test(id.replace(/[\s\-]/g, ''));
+      if (mode === 'daftar' && name.length < 2) err = 'Nama lengkap wajib diisi.';
+      else if (!validId) err = 'Masukkan email atau nomor WhatsApp yang valid.';
+      else if (pass.length < 6) err = 'Kata sandi minimal 6 karakter.';
+      if (err) {
+        $('authError').textContent = err;
+        $('authError').classList.remove('hidden');
+        return;
+      }
+      closeModal('authModal');
+      this.reset();
+      showToast(mode === 'daftar' ? 'Akun berhasil dibuat (simulasi). Selamat datang!' : 'Berhasil masuk (simulasi).');
+    });
+
+    /* ============================================================
+       LIVE PREVIEW DAILY ACTIVITY LOG
+    ============================================================ */
+    var logSeed = [
+      { jam: '07.15', ikon: 'fa-sun', warna: 'bg-amber-100 text-amber-600', judul: 'Pendamping tiba', isi: 'Bu Siti tiba dan menyapa Eyang dengan bahasa Jawa. Eyang tampak segar.' },
+      { jam: '07.40', ikon: 'fa-utensils', warna: 'bg-orange-100 text-orange-600', judul: 'Sarapan', isi: 'Bubur ayam + teh hangat tanpa gula. Porsi habis.', badge: 'Habis' }
+    ];
+    var logQueue = [
+      { jam: '08.10', ikon: 'fa-heart-pulse', warna: 'bg-red-100 text-red-600', judul: 'Tensi & nadi', isi: 'Tekanan darah 126/80, nadi 74 bpm. Dalam batas baik.', badge: '126/80', aksi: 'bp', bp: '126/80', nadi: '74 bpm', toast: 'Tensi pagi: 126/80, normal' },
+      { jam: '08.30', ikon: 'fa-pills', warna: 'bg-brand-100 text-brand', judul: 'Obat pagi diminum', isi: 'Amlodipine 5 mg diminum bersama air putih, dipantau langsung.', aksi: 'med', medIndex: 0, toast: 'Obat pagi sudah diminum' },
+      { jam: '09.15', ikon: 'fa-person-walking', warna: 'bg-green-100 text-green-600', judul: 'Senam ringan di teras', isi: 'Jalan 15 menit dan senam peregangan. Eyang bercerita masa mudanya.', foto: true, aksi: 'mood', mood: '&#128516;', toast: 'Foto kegiatan baru dikirim' },
+      { jam: '10.30', ikon: 'fa-glass-water', warna: 'bg-sky-100 text-sky-600', judul: 'Minum & camilan', isi: 'Air putih 250 ml dan pisang kukus. Hidrasi cukup.', badge: '250 ml' },
+      { jam: '12.00', ikon: 'fa-utensils', warna: 'bg-orange-100 text-orange-600', judul: 'Makan siang', isi: 'Nasi lembek, sayur bening, ikan kukus. Habis 3/4 porsi.', badge: '3/4' , toast: 'Makan siang tercatat' },
+      { jam: '12.30', ikon: 'fa-pills', warna: 'bg-brand-100 text-brand', judul: 'Obat siang diminum', isi: 'Metformin 500 mg diminum setelah makan.', aksi: 'med', medIndex: 1, toast: 'Obat siang sudah diminum' },
+      { jam: '13.30', ikon: 'fa-bed', warna: 'bg-indigo-100 text-indigo-600', judul: 'Istirahat siang', isi: 'Eyang tidur siang 45 menit dengan nyenyak.', foto: true, toast: 'Eyang beristirahat dengan nyenyak' }
+    ];
+    var logShown, logPtr, meds, bpTrend;
+
+    function initLog() {
+      logShown = logSeed.slice();
+      logPtr = 0;
+      meds = [
+        { nama: 'Amlodipine 5 mg', jam: '08.30', done: false },
+        { nama: 'Metformin 500 mg', jam: '12.30', done: false },
+        { nama: 'Vitamin D3', jam: '19.00', done: false }
+      ];
+      bpTrend = [134, 131, 130, 129, 128];
+      $('statBP').textContent = '128/82';
+      $('statPulse').textContent = '76 bpm';
+      $('statMood').innerHTML = '&#128522;';
+      $('simulateBtn').disabled = false;
+      $('simulateBtn').classList.remove('opacity-60', 'cursor-not-allowed');
+      renderMeds(); renderBP(); renderTimeline(false);
+    }
+
+    function renderMeds() {
+      $('medList').innerHTML = meds.map(function (m, i) {
+        return '<button type="button" data-med="' + i + '" class="w-full flex items-center gap-2.5 text-left rounded-lg px-2.5 py-2 border transition ' + (m.done ? 'bg-green-50 border-green-200' : 'bg-cream border-cream-dark hover:border-brand-300') + '">' +
+          '<span class="w-5 h-5 rounded-md flex items-center justify-center text-[10px] ' + (m.done ? 'bg-green-500 text-white' : 'border-2 border-gray-300 bg-white text-transparent') + '"><i class="fa-solid fa-check"></i></span>' +
+          '<span class="flex-1 text-xs font-bold ' + (m.done ? 'text-green-800 line-through' : 'text-gray-700') + '">' + m.nama + '</span>' +
+          '<span class="text-[10px] font-bold text-gray-500">' + m.jam + '</span></button>';
+      }).join('');
+    }
+
+    function renderBP() {
+      var max = 140, min = 110;
+      $('bpChart').innerHTML = bpTrend.map(function (v, i) {
+        var h = Math.max(14, Math.round(((v - min) / (max - min)) * 100));
+        var last = i === bpTrend.length - 1;
+        return '<div class="flex-1 flex flex-col items-center justify-end h-full gap-1"><span class="text-[9px] font-bold text-gray-500">' + v + '</span><div class="w-full rounded-t-md ' + (last ? 'bg-brand' : 'bg-brand-200') + '" style="height:' + h + '%"></div></div>';
+      }).join('');
+    }
+
+    function entryHTML(e, isNew) {
+      var foto = e.foto
+        ? '<div class="mt-2 grid grid-cols-2 gap-1.5"><div class="h-16 rounded-lg bg-gradient-to-br from-brand-200 to-amber-100 flex items-center justify-center text-brand-700"><i class="fa-solid fa-image text-lg"></i></div><div class="h-16 rounded-lg bg-gradient-to-br from-amber-100 to-brand-100 flex items-center justify-center text-amber-600"><i class="fa-solid fa-image text-lg"></i></div></div>'
+        : '';
+      var badge = e.badge ? '<span class="text-[10px] font-bold bg-brand-50 text-brand-700 border border-brand-100 px-2 py-0.5 rounded-full">' + e.badge + '</span>' : '';
+      return '<div class="' + (isNew ? 'log-new ' : '') + 'flex gap-2.5 bg-white rounded-xl p-3 border border-cream-dark">' +
+        '<span class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-sm ' + e.warna + '"><i class="fa-solid ' + e.ikon + '"></i></span>' +
+        '<div class="min-w-0 flex-1">' +
+          '<div class="flex items-center justify-between gap-2"><p class="text-xs font-extrabold text-gray-800 leading-tight">' + e.judul + '</p><span class="text-[10px] font-bold text-gray-400 shrink-0">' + e.jam + '</span></div>' +
+          '<p class="text-[11px] text-gray-600 leading-snug mt-0.5">' + e.isi + '</p>' + foto +
+          (badge ? '<div class="mt-1.5">' + badge + '</div>' : '') +
+        '</div></div>';
+    }
+
+    function renderTimeline(highlightFirst) {
+      var rev = logShown.slice().reverse();
+      $('logTimeline').innerHTML = rev.map(function (e, i) { return entryHTML(e, highlightFirst && i === 0); }).join('');
+      $('logTimeline').scrollTop = 0;
+    }
+
+    function logToast(msg) {
+      $('logToastText').textContent = msg;
+      var t = $('logToast');
+      t.classList.remove('hidden');
+      clearTimeout(logToast._t);
+      logToast._t = setTimeout(function () { t.classList.add('hidden'); }, 2400);
+    }
+
+    function simulateUpdate() {
+      if (logPtr >= logQueue.length) {
+        $('simulateBtn').disabled = true;
+        $('simulateBtn').classList.add('opacity-60', 'cursor-not-allowed');
+        logToast('Semua update hari ini sudah tampil');
+        return;
+      }
+      var e = logQueue[logPtr++];
+      logShown.push(e);
+      if (e.aksi === 'bp') {
+        $('statBP').textContent = e.bp; $('statPulse').textContent = e.nadi;
+        bpTrend[bpTrend.length - 1] = parseInt(e.bp.split('/')[0], 10); renderBP();
+      }
+      if (e.aksi === 'med' && meds[e.medIndex]) { meds[e.medIndex].done = true; renderMeds(); }
+      if (e.aksi === 'mood') { $('statMood').innerHTML = e.mood; }
+      renderTimeline(true);
+      if (e.toast) logToast(e.toast);
+      if (logPtr >= logQueue.length) {
+        $('simulateBtn').disabled = true;
+        $('simulateBtn').classList.add('opacity-60', 'cursor-not-allowed');
+      }
+    }
+
+    $('simulateBtn').addEventListener('click', simulateUpdate);
+    $('resetLogBtn').addEventListener('click', function () { initLog(); logToast('Simulasi diulang dari awal'); });
+    $('medList').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-med]');
+      if (!b) return;
+      var i = parseInt(b.getAttribute('data-med'), 10);
+      meds[i].done = !meds[i].done;
+      renderMeds();
+      logToast(meds[i].done ? meds[i].nama + ' ditandai sudah diminum' : 'Tanda obat dibatalkan');
+    });
+
+    function tickClock() {
+      var d = new Date();
+      $('phoneClock').textContent = String(d.getHours()).padStart(2, '0') + '.' + String(d.getMinutes()).padStart(2, '0');
+      $('logDate').textContent = d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) + ' • Diperbarui real-time';
+    }
+
+    /* ============================================================
+       INIT
+    ============================================================ */
+    renderCatalog();
+    initLog();
+    tickClock();
+    setInterval(tickClock, 30000);
+  })();
+  </script>
+</body>
+</html>
