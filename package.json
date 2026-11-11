@@ -1,0 +1,15 @@
+{
+  "name": "temanlansia",
+  "version": "1.0.0",
+  "description": "",
+  "main": "run_all_tests.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.119.0"
+  }
+}

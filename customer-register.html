@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Registrasi Customer — TemanLansia</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{burgundy:{950:'#4a1019',900:'#641522',800:'#7a1f2b',700:'#8b1a2d'},cream:{50:'#fffdf9',100:'#fbf8f5',200:'#f5efe8',300:'#e8ded2'},gold:{500:'#c9a227',600:'#a98313'}}}}}</script>
+  <style>
+    :root{--burgundy:#641522;--cream:#fbf8f5;--gold:#c9a227;--line:#e8ded2}body{margin:0;background:var(--cream);color:#301c20;font:14px/1.5 Inter,system-ui,sans-serif}.auth-card{background:#fff;border:1px solid var(--line);border-top:5px solid var(--burgundy);border-radius:24px;box-shadow:0 12px 32px #4a101912}.input-field{width:100%;background:#fbf8f5;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-weight:600}.input-field:focus{outline:none;border-color:var(--burgundy)}.btn-primary{width:100%;background:var(--burgundy);color:#fff;border-radius:12px;padding:13px;font-weight:700;border:0;cursor:pointer}.btn-primary:hover{background:#7a1f2b}
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+  <header class="border-b border-cream-300 bg-cream-50/95 py-4"><div class="max-w-4xl mx-auto px-5 flex justify-between items-center"><a href="index.html" class="font-serif text-2xl font-bold text-burgundy-950">TemanLansia</a><a href="index.html" class="text-xs font-bold text-burgundy-900">Kembali</a></div></header>
+  <main class="flex-1 flex items-center justify-center p-5">
+    <div class="auth-card max-w-lg w-full p-8">
+      <p class="font-mono text-[10px] tracking-widest text-gold-600 font-bold uppercase">PENDAFTARAN KELUARGA</p>
+      <h1 class="font-serif text-3xl font-bold text-burgundy-950 mt-1">Daftar Akun Customer</h1>
+      <p class="text-xs text-stone-600 mt-1">Daftarkan akun keluarga untuk mengelola pendampingan lansia.</p>
+      <div id="authAlert" class="hidden mt-4 p-3 rounded-xl text-xs font-bold" role="alert"></div>
+      <form id="customerRegisterForm" class="space-y-4 mt-6">
+        <div><label for="regFullName" class="block text-xs font-bold text-burgundy-950 mb-1">Nama Lengkap</label><input id="regFullName" type="text" autocomplete="name" required class="input-field"></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div><label for="regEmail" class="block text-xs font-bold text-burgundy-950 mb-1">Email</label><input id="regEmail" type="email" autocomplete="email" required class="input-field"></div>
+          <div><label for="regPhone" class="block text-xs font-bold text-burgundy-950 mb-1">Nomor WhatsApp</label><input id="regPhone" type="tel" autocomplete="tel" placeholder="08xxxxxxxxxx" required class="input-field"></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div><label for="regEmergencyName" class="block text-xs font-bold text-burgundy-950 mb-1">Nama Kontak Darurat</label><input id="regEmergencyName" type="text" autocomplete="name" required class="input-field"></div>
+          <div><label for="regEmergencyPhone" class="block text-xs font-bold text-burgundy-950 mb-1">Nomor Kontak Darurat</label><input id="regEmergencyPhone" type="tel" autocomplete="tel" required class="input-field"></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div><label for="regPassword" class="block text-xs font-bold text-burgundy-950 mb-1">Password</label><input id="regPassword" type="password" minlength="6" autocomplete="new-password" required class="input-field"></div>
+          <div><label for="regPasswordConfirm" class="block text-xs font-bold text-burgundy-950 mb-1">Konfirmasi Password</label><input id="regPasswordConfirm" type="password" minlength="6" autocomplete="new-password" required class="input-field"></div>
+        </div>
+        <button id="registerSubmitBtn" type="submit" class="btn-primary">Daftar Akun</button>
+      </form>
+      <div class="border-t border-cream-300 mt-6 pt-5 text-center text-xs text-stone-600"><p>Sudah punya akun? <a href="login.html" class="font-bold text-burgundy-900 hover:underline">Masuk di sini</a></p></div>
+    </div>
+  </main>
+  <footer class="py-4 text-center text-xs text-stone-500 border-t border-cream-300">&copy; 2026 TemanLansia. Registrasi Customer.</footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase-config.local.js"></script><script src="js/supabase-client.js"></script>
+  <script>
+    const form = document.getElementById('customerRegisterForm');
+    const alertBox = document.getElementById('authAlert');
+    function setAlert(msg, ok = false) {
+      alertBox.textContent = msg;
+      alertBox.className = `mt-4 p-3 rounded-xl text-xs font-bold ${ok ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-red-50 text-red-800 border border-red-200'}`;
+      alertBox.classList.remove('hidden');
+    }
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      alertBox.classList.add('hidden');
+      const fullName = document.getElementById('regFullName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const emergencyName = document.getElementById('regEmergencyName').value.trim();
+      const emergencyPhone = document.getElementById('regEmergencyPhone').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const confirm = document.getElementById('regPasswordConfirm').value;
+      if (password !== confirm) return setAlert('Konfirmasi password tidak cocok.');
+      try {
+        await window.TemanLansiaSupabase.signUpCustomer({ email, password, fullName, phone, emergencyName, emergencyPhone });
+        setAlert('Pendaftaran berhasil dikirim. Periksa email jika konfirmasi diaktifkan, atau langsung login.', true);
+        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+      } catch (err) {
+        setAlert(err.message || 'Pendaftaran customer gagal.');
+      }
+    });
+  </script>
+</body>
+</html>
