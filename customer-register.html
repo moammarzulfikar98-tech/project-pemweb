@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Registrasi Customer — TemanLansia</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{burgundy:{950:'#4a1019',900:'#641522',800:'#7a1f2b',700:'#8b1a2d'},cream:{50:'#fffdf9',100:'#fbf8f5',200:'#f5efe8',300:'#e8ded2'},gold:{500:'#c9a227',600:'#a98313'}}}}}</script>
+  <style>
+    :root {
+      --burgundy: #641522;
+      --cream: #fbf8f5;
+      --gold: #c9a227;
+      --line: #e8ded2;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: var(--cream);
+      color: #301c20;
+      font: 14px/1.5 Inter, system-ui, sans-serif;
+    }
+    .auth-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-top: 5px solid var(--burgundy);
+      border-radius: 20px;
+      box-shadow: 0 12px 32px #4a101912;
+      width: min(100%, 540px);
+      box-sizing: border-box;
+      padding: clamp(20px, 4.5vw, 32px);
+    }
+    .input-field {
+      width: 100%;
+      background: #fbf8f5;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-weight: 600;
+      font-size: 16px;
+      min-height: 48px;
+      box-sizing: border-box;
+    }
+    .input-field:focus {
+      outline: 3px solid #c9a22766;
+      border-color: var(--burgundy);
+    }
+    .input-wrapper {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+    .input-wrapper .input-field {
+      padding-right: 44px;
+    }
+    .toggle-pwd {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+      color: #76686a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      min-height: 36px;
+      min-width: 36px;
+    }
+    .toggle-pwd:hover {
+      color: var(--burgundy);
+    }
+    .toggle-pwd svg {
+      width: 18px;
+      height: 18px;
+    }
+    .btn-primary {
+      width: 100%;
+      background: var(--burgundy);
+      color: #fff;
+      border-radius: 10px;
+      padding: 13px;
+      font-weight: 700;
+      font-size: 14px;
+      min-height: 48px;
+      border: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease;
+    }
+    .btn-primary:hover {
+      background: #7a1f2b;
+    }
+    @media (max-width: 640px) {
+      .auth-card {
+        padding: 20px 16px !important;
+        border-radius: 16px;
+      }
+      .input-field {
+        min-height: 46px;
+        padding: 10px 12px;
+      }
+      .btn-primary {
+        min-height: 46px;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+  <header class="border-b border-cream-300 bg-cream-50/95 py-3.5 sm:py-4">
+    <div class="max-w-4xl mx-auto px-4 sm:px-5 flex justify-between items-center">
+      <a href="index.html" class="font-serif text-xl sm:text-2xl font-bold text-burgundy-950">TemanLansia</a>
+      <a href="index.html" class="text-xs font-bold text-burgundy-900 hover:underline min-h-[44px] flex items-center px-2">Kembali</a>
+    </div>
+  </header>
+  <main class="flex-1 flex items-center justify-center p-3 sm:p-6 my-auto">
+    <div class="auth-card max-w-lg w-full">
+      <p class="font-mono text-[10px] tracking-widest text-gold-600 font-bold uppercase mb-1">PENDAFTARAN KELUARGA</p>
+      <h1 class="font-serif text-2xl sm:text-3xl font-bold text-burgundy-950 mt-1 leading-tight">Daftar Akun Customer</h1>
+      <p class="text-xs text-stone-600 mt-1">Daftarkan akun keluarga untuk mengelola pendampingan lansia.</p>
+      <div id="authAlert" class="hidden mt-4 p-3 rounded-xl text-xs font-bold" role="alert"></div>
+      <form id="customerRegisterForm" class="space-y-4 mt-6">
+        <div>
+          <label for="regFullName" class="block text-xs font-bold text-burgundy-950 mb-1">Nama Lengkap</label>
+          <input id="regFullName" type="text" autocomplete="name" placeholder="Nama lengkap Anda" required class="input-field">
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div>
+            <label for="regEmail" class="block text-xs font-bold text-burgundy-950 mb-1">Email</label>
+            <input id="regEmail" type="email" autocomplete="email" placeholder="nama@email.com" required class="input-field">
+          </div>
+          <div>
+            <label for="regPhone" class="block text-xs font-bold text-burgundy-950 mb-1">Nomor WhatsApp</label>
+            <input id="regPhone" type="tel" autocomplete="tel" placeholder="08xxxxxxxxxx" required class="input-field">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div>
+            <label for="regEmergencyName" class="block text-xs font-bold text-burgundy-950 mb-1">Nama Kontak Darurat</label>
+            <input id="regEmergencyName" type="text" autocomplete="name" placeholder="Nama keluarga darurat" required class="input-field">
+          </div>
+          <div>
+            <label for="regEmergencyPhone" class="block text-xs font-bold text-burgundy-950 mb-1">Nomor Kontak Darurat</label>
+            <input id="regEmergencyPhone" type="tel" autocomplete="tel" placeholder="08xxxxxxxxxx" required class="input-field">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div>
+            <label for="regPassword" class="block text-xs font-bold text-burgundy-950 mb-1">Password</label>
+            <div class="input-wrapper">
+              <input id="regPassword" type="password" minlength="6" autocomplete="new-password" placeholder="Min. 6 karakter" required class="input-field">
+              <button type="button" class="toggle-pwd" onclick="togglePasswordVisibility('regPassword', this)" aria-label="Lihat password">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <label for="regPasswordConfirm" class="block text-xs font-bold text-burgundy-950 mb-1">Konfirmasi Password</label>
+            <div class="input-wrapper">
+              <input id="regPasswordConfirm" type="password" minlength="6" autocomplete="new-password" placeholder="Ketik ulang password" required class="input-field">
+              <button type="button" class="toggle-pwd" onclick="togglePasswordVisibility('regPasswordConfirm', this)" aria-label="Lihat konfirmasi password">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <button id="registerSubmitBtn" type="submit" class="btn-primary">Daftar Akun</button>
+      </form>
+      <div class="border-t border-cream-300 mt-6 pt-4 text-center text-xs text-stone-600">
+        <p>Sudah punya akun? <a href="login.html" class="font-bold text-burgundy-900 hover:underline min-h-[44px] inline-flex items-center px-1">Masuk di sini</a></p>
+      </div>
+    </div>
+  </main>
+  <footer class="py-4 text-center text-xs text-stone-500 border-t border-cream-300">&copy; 2026 TemanLansia. Registrasi Customer.</footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.local.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script>
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const isText = input.type === 'text';
+      input.type = isText ? 'password' : 'text';
+      const svg = btn.querySelector('svg');
+      if (svg) {
+        svg.innerHTML = isText 
+          ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>'
+          : '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+      }
+    }
+
+    const form = document.getElementById('customerRegisterForm');
+    const alertBox = document.getElementById('authAlert');
+    function setAlert(msg, ok = false) {
+      alertBox.textContent = msg;
+      alertBox.className = `mt-4 p-3 rounded-xl text-xs font-bold ${ok ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-red-50 text-red-800 border border-red-200'}`;
+      alertBox.classList.remove('hidden');
+    }
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      alertBox.classList.add('hidden');
+      const fullName = document.getElementById('regFullName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const emergencyName = document.getElementById('regEmergencyName').value.trim();
+      const emergencyPhone = document.getElementById('regEmergencyPhone').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const confirm = document.getElementById('regPasswordConfirm').value;
+      if (password !== confirm) return setAlert('Konfirmasi password tidak cocok.');
+      try {
+        await window.TemanLansiaSupabase.signUpCustomer({ email, password, fullName, phone, emergencyName, emergencyPhone });
+        setAlert('Pendaftaran berhasil dikirim. Periksa email jika konfirmasi diaktifkan, atau langsung login.', true);
+        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+      } catch (err) {
+        setAlert(err.message || 'Pendaftaran customer gagal.');
+      }
+    });
+  </script>
+</body>
+</html>
