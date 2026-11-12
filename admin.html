@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>TemanLansia | Admin Dashboard</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root{--wine:#800020;--wine2:#590019;--gold:#c99848;--cream:#faf6ef;--paper:#fffefa;--ink:#30272a;--muted:#786f71;--line:#eae0da;--green:#22785b;--red:#b83e4b;--shadow:0 8px 30px rgba(76,28,34,.045)}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:13px}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5} .app{display:flex;min-height:100vh}.side{width:252px;position:fixed;inset:0 auto 0 0;background:var(--wine2);color:#fff;display:flex;flex-direction:column;z-index:20}.brand{padding:26px 23px 23px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #ffffff1b}.brandmark{height:42px;width:42px;display:grid;place-items:center;border:1px solid #e1bd7e;background:#a3763b24;border-radius:13px;color:#e8c78d;font-weight:800;font-size:17px}.brand strong{display:block;font-size:17px;letter-spacing:-.6px}.brand small{display:block;color:#e2c2a0;font-size:10px;letter-spacing:1.8px;margin-top:3px}.nav{padding:20px 12px;overflow-y:auto;flex:1}.navlabel{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:#d9a6b2;margin:14px 13px 9px;font-weight:800}.nav button{display:flex;align-items:center;gap:11px;width:100%;border:0;color:#f1dfe3;background:transparent;padding:12px 13px;border-radius:10px;text-align:left;font-weight:600;margin:2px 0}.nav button:hover,.nav button.active{background:#ffffff16;color:#fff}.nav button.active{box-shadow:inset 3px 0 var(--gold)}.nav button svg{width:17px;height:17px}.sidefoot{padding:17px 19px;border-top:1px solid #ffffff21;display:flex;align-items:center;gap:10px}.avatar{background:#e8c990;color:var(--wine2);border-radius:12px;width:37px;height:37px;display:grid;place-items:center;font-weight:800}.sidefoot .name{flex:1;min-width:0}.sidefoot strong{display:block;font-size:12px}.sidefoot small{color:#dfb9c1;font-size:10px}.sidefoot button{background:none;border:0;color:white;cursor:pointer;padding:6px;border-radius:8px;display:grid;place-items:center;margin-left:auto;transition:all .18s ease}.sidefoot button:hover{background:rgba(255,255,255,0.14);color:#ffccd5;transform:translateX(2px)}.sidefoot button:active{transform:translateX(0) scale(0.95)}.main{margin-left:252px;min-width:0;flex:1}.top{height:76px;background:#fffefa;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 35px;gap:18px}.crumb{color:var(--muted);font-size:12px}.crumb strong{color:var(--wine)}.topright{display:flex;align-items:center;gap:15px}.env{display:inline-flex;align-items:center;gap:7px;color:#8c5c23;background:#f9eedc;border:1px solid #eedab8;border-radius:30px;padding:8px 11px;font-weight:700;font-size:10px}.dot{height:7px;width:7px;background:#c68a35;border-radius:50%}.date{color:var(--muted);font-size:11px}.content{max-width:1500px;margin:auto;padding:32px 36px 60px}.eyebrow{font-size:11px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--wine);margin:0 0 8px}.heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:25px}.heading h1{font-size:27px;letter-spacing:-1.1px;margin:0 0 7px}.heading p{margin:0;color:var(--muted);line-height:1.7}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;padding:11px 15px;border:1px solid var(--line);background:white;color:var(--ink);font-weight:700;font-size:12px}.btn svg{width:15px;height:15px}.btn.primary{background:var(--wine);border-color:var(--wine);color:white}.btn.primary:hover{background:var(--wine2)}.btn.ghost{background:#fff}.btn.small{padding:8px 10px;font-size:11px}.btn.warn{border-color:#f1d1d4;color:var(--red);background:#fff8f8}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.metric,.panel{background:var(--paper);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow)}.metric{padding:20px}.metric .label{color:var(--muted);font-weight:700;font-size:11px}.metric .value{font-size:27px;font-weight:800;letter-spacing:-1.1px;margin:10px 0 8px}.metric .sub{font-size:10px;color:var(--muted)}.metric .ico{float:right;color:var(--wine);background:#f8eaf0;padding:9px;border-radius:11px}.metric .ico svg{width:17px;height:17px}.columns{display:grid;grid-template-columns:1.65fr 1fr;gap:17px;margin-top:18px}.panel{padding:22px}.panel h2{font-size:15px;margin:0;letter-spacing:-.3px}.panel .hint{color:var(--muted);font-size:11px;margin:6px 0 0}.panelhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px}.mini-bars{height:210px;display:flex;align-items:end;gap:14px;padding:16px 5px 5px;border-bottom:1px solid var(--line)}.barwrap{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:9px}.bar{width:100%;max-width:40px;border-radius:7px 7px 0 0;background:linear-gradient(0deg,var(--wine),#c47d90);min-height:5px}.barwrap span{font-size:10px;color:var(--muted)}.empty{border:1px dashed #decfc9;border-radius:12px;padding:25px;color:var(--muted);text-align:center;line-height:1.8}.empty svg{display:block;margin:0 auto 9px;color:#b29c9f}.activity{display:flex;align-items:flex-start;gap:11px;padding:13px 0;border-bottom:1px solid var(--line)}.activity:last-child{border:0}.activity .bullet{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#f5e8e9;color:var(--wine)}.activity .bullet svg{width:15px}.activity strong{font-size:12px}.activity p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.5}.notice{background:#fff8e9;border:1px solid #ead6af;border-radius:13px;padding:14px 17px;display:flex;align-items:center;gap:12px;color:#7a5425;margin-bottom:20px;line-height:1.6}.notice svg{flex:none;width:19px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:17px 0}.search{position:relative;flex:1;min-width:230px}.search svg{position:absolute;left:12px;top:11px;color:#a09293;width:17px}.search input{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 12px 11px 38px;background:white;outline:0}.search input:focus{border-color:#bf8797}.toolbar select,.field input,.field select{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 12px;outline:0}.tablewrap{overflow:auto}.tbl{width:100%;border-collapse:collapse;white-space:nowrap;text-align:left}.tbl th{background:#fbf5ef;color:#786b6d;font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:13px 15px}.tbl td{padding:14px 15px;border-bottom:1px solid #f1eae6;font-size:12px}.tbl tr:last-child td{border-bottom:0}.pill{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:5px 9px;font-size:10px;font-weight:800;background:#f2eaf0;color:var(--wine)}.pill.green{background:#e8f5ed;color:#267251}.pill.amber{background:#fff3db;color:#956423}.pill.gray{background:#f0efef;color:#6d6767}.muted{color:var(--muted)}.section{display:none}.section.active{display:block}.cards2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.feature{display:flex;gap:13px;padding:18px;border:1px solid var(--line);border-radius:13px;background:white}.feature svg{color:var(--wine);flex:none}.feature strong{font-size:13px}.feature p{font-size:11px;color:var(--muted);line-height:1.7;margin:5px 0 0}.callout{margin-top:18px;border-left:3px solid var(--gold);background:#fff9ec;padding:15px 17px;line-height:1.7;color:#6e5b44}.modalback{position:fixed;inset:0;background:#24141888;z-index:60;display:none;align-items:center;justify-content:center;padding:20px}.modalback.show{display:flex}.modal{background:white;border-radius:18px;width:min(100%,500px);padding:25px;box-shadow:0 30px 80px #1d071b44}.modal h2{margin:0 0 8px}.modal p{color:var(--muted);line-height:1.7}.field{display:flex;flex-direction:column;gap:6px;margin:14px 0}.field label{font-weight:700;font-size:11px}.modalactions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}.toast{position:fixed;bottom:20px;right:22px;z-index:80;background:#30272a;color:white;border-radius:10px;padding:13px 18px;box-shadow:var(--shadow);display:none;max-width:370px;line-height:1.6}.toast.show{display:block}.mobiletoggle{display:none}.smallnote{font-size:11px;color:var(--muted);line-height:1.7}.danger{color:var(--red)}@media(max-width:1050px){.grid4{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:repeat(2,1fr)}.columns{grid-template-columns:1fr}.cards2{grid-template-columns:1fr}}@media(max-width:760px){.side{transform:translateX(-100%);transition:transform .2s}.side.open{transform:translateX(0)}.main{margin-left:0}.mobiletoggle{display:inline-flex}.top{padding:0 16px}.date{display:none}.content{padding:24px 16px}.heading{align-items:flex-start;flex-direction:column}.grid4{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.grid3{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.metric{padding:15px}.metric .value{font-size:23px}}@media(max-width:420px){.grid4{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.env{font-size:9px}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script><style>
+/* Dashboard visual update — line chart and regional language panel */
+.hero-sos{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 22px;border-radius:15px;background:linear-gradient(105deg,#a81736,#800020);color:white;margin-bottom:20px;box-shadow:0 8px 20px #8000201b}
+.hero-sos .sos-icon{display:grid;place-items:center;width:43px;height:43px;border-radius:12px;background:#ffffff20;flex:none}
+.hero-sos .sos-icon svg{width:22px;height:22px}.hero-sos .sos-title{font-size:15px;font-weight:800;margin:3px 0}.hero-sos .sos-sub{font-size:11px;color:#ffe9ed;line-height:1.5}.hero-sos .sos-kicker{font-size:10px;font-weight:800;letter-spacing:.5px;color:#ffdfb1}
+.hero-sos .sos-copy{display:flex;gap:14px;align-items:center}.hero-sos .sos-note{font-size:11px;line-height:1.5;background:#ffffff1c;padding:9px 12px;border-radius:10px}
+.metric .value{color:var(--wine)}.metric .sub{color:var(--muted)}
+.trend-layout{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(260px,.9fr);gap:18px;margin-top:19px}.trend-chart{height:270px;position:relative}.trend-chart canvas{width:100%!important;height:100%!important}
+.language-row{margin:19px 0}.language-top{display:flex;justify-content:space-between;gap:12px;font-size:11px;font-weight:750;color:var(--wine)}.language-top span:last-child{color:var(--muted);font-weight:650}.language-track{height:8px;background:#f0e9dd;border-radius:30px;overflow:hidden;margin-top:9px}.language-fill{height:100%;border-radius:30px;background:var(--wine)}.language-fill.gold{background:#d3a045}.language-fill.orange{background:#d78d27}.lang-note{margin-top:28px;background:#fcf4e7;border:1px solid #f1e6d1;padding:13px;border-radius:11px;color:#805b37;font-size:11px;line-height:1.7}
+@media(max-width:1080px){.trend-layout{grid-template-columns:1fr}}@media(max-width:760px){.hero-sos{flex-direction:column;align-items:flex-start}.trend-chart{height:230px}}
+/* Layout stabilization & sidebar-header fixes */
+.hidden{display:none!important}
+.main{margin-left:252px!important;width:calc(100% - 252px)!important;min-width:0;flex:1}
+.top{height:76px;background:#fffefa;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:20}
+.side{width:252px;position:fixed;inset:0 auto 0 0;background:var(--wine2);color:#fff;display:flex;flex-direction:column;z-index:30}
+.side-bottom{padding:6px 12px;background:var(--wine2)}
+.side-divider{height:1px;background:#ffffff1b;margin:0 4px 8px}
+.nav-home-link{display:flex;align-items:center;gap:11px;width:100%;color:#f1dfe3;text-decoration:none;padding:12px 13px;border-radius:10px;font-weight:600;font-size:13px;transition:all .18s ease;cursor:pointer;box-sizing:border-box}
+.nav-home-link:hover{background:#ffffff16;color:#fff;transform:translateX(3px)}
+.nav-home-link i,.nav-home-link svg{width:17px;height:17px;color:#e8c78d;transition:transform .18s ease}
+.nav-home-link:hover i,.nav-home-link:hover svg{color:#fff;transform:scale(1.12)}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:25;backdrop-filter:blur(3px);transition:opacity .2s ease}
+.sidebar-backdrop.active{display:block}
+.side-close-btn{display:none;background:none;border:none;color:#f1dfe3;cursor:pointer;padding:6px;border-radius:8px;align-items:center;justify-content:center;margin-left:auto}
+.side-close-btn:hover{background:rgba(255,255,255,0.15);color:#fff}
+.side-close-btn svg{width:18px;height:18px}
+
+/* Responsive Breakpoints: Tablet (<=1024px) & Mobile (<=768px, <=480px) */
+@media(max-width:1024px){
+  .main{margin-left:0!important;width:100%!important}
+  .side{transform:translateX(-100%);transition:transform .25s ease;width:252px;max-width:85vw;box-shadow:4px 0 24px rgba(0,0,0,0.25)}
+  .side.open{transform:translateX(0)}
+  .mobiletoggle{display:inline-flex!important}
+  .side-close-btn{display:inline-flex!important}
+  .top{padding:0 16px}
+  .date{display:none}
+  .content{padding:20px 16px}
+  .grid4{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px}
+  .grid3{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px}
+  .trend-layout{grid-template-columns:1fr!important}
+}
+
+@media(max-width:540px){
+  .grid4{grid-template-columns:1fr!important;gap:10px}
+  .grid3{grid-template-columns:1fr!important;gap:10px}
+  .heading{flex-direction:column;align-items:flex-start;gap:8px}
+  .heading h1{font-size:22px}
+  .hero-sos{padding:14px 16px;flex-direction:column;align-items:flex-start;gap:12px}
+  .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%}
+  .modal{width:min(94vw,540px)!important}
+}
+    .logout-modal-backdrop{position:fixed;inset:0;background:rgba(26,26,26,0.6);backdrop-filter:blur(3px);display:none;place-items:center;z-index:9999;padding:16px;opacity:0;transition:opacity .2s ease}
+    .logout-modal-backdrop.open{display:grid;opacity:1}
+    .logout-modal-card{background:#fff;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,0.2),0 1px 3px rgba(0,0,0,0.1);width:100%;max-width:380px;padding:28px 24px 22px;text-align:center;position:relative;transform:scale(0.95);transition:transform .2s ease;box-sizing:border-box}
+    .logout-modal-backdrop.open .logout-modal-card{transform:scale(1)}
+    .logout-modal-close{position:absolute;top:16px;right:16px;background:none;border:0;color:var(--muted);font-size:22px;line-height:1;cursor:pointer;padding:4px;border-radius:6px}
+    .logout-modal-close:hover{color:var(--wine);background:var(--cream)}
+    .logout-icon-wrap{width:56px;height:56px;border-radius:50%;background:#fcf3e8;color:var(--wine);display:grid;place-items:center;margin:0 auto 16px;border:1px solid #fae2c8}
+    .logout-icon-wrap svg{width:26px;height:26px}
+    .logout-modal-card h3{margin:0 0 8px;font:700 20px Georgia,serif;color:var(--wine)}
+    .logout-modal-card p{margin:0 0 24px;font-size:13.5px;line-height:1.5;color:var(--muted)}
+    .logout-modal-actions{display:flex;gap:10px;justify-content:center}
+    .logout-modal-actions .btn{flex:1;height:42px;display:flex;align-items:center;justify-content:center;border-radius:10px;font-size:13px;font-weight:700;transition:all .15s ease}
+    .btn-logout-cancel{background:var(--cream);color:var(--wine);border:1px solid #eedcd1}
+    .btn-logout-cancel:hover{background:#f3eae0;border-color:#e0ccbf}
+    .btn-logout-confirm{background:var(--wine);color:#fff;border:1px solid var(--wine)}
+    .btn-logout-confirm:hover{background:var(--wine2);border-color:var(--wine2);outline:2px solid var(--gold);outline-offset:1px}
+    .btn-logout-confirm:disabled,.btn-logout-cancel:disabled{opacity:.6;cursor:not-allowed}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.local.js"></script>
+<script src="js/supabase-client.js"></script>
+</head>
+<body>
+<div id="deniedScreen" class="denied-screen hidden">
+  <div class="denied-card">
+    <div class="denied-icon"><i data-lucide="shield-alert"></i></div>
+    <h2>Akses Ditolak</h2>
+    <p id="deniedMsg">Sesi harus memiliki role admin pada database.</p>
+    <div class="denied-actions">
+      <a href="login.html?returnUrl=admin.html" class="btn primary"><i data-lucide="log-in"></i> Masuk ke Akun Admin</a>
+      <a href="index.html" class="btn"><i data-lucide="arrow-left"></i> Kembali ke Beranda</a>
+      <a href="admin.html?preview=1" class="btn small" style="opacity:0.8;margin-top:6px"><i data-lucide="eye"></i> Pratinjau Desain (Bypass UI Review)</a>
+    </div>
+  </div>
+</div>
+<div class="app" id="adminApp">
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+<aside class="side" id="sidebar">
+<div class="brand"><div class="brandmark">TL</div><div style="flex:1"><strong>TemanLansia</strong><small>ADMIN WORKSPACE</small></div><button class="side-close-btn" id="sideCloseBtn" onclick="closeSidebar()" aria-label="Tutup menu"><i data-lucide="x"></i></button></div>
+<nav aria-label="Navigasi admin" class="nav">
+<div class="navlabel">Ringkasan</div>
+<button class="active" data-page="dashboard"><i data-lucide="layout-dashboard"></i>Dashboard Utama</button>
+<button data-page="monitor"><i data-lucide="activity"></i>Monitoring Layanan</button>
+<div class="navlabel">Operasional</div>
+<button data-page="caregivers"><i data-lucide="heart-handshake"></i>Data Caregiver</button>
+<button data-page="customers"><i data-lucide="users"></i>Data Customer</button>
+<button data-page="bookings"><i data-lucide="calendar-check"></i>Kelola Pesanan</button>
+<div class="navlabel">Administrasi</div>
+<button data-page="payments"><i data-lucide="wallet"></i>Keuangan &amp; QRIS</button>
+<button data-page="audit"><i data-lucide="history"></i>Riwayat Aktivitas</button>
+</nav>
+<div class="side-bottom">
+  <div class="side-divider"></div>
+  <a href="index.html" class="nav-home-link" id="adminHomeLink" title="Kembali ke Beranda TemanLansia">
+    <i data-lucide="home"></i>
+    <span>Beranda TemanLansia</span>
+  </a>
+</div>
+<div class="sidefoot"><div class="avatar">AD</div><div class="name"><strong>Administrator</strong><small>Identitas dari sesi login</small></div><button id="logout" title="Keluar"><i data-lucide="log-out"></i></button></div>
+</aside>
+<div class="main"><header class="top"><div style="display:flex;align-items:center;gap:13px"><button aria-label="Buka menu" class="btn small mobiletoggle" id="menuBtn"><i data-lucide="menu"></i></button><span class="crumb">TemanLansia / <strong id="breadcrumb">Dashboard Utama</strong></span></div><div class="topright"><span class="date" id="today"></span></div></header>
+<main class="content">
+<div class="notice" id="previewNotice"><i data-lucide="info"></i><div><strong>Pratinjau antarmuka.</strong> Data di halaman ini adalah contoh, bukan data Supabase. Aksi sensitif dinonaktifkan sampai autentikasi, otorisasi, dan backend admin diintegrasikan.</div></div>
+<section class="section active" id="page-dashboard">
+<div class="heading"><div><p class="eyebrow">Overview / Operasional</p><h1>Dashboard Utama</h1><p>Pusat kendali operasional dan layanan TemanLansia.</p></div><span class="pill green" id="dashStatusPill">SUPABASE READ-ONLY</span></div>
+<div class="hero-sos"><div class="sos-copy"><div class="sos-icon"><i data-lucide="siren"></i></div><div><div class="sos-kicker">PUSAT MONITORING DARURAT · SUPABASE READ-ONLY</div><div class="sos-title" id="sosBannerTitle">Memeriksa status panggilan SOS…</div><div class="sos-sub" id="sosBannerSub">Data SOS aktual dibaca dari tabel <code>sos_events</code>.</div></div></div><div class="sos-note" id="sosBannerNote">Memuat data darurat…</div></div>
+<div class="grid3">
+<div class="metric"><span class="ico"><i data-lucide="user-round-check"></i></span><div class="label">Caregiver Aktif</div><div class="value" id="metricCgActive">—</div><div class="sub" id="metricCgSub">Memuat data Supabase…</div></div>
+<div class="metric"><span class="ico"><i data-lucide="heart-pulse"></i></span><div class="label">Sesi Hari Ini</div><div class="value" id="metricSessionsToday">—</div><div class="sub" id="metricSessionsSub">Jadwal Asia/Jakarta</div></div>
+
+<div class="metric"><span class="ico"><i data-lucide="qr-code"></i></span><div class="label">Pembayaran QRIS</div><div class="value" id="metricQrisPaid">—</div><div class="sub" id="metricQrisSub">Status paid_demo (simulasi)</div></div>
+</div>
+<div class="trend-layout">
+<div class="panel"><div class="panelhead"><div><h2>Statistik Pemesanan Pendamping</h2><p class="hint" id="trendHint">Tren harian pemesanan caregiver aktual</p></div><span class="pill green" id="trendPill">DATA AKTUAL</span></div><div class="trend-chart"><canvas aria-label="Grafik tren pemesanan aktual" id="bookingLineChart" role="img"></canvas></div><p class="smallnote" id="trendNote" style="margin:12px 0 0">Memuat data pemesanan riil dari Supabase…</p></div>
+<div class="panel"><div class="panelhead"><div><h2>Bahasa Daerah Caregiver</h2><p class="hint">Preferensi komunikasi lansia</p></div><span class="pill gray">BELUM ADA SKEMA</span></div>
+<div id="regionalLanguageWrap">
+<div class="empty" style="padding:48px 16px"><i data-lucide="info"></i><div><strong style="color:var(--wine);font-size:14px;display:block;margin-bottom:6px">Data belum tersedia</strong><p class="muted" style="line-height:1.6;font-size:12px;max-width:320px;margin:0 auto">Skema database Supabase saat ini belum memiliki tabel atau agregat preferensi bahasa daerah lansia. Tidak ada data dummy yang ditampilkan.</p></div></div>
+</div>
+</div></div>
+</section>
+<section class="section" id="page-monitor"><div class="heading"><div><p class="eyebrow">Pemantauan</p><h1>Monitoring Layanan</h1><p>Perkembangan booking, sesi caregiver, live report, dan sinyal SOS.</p></div><span class="pill green">READ-ONLY</span></div><div class="grid4"><div class="metric"><div class="label">Menunggu Pembayaran</div><div class="value" id="monUnpaid">—</div><div class="sub">booking pending</div></div><div class="metric"><div class="label">Terkonfirmasi</div><div class="value" id="monConfirmed">—</div><div class="sub">booking confirmed</div></div><div class="metric"><div class="label">Sedang Berlangsung</div><div class="value" id="monInProgress">—</div><div class="sub">booking in_progress</div></div><div class="metric"><div class="label">Selesai</div><div class="value" id="monCompleted">—</div><div class="sub">booking completed</div></div></div><div class="columns"><div class="panel"><div class="panelhead"><h2>Live Report Caregiver</h2><span class="pill green">live_reports</span></div><div id="liveReportWrap"><div class="empty"><i data-lucide="clipboard-list"></i>Memuat data live reports…</div></div></div><div class="panel"><div class="panelhead"><h2>Permintaan SOS</h2><span class="pill green">sos_events</span></div><div id="sosEventWrap"><div class="empty"><i data-lucide="siren"></i>Memuat sinyal SOS…</div></div></div></div></section>
+<section class="section" id="page-caregivers"><div class="heading"><div><p class="eyebrow">Operasional / SDM</p><h1>Data Caregiver</h1><p>Daftar profil caregiver resmi dari tabel <code>caregivers</code>.</p></div><button class="btn primary" onclick="openModal()"><i data-lucide="user-plus"></i> Tambah Caregiver</button></div><div class="panel"><div class="panelhead"><div><h2>Direktori Caregiver</h2><p class="hint" id="caregiverCountHint">Memuat data dari database…</p></div><span class="pill green">caregivers</span></div><div class="toolbar"><div class="search"><i data-lucide="search"></i><input id="caregiverSearch" placeholder="Cari nama, kota, area, atau keahlian..."/></div><select id="caregiverFilter"><option value="all">Semua status</option><option value="active">Aktif</option><option value="inactive">Nonaktif</option></select></div><div class="tablewrap"><table class="tbl"><thead><tr><th style="width:70px">ID</th><th>Nama</th><th>Keahlian / Wilayah</th><th>Tarif</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="caregiverRows"><tr><td colspan="6" class="muted" style="text-align:center;padding:24px">Memuat data caregiver dari Supabase…</td></tr></tbody></table></div></div></section>
+<section class="section" id="page-customers"><div class="heading"><div><p class="eyebrow">Operasional / Pelanggan</p><h1>Manajemen Customer</h1><p>Daftar customer riil dari tabel <code>customers</code> dan <code>profiles</code>.</p></div><span class="pill green">READ-ONLY</span></div><div class="panel"><div class="panelhead"><div><h2>Daftar Customer</h2><p class="hint" id="customerCountHint">Memuat data customer…</p></div><span class="pill green">customers</span></div><div class="toolbar"><div class="search"><i data-lucide="search"></i><input id="customerSearch" placeholder="Cari ID, nama, atau kontak darurat…"/></div></div><div class="tablewrap"><table class="tbl" style="min-width:760px"><thead><tr><th style="width:130px">Customer ID</th><th style="min-width:170px">Customer Name</th><th style="min-width:180px">Emergency Contact Name</th><th style="width:180px">Emergency Contact Phone</th><th style="width:130px">Registration Date</th></tr></thead><tbody id="customerRows"><tr><td colspan="5" class="muted" style="text-align:center;padding:24px">Memuat data customer dari Supabase…</td></tr></tbody></table></div></div></section>
+<section class="section" id="page-bookings"><div class="heading"><div><p class="eyebrow">Operasional / Pemesanan</p><h1>Kelola Pesanan</h1><p>Pemantauan seluruh pemesanan dari tabel <code>bookings</code>.</p></div><span class="pill green">READ-ONLY</span></div><div class="panel"><div class="panelhead"><div><h2>Daftar Pesanan</h2><p class="hint" id="bookingCountHint">Memuat data pemesanan…</p></div><span class="pill green">bookings</span></div><div class="toolbar"><div class="search"><i data-lucide="search"></i><input id="bookingSearch" placeholder="Cari ID booking / customer…"/></div><select id="bookingFilter"><option value="all">Semua status booking</option><option value="pending">pending</option><option value="confirmed">confirmed</option><option value="in_progress">in_progress</option><option value="completed">completed</option><option value="cancelled">cancelled</option></select></div><div class="tablewrap"><table class="tbl"><thead><tr><th>Booking ID</th><th>Customer</th><th>Caregiver</th><th>Jadwal Layanan</th><th>Total Biaya</th><th>Status</th></tr></thead><tbody id="bookingRows"><tr><td colspan="6" class="muted" style="text-align:center;padding:24px">Memuat data pemesanan dari Supabase…</td></tr></tbody></table></div></div></section>
+<section class="section" id="page-payments"><div class="heading"><div><p class="eyebrow">Administrasi / Keuangan</p><h1>Keuangan &amp; QRIS</h1><p>Monitoring transaksi pembayaran demo dari tabel <code>payments</code>.</p></div><span class="pill green">READ-ONLY</span></div><div class="grid4"><div class="metric"><div class="label">Belum Dibayar</div><div class="value" id="payUnpaid">—</div><div class="sub">status: unpaid</div></div><div class="metric"><div class="label">Dibayar (Demo)</div><div class="value" id="payPaidDemo">—</div><div class="sub">status: paid_demo</div></div><div class="metric"><div class="label">Total Nominal (Demo)</div><div class="value" id="payTotalAmount">—</div><div class="sub">Akumulasi paid_demo</div></div><div class="metric"><div class="label">Pencairan Riil</div><div class="value">N/A</div><div class="sub">Tidak tersedia dalam mode demo</div></div></div><div class="panel" style="margin-top:18px"><div class="panelhead"><div><h2>Daftar Transaksi Pembayaran</h2><p class="hint" id="paymentCountHint">Memuat data transaksi…</p></div><span class="pill amber">SIMULASI DEMO</span></div><div class="tablewrap"><table class="tbl"><thead><tr><th>Payment ID</th><th>Booking ID</th><th>Metode &amp; Provider</th><th>Nominal</th><th>Status</th><th>Tipe Transaksi</th><th>Waktu</th></tr></thead><tbody id="paymentRows"><tr><td colspan="7" class="muted" style="text-align:center;padding:24px">Memuat transaksi payments dari Supabase…</td></tr></tbody></table></div></div></section>
+<section class="section" id="page-audit"><div class="heading"><div><p class="eyebrow">Administrasi / Akuntabilitas</p><h1>Riwayat Aktivitas Pesanan</h1><p>Pencatatan riwayat transisi status pemesanan dari tabel <code>booking_events</code>.</p></div><span class="pill gray">CATATAN PESANAN</span></div><div class="panel"><div class="panelhead"><div><h2>Log Transisi Pesanan</h2><p class="hint" id="auditCountHint">Memuat data log…</p></div><span class="pill green">booking_events</span></div><div class="tablewrap"><table class="tbl"><thead><tr><th>Waktu</th><th>Booking ID</th><th>Dari Status</th><th>Menjadi Status</th><th>Aktor ID</th></tr></thead><tbody id="auditRows"><tr><td colspan="5" class="muted" style="text-align:center;padding:32px">Memuat riwayat booking events dari Supabase…</td></tr></tbody></table></div></div></section>
+</main></div></div>
+<div aria-labelledby="modalTitle" aria-modal="true" class="modalback" id="modalBack" role="dialog">
+  <div class="modal" style="max-width:540px;max-height:90vh;display:flex;flex-direction:column;background:var(--paper);padding:0;overflow:hidden">
+    <div style="padding:24px 26px 16px;border-bottom:1px solid var(--line)">
+      <h2 id="modalTitle" style="margin:0 0 4px;color:var(--wine);font-size:18px">Tambah Caregiver Baru</h2>
+      <p id="modalDesc" style="margin:0;color:var(--muted);font-size:12px">Lengkapi formulir akun login dan profil operasional di bawah ini.</p>
+    </div>
+    <div style="padding:20px 26px;overflow-y:auto;flex:1">
+      <input id="editCaregiverId" type="hidden" value=""/>
+      
+      <!-- Seksi 1: Kredensial Akun Login -->
+      <div style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:14px">
+          <span style="color:var(--wine);font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase"><i data-lucide="key-round" style="width:13px;height:13px;display:inline-block;vertical-align:middle;margin-right:4px"></i> Kredensial Akun Login</span>
+          <span id="accountStatusBadge" class="pill gray">Baru</span>
+        </div>
+        <div class="field" style="margin-bottom:12px">
+          <label for="caregiverEmail">Email Login Caregiver</label>
+          <input autocomplete="off" id="caregiverEmail" placeholder="nama.caregiver@temanlansia.id" type="email"/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="field" style="margin-bottom:0">
+            <label for="caregiverPassword" id="labelPassword">Password Awal *</label>
+            <div style="position:relative">
+              <input autocomplete="new-password" id="caregiverPassword" placeholder="Min. 6 karakter" type="password" style="padding-right:36px;width:100%"/>
+              <button type="button" onclick="togglePasswordVisibility('caregiverPassword', this)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;padding:4px"><i data-lucide="eye" style="width:15px;height:15px"></i></button>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label for="caregiverPasswordConfirm" id="labelPasswordConfirm">Konfirmasi Password *</label>
+            <div style="position:relative">
+              <input autocomplete="new-password" id="caregiverPasswordConfirm" placeholder="Ketik ulang password" type="password" style="padding-right:36px;width:100%"/>
+              <button type="button" onclick="togglePasswordVisibility('caregiverPasswordConfirm', this)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;padding:4px"><i data-lucide="eye" style="width:15px;height:15px"></i></button>
+            </div>
+          </div>
+        </div>
+        <small class="muted" id="authHelpText" style="display:block;margin-top:8px;font-size:11px;line-height:1.4">Akun login Supabase Auth akan dibuat khusus untuk portal caregiver.</small>
+      </div>
+
+      <!-- Seksi 2: Profil Operasional -->
+      <div>
+        <div style="border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:14px">
+          <span style="color:var(--wine);font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase"><i data-lucide="user-check" style="width:13px;height:13px;display:inline-block;vertical-align:middle;margin-right:4px"></i> Profil Operasional</span>
+        </div>
+        <div class="field" style="margin-bottom:12px">
+          <label for="newName">Nama lengkap</label>
+          <input autocomplete="off" id="newName" placeholder="Nama lengkap &amp; gelar caregiver"/>
+        </div>
+        <div class="field" style="margin-bottom:12px">
+          <label for="newRole">Role / Jabatan</label>
+          <input autocomplete="off" id="newRole" placeholder="Contoh: Pendamping Lansia Medis"/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="field" style="margin-bottom:0">
+            <label for="newCategory">Kategori</label>
+            <select id="newCategory">
+              <option value="medis">Medis</option>
+              <option value="non-medis">Non-Medis</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label for="newActive">Status Aktif</label>
+            <select id="newActive">
+              <option value="true">Aktif</option>
+              <option value="false">Nonaktif</option>
+            </select>
+          </div>
+        </div>
+        <p class="smallnote" style="margin-top:14px;background:#f8f5f0;padding:10px 12px;border-radius:8px;color:#7a6b6e">
+          <i data-lucide="info" style="width:13px;height:13px;display:inline-block;vertical-align:middle;margin-right:4px"></i> Kota domisili, area pelayanan, dan tarif per shift dikelola mandiri oleh caregiver melalui menu Profil Saya.
+        </p>
+      </div>
+    </div>
+    <div class="modalactions" style="padding:14px 26px;border-top:1px solid var(--line);background:var(--paper);margin:0;position:sticky;bottom:0">
+      <button class="btn" onclick="closeModal()">Batal</button>
+      <button class="btn primary" id="saveCaregiverBtn" onclick="saveCaregiver()"><i data-lucide="check"></i> Simpan</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<div id="logoutModal" class="logout-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="logoutModalTitle">
+  <div class="logout-modal-card">
+    <button id="closeLogoutModal" class="logout-modal-close" type="button" aria-label="Tutup konfirmasi">&times;</button>
+    <div class="logout-icon-wrap" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+      </svg>
+    </div>
+    <h3 id="logoutModalTitle">Konfirmasi Keluar</h3>
+    <p>Apakah Anda yakin ingin keluar dari portal Admin?</p>
+    <div class="logout-modal-actions">
+      <button id="cancelLogout" class="btn btn-logout-cancel" type="button">Batal</button>
+      <button id="confirmLogout" class="btn btn-logout-confirm" type="button">Ya, Keluar</button>
+    </div>
+  </div>
+</div>
+<script>
+'use strict';
+
+const labels = {
+  dashboard: 'Dashboard Utama',
+  monitor: 'Monitoring Layanan',
+  caregivers: 'Data Caregiver',
+  customers: 'Data Customer',
+  bookings: 'Kelola Pesanan',
+  payments: 'Keuangan & QRIS',
+  audit: 'Riwayat Aktivitas'
+};
+
+let _chartInstance = null;
+let _rawCaregivers = [];
+let _rawCustomers = [];
+let _rawBookings = [];
+let _rawPayments = [];
+let _rawAudit = [];
+
+function iconRefresh() {
+  if (window.lucide) lucide.createIcons();
+}
+
+function esc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[char]));
+}
+
+function money(val) {
+  return 'Rp ' + Number(val || 0).toLocaleString('id-ID');
+}
+
+function formatDate(val) {
+  if (!val) return '—';
+  try {
+    return new Date(val).toLocaleString('id-ID', {
+      timeZone: 'Asia/Jakarta',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch (e) {
+    return String(val);
+  }
+}
+
+function formatDateOnly(val) {
+  if (!val) return '—';
+  try {
+    return new Date(val).toLocaleDateString('id-ID', {
+      timeZone: 'Asia/Jakarta',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  } catch (e) {
+    return String(val);
+  }
+}
+
+function closeSidebar() {
+  const sb = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebarBackdrop');
+  if (sb) sb.classList.remove('open');
+  if (backdrop) backdrop.classList.remove('active');
+}
+
+function switchPage(page) {
+  if (!labels[page]) return;
+  document.querySelectorAll('.section').forEach(el => el.classList.toggle('active', el.id === 'page-' + page));
+  document.querySelectorAll('.nav button[data-page]').forEach(el => el.classList.toggle('active', el.dataset.page === page));
+  const bc = document.getElementById('breadcrumb');
+  if (bc) bc.textContent = labels[page];
+  closeSidebar();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.querySelectorAll('.nav button[data-page]').forEach(el => el.addEventListener('click', () => switchPage(el.dataset.page)));
+const menuBtn = document.getElementById('menuBtn');
+const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+if (menuBtn) {
+  menuBtn.addEventListener('click', () => {
+    const sb = document.getElementById('sidebar');
+    if (sb) {
+      sb.classList.toggle('open');
+      if (sidebarBackdrop) sidebarBackdrop.classList.toggle('active', sb.classList.contains('open'));
+    }
+  });
+}
+if (sidebarBackdrop) {
+  sidebarBackdrop.addEventListener('click', closeSidebar);
+}
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeSidebar();
+    closeModal();
+    closeLogoutModal();
+  }
+});
+
+const todayEl = document.getElementById('today');
+if (todayEl) {
+  todayEl.textContent = new Intl.DateTimeFormat('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }).format(new Date());
+}
+
+let toastTimeout;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.classList.remove('show'), 4800);
+}
+
+function togglePasswordVisibility(fieldId, btnEl) {
+  const input = document.getElementById(fieldId);
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (btnEl) btnEl.innerHTML = '<i data-lucide="eye-off" style="width:15px;height:15px"></i>';
+  } else {
+    input.type = 'password';
+    if (btnEl) btnEl.innerHTML = '<i data-lucide="eye" style="width:15px;height:15px"></i>';
+  }
+  iconRefresh();
+}
+
+function openModal() {
+  const mb = document.getElementById('modalBack');
+  if (mb) mb.classList.add('show');
+  document.getElementById('modalTitle').textContent = 'Tambah Caregiver Baru';
+  document.getElementById('modalDesc').textContent = 'Lengkapi formulir akun login dan profil operasional di bawah ini.';
+  document.getElementById('editCaregiverId').value = '';
+  
+  // Credentials reset
+  document.getElementById('accountStatusBadge').className = 'pill green';
+  document.getElementById('accountStatusBadge').textContent = 'Buat Akun Baru';
+  document.getElementById('caregiverEmail').value = '';
+  document.getElementById('caregiverEmail').disabled = false;
+  document.getElementById('caregiverPassword').value = '';
+  document.getElementById('caregiverPasswordConfirm').value = '';
+  document.getElementById('labelPassword').textContent = 'Password Awal *';
+  document.getElementById('labelPasswordConfirm').textContent = 'Konfirmasi Password *';
+  document.getElementById('authHelpText').textContent = 'Akun login Supabase Auth akan dibuat khusus untuk portal caregiver.';
+
+  // Profile reset
+  document.getElementById('newName').value = '';
+  document.getElementById('newRole').value = '';
+  document.getElementById('newCategory').value = 'medis';
+  document.getElementById('newActive').value = 'true';
+  document.getElementById('newName').focus();
+  iconRefresh();
+}
+
+function openEditCaregiver(id) {
+  const cg = _rawCaregivers.find(c => String(c.id) === String(id));
+  if (!cg) {
+    showToast('Caregiver tidak ditemukan.');
+    return;
+  }
+  const mb = document.getElementById('modalBack');
+  if (mb) mb.classList.add('show');
+  document.getElementById('modalTitle').textContent = 'Edit Profil Caregiver';
+  document.getElementById('modalDesc').textContent = `Memperbarui record CG-${esc(cg.legacy_caregiver_id || String(cg.id).slice(0, 6))} (${esc(cg.name)})`;
+  document.getElementById('editCaregiverId').value = cg.id;
+
+  // Account management
+  const hasAccount = Boolean(cg.user_id);
+  const badge = document.getElementById('accountStatusBadge');
+  const authHelp = document.getElementById('authHelpText');
+  const emailInput = document.getElementById('caregiverEmail');
+
+  if (hasAccount) {
+    badge.className = 'pill green';
+    badge.textContent = 'Akun Terhubung';
+    emailInput.value = cg.email || '';
+    emailInput.placeholder = 'Email akun login caregiver';
+    document.getElementById('labelPassword').textContent = 'Password Baru (Opsional)';
+    document.getElementById('labelPasswordConfirm').textContent = 'Konfirmasi Password Baru';
+    authHelp.textContent = 'Kosongkan kedua field password jika tidak ingin mengganti password login caregiver.';
+  } else {
+    badge.className = 'pill amber';
+    badge.textContent = 'Belum Memiliki Akun';
+    emailInput.value = '';
+    emailInput.placeholder = 'Masukkan email untuk aktivasi login';
+    document.getElementById('labelPassword').textContent = 'Password Awal *';
+    document.getElementById('labelPasswordConfirm').textContent = 'Konfirmasi Password *';
+    authHelp.textContent = 'Caregiver ini belum memiliki akun login. Masukkan email & password awal untuk mengaktifkan akses dashboard.';
+  }
+
+  document.getElementById('caregiverPassword').value = '';
+  document.getElementById('caregiverPasswordConfirm').value = '';
+
+  // Profile values
+  document.getElementById('newName').value = cg.name || '';
+  document.getElementById('newRole').value = cg.role || '';
+  document.getElementById('newCategory').value = cg.category || 'medis';
+  document.getElementById('newActive').value = String(Boolean(cg.is_active));
+  document.getElementById('newName').focus();
+  iconRefresh();
+}
+
+function closeModal() {
+  const mb = document.getElementById('modalBack');
+  if (mb) mb.classList.remove('show');
+}
+
+const modalBack = document.getElementById('modalBack');
+if (modalBack) {
+  modalBack.addEventListener('click', e => {
+    if (e.target.id === 'modalBack') closeModal();
+  });
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+async function saveCaregiver() {
+  const saveBtn = document.getElementById('saveCaregiverBtn');
+  const editId = document.getElementById('editCaregiverId').value.trim();
+  const name = document.getElementById('newName').value.trim();
+  const role = document.getElementById('newRole').value.trim();
+  const category = document.getElementById('newCategory').value;
+  const isActive = document.getElementById('newActive').value === 'true';
+
+  const email = document.getElementById('caregiverEmail').value.trim();
+  const password = document.getElementById('caregiverPassword').value;
+  const passwordConfirm = document.getElementById('caregiverPasswordConfirm').value;
+
+  if (!name || !role) {
+    showToast('Nama lengkap dan role/jabatan wajib diisi.');
+    return;
+  }
+
+  // Credentials validation
+  const cg = editId ? _rawCaregivers.find(c => String(c.id) === String(editId)) : null;
+  const isNewAccountNeeded = !editId || (cg && !cg.user_id);
+
+  if (isNewAccountNeeded) {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showToast('Alamat email login wajib diisi dengan format yang benar.');
+      return;
+    }
+    if (!password || password.length < 6) {
+      showToast('Password awal wajib diisi minimal 6 karakter.');
+      return;
+    }
+    if (password !== passwordConfirm) {
+      showToast('Konfirmasi password tidak cocok dengan password awal.');
+      return;
+    }
+  } else {
+    // Editing existing account: password change is optional
+    if (password) {
+      if (password.length < 6) {
+        showToast('Password baru minimal 6 karakter.');
+        return;
+      }
+      if (password !== passwordConfirm) {
+        showToast('Konfirmasi password baru tidak cocok.');
+        return;
+      }
+    }
+  }
+
+  saveBtn.disabled = true;
+  saveBtn.innerHTML = '<i data-lucide="loader" class="spin" style="width:14px;height:14px"></i> Menyimpan…';
+  iconRefresh();
+
+  try {
+    const { client, session } = await window.TemanLansiaSupabase.getSession();
+    if (!client) throw new Error('Client Supabase tidak terhubung.');
+    const accessToken = session?.access_token;
+    if (!accessToken) throw new Error('Sesi admin tidak memiliki token otentikasi. Silakan login kembali.');
+
+    const cfg = window.TEMANLANSIA_SUPABASE_CONFIG || {};
+    const baseUrl = String(cfg.url || '').replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
+    const anonKey = String(cfg.publishableKey || '');
+
+    let edgePayload = {};
+
+    if (!editId) {
+      edgePayload = {
+        action: 'create_caregiver',
+        name,
+        role,
+        category,
+        is_active: isActive,
+        email,
+        password
+      };
+    } else if (isNewAccountNeeded) {
+      edgePayload = {
+        action: 'activate_caregiver_account',
+        caregiver_id: editId,
+        email,
+        password
+      };
+    } else {
+      edgePayload = {
+        action: 'update_caregiver_account',
+        caregiver_id: editId,
+        name,
+        role,
+        category,
+        is_active: isActive,
+        email: email || undefined,
+        password: password || undefined
+      };
+    }
+
+    // Panggil Supabase Edge Function tepercaya
+    const fnUrl = `${baseUrl}/functions/v1/admin-caregiver-account`;
+    const res = await fetch(fnUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'apikey': anonKey
+      },
+      body: JSON.stringify(edgePayload)
+    });
+
+    let resJson = null;
+    try {
+      resJson = await res.json();
+    } catch (_) {}
+
+    if (!res.ok) {
+      if (res.status === 404) {
+        throw new Error("Edge Function 'admin-caregiver-account' belum aktif di server. Jalankan deployment via Supabase CLI.");
+      }
+      throw new Error(resJson?.error || `Server mengembalikan status ${res.status}: ${res.statusText}`);
+    }
+
+    showToast(resJson?.message || 'Data caregiver dan akun login berhasil diproses.');
+
+    // Muat ulang data terbaru dari Supabase
+    await loadSupabaseData(client);
+    closeModal();
+  } catch (err) {
+    console.error('Operasi caregiver gagal:', err);
+    showToast(`Operasi ditolak: ${err.message || 'Gagal memproses ke backend Edge Function'}`);
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = '<i data-lucide="check"></i> Simpan';
+    iconRefresh();
+  }
+}
+
+async function toggleCaregiverActive(id, newActiveStatus) {
+  const cg = _rawCaregivers.find(c => String(c.id) === String(id));
+  if (!cg) return;
+  const actionName = newActiveStatus ? 'mengaktifkan' : 'menonaktifkan';
+  if (!confirm(`Konfirmasi: Apakah Anda yakin ingin ${actionName} caregiver "${cg.name}"?`)) return;
+
+  try {
+    const { client } = await window.TemanLansiaSupabase.getSession();
+    if (!client) throw new Error('Client Supabase tidak terhubung.');
+
+    const { data, error } = await client
+      .from('caregivers')
+      .update({ is_active: newActiveStatus, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select('id, is_active')
+      .single();
+
+    if (error) throw error;
+    if (!data) throw new Error('Tidak ada respon data dari database.');
+
+    // Verify fresh state from database directly
+    const { data: freshCg, error: verifyErr } = await client
+      .from('caregivers')
+      .select('id, is_active')
+      .eq('id', id)
+      .single();
+
+    if (verifyErr || !freshCg || freshCg.is_active !== newActiveStatus) {
+      throw new Error('Database tidak mengonfirmasi perubahan status.');
+    }
+
+    cg.is_active = freshCg.is_active;
+    showToast(`Status "${cg.name}" berhasil diubah menjadi ${freshCg.is_active ? 'Aktif' : 'Nonaktif'} (Tersimpan permanen di Supabase).`);
+    renderCaregivers();
+  } catch (err) {
+    console.error('Toggle status caregiver gagal:', err);
+    showToast(`Gagal mengubah status: ${err.message || 'Izin UPDATE ditolak RLS'}`);
+  }
+}
+
+function statusBadge(st) {
+  const s = String(st || '').toLowerCase();
+  if (s === 'confirmed' || s === 'completed' || s === 'paid_demo' || s === 'active' || s === 'true') {
+    return `<span class="pill green">${esc(st)}</span>`;
+  }
+  if (s === 'pending' || s === 'unpaid' || s === 'inactive' || s === 'false') {
+    return `<span class="pill amber">${esc(st)}</span>`;
+  }
+  return `<span class="pill gray">${esc(st || '—')}</span>`;
+}
+
+// Renderers for 7 sections
+function renderCaregivers() {
+  const tbody = document.getElementById('caregiverRows');
+  if (!tbody) return;
+  const q = (document.getElementById('caregiverSearch')?.value || '').toLowerCase().trim();
+  const filter = document.getElementById('caregiverFilter')?.value || 'all';
+
+  const filtered = _rawCaregivers.filter(cg => {
+    const matchQ = (cg.name + ' ' + (cg.role || '') + ' ' + (cg.city || '') + ' ' + (cg.area || '') + ' ' + (cg.category || '')).toLowerCase().includes(q);
+    const matchF = filter === 'all' ? true : filter === 'active' ? cg.is_active === true : cg.is_active === false;
+    return matchQ && matchF;
+  });
+
+  const countHint = document.getElementById('caregiverCountHint');
+  if (countHint) countHint.textContent = `Menampilkan ${filtered.length} dari ${_rawCaregivers.length} caregiver terdaftar di Supabase`;
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="muted" style="text-align:center;padding:24px">${_rawCaregivers.length ? 'Tidak ada caregiver yang cocok dengan filter.' : 'Belum ada data caregiver di database Supabase.'}</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(cg => `
+    <tr>
+      <td><code>CG-${esc(cg.legacy_caregiver_id || String(cg.id || '').slice(0, 6))}</code></td>
+      <td><strong>${esc(cg.name)}</strong><br><span class="muted">${esc(cg.role || 'Caregiver')}</span></td>
+      <td><span>${esc(cg.category || 'Umum')}</span><br><span class="muted">${esc(cg.city || '')}${cg.area ? ', ' + esc(cg.area) : ''}</span></td>
+      <td><strong>${money(cg.price_per_shift)}</strong><span class="muted">/shift</span></td>
+      <td>${cg.is_active ? '<span class="pill green">Aktif</span>' : '<span class="pill amber">Nonaktif</span>'}</td>
+      <td>
+        <div style="display:flex;gap:6px;flex-wrap:nowrap">
+          <button class="btn small" onclick="openEditCaregiver('${esc(cg.id)}')" title="Edit profil caregiver"><i data-lucide="edit-3" style="width:13px;height:13px"></i> Edit</button>
+          <button class="btn small ${cg.is_active ? '' : 'primary'}" onclick="toggleCaregiverActive('${esc(cg.id)}', ${!cg.is_active})" title="Ubah status aktif/nonaktif">${cg.is_active ? 'Nonaktifkan' : 'Aktifkan'}</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+  iconRefresh();
+}
+
+function renderCustomers() {
+  const tbody = document.getElementById('customerRows');
+  if (!tbody) return;
+  const q = (document.getElementById('customerSearch')?.value || '').toLowerCase().trim();
+
+  const filtered = _rawCustomers.filter(c => {
+    const name = c.customer_name || c.full_name || '';
+    const emContact = c.emergency_contact_name || '';
+    const emPhone = c.emergency_contact_phone || '';
+    const id = c.id || '';
+    return (name + ' ' + emContact + ' ' + emPhone + ' ' + id).toLowerCase().includes(q);
+  });
+
+  const hint = document.getElementById('customerCountHint');
+  if (hint) hint.textContent = `Menampilkan ${filtered.length} dari ${_rawCustomers.length} customer terdaftar di Supabase`;
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="muted" style="text-align:center;padding:24px">${_rawCustomers.length ? 'Tidak ada customer yang sesuai pencarian.' : 'Belum ada data customer terdaftar di database Supabase.'}</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(c => {
+    const rawName = (c.customer_name || c.full_name || '').trim();
+    // Do not show email as name
+    const isEmailLike = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawName);
+    const displayName = (rawName && !isEmailLike) ? `<strong>${esc(rawName)}</strong>` : '<span class="muted" style="font-style:italic">Belum diisi</span>';
+
+    const emName = (c.emergency_contact_name || '').trim();
+    const displayEmName = (emName && emName !== '—') ? esc(emName) : '<span class="muted" style="font-style:italic">Belum diisi</span>';
+
+    const emPhone = (c.emergency_contact_phone || '').trim();
+    const displayEmPhone = emPhone ? esc(emPhone) : '<span class="muted" style="font-style:italic">Belum diisi</span>';
+
+    const dateVal = c.created_at;
+    const displayDate = dateVal ? formatDateOnly(dateVal) : '<span class="muted" style="font-style:italic">Belum diisi</span>';
+
+    return `<tr>
+      <td><code title="${esc(c.id || '')}">${esc(String(c.id || '').slice(0, 8))}…</code></td>
+      <td>${displayName}</td>
+      <td>${displayEmName}</td>
+      <td>${displayEmPhone}</td>
+      <td>${displayDate}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderBookings() {
+  const tbody = document.getElementById('bookingRows');
+  if (!tbody) return;
+  const q = (document.getElementById('bookingSearch')?.value || '').toLowerCase().trim();
+  const filter = document.getElementById('bookingFilter')?.value || 'all';
+
+  const filtered = _rawBookings.filter(b => {
+    const custName = b.customers?.profiles?.full_name || '';
+    const cgName = b.caregivers?.name || '';
+    const id = b.id || '';
+    const matchQ = (custName + ' ' + cgName + ' ' + id).toLowerCase().includes(q);
+    const matchF = filter === 'all' ? true : b.status === filter;
+    return matchQ && matchF;
+  });
+
+  const hint = document.getElementById('bookingCountHint');
+  if (hint) hint.textContent = `Menampilkan ${filtered.length} dari ${_rawBookings.length} pemesanan`;
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="muted" style="text-align:center;padding:24px">${_rawBookings.length ? 'Tidak ada booking yang cocok dengan filter.' : 'Belum ada data pemesanan di database Supabase.'}</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(b => {
+    const cgLabel = b.caregivers?.name ? esc(b.caregivers.name) : (b.caregiver_id ? `<code>CG-${esc(String(b.caregiver_id).slice(0,6))}</code>` : '—');
+    const custLabel = b.customers?.profiles?.full_name ? esc(b.customers.profiles.full_name) : (b.customer_id ? `<code>${esc(String(b.customer_id).slice(0,8))}…</code>` : '—');
+    const schedule = (b.start_at ? formatDate(b.start_at) : '—') + '<br><span class="muted">s.d. ' + (b.end_at ? formatDate(b.end_at) : '—') + '</span>';
+    return `
+      <tr>
+        <td><code>${esc(String(b.id).slice(0, 8))}…</code></td>
+        <td><strong>${custLabel}</strong></td>
+        <td><strong>${cgLabel}</strong></td>
+        <td>${schedule}</td>
+        <td><strong>${money(b.total_amount)}</strong></td>
+        <td>${statusBadge(b.status)}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderPayments() {
+  const tbody = document.getElementById('paymentRows');
+  if (!tbody) return;
+
+  const hint = document.getElementById('paymentCountHint');
+  if (hint) hint.textContent = `Total ${_rawPayments.length} transaksi tercatat di tabel payments`;
+
+  if (!_rawPayments.length) {
+    tbody.innerHTML = `<tr><td colspan="7" class="muted" style="text-align:center;padding:24px">Belum ada transaksi pembayaran di database Supabase.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = _rawPayments.map(p => `
+    <tr>
+      <td><code>${esc(String(p.id).slice(0, 8))}…</code></td>
+      <td><code>${p.booking_id ? esc(String(p.booking_id).slice(0, 8)) + '…' : '—'}</code></td>
+      <td>${esc(p.method || 'QRIS')} · <span class="muted">${esc(p.provider || 'demo')}</span></td>
+      <td><strong>${money(p.amount)}</strong></td>
+      <td>${statusBadge(p.status)}</td>
+      <td><span class="pill amber">Simulasi Demo</span></td>
+      <td>${formatDate(p.paid_at || p.created_at)}</td>
+    </tr>
+  `).join('');
+}
+
+function renderAudit() {
+  const tbody = document.getElementById('auditRows');
+  if (!tbody) return;
+
+  const hint = document.getElementById('auditCountHint');
+  if (hint) hint.textContent = `Total ${_rawAudit.length} catatan aktivitas transisi status pesanan`;
+
+  if (!_rawAudit.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="muted" style="text-align:center;padding:32px">Belum ada riwayat aktivitas transisi pesanan di tabel booking_events.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = _rawAudit.map(ev => `
+    <tr>
+      <td>${formatDate(ev.created_at)}</td>
+      <td><code>${ev.booking_id ? esc(String(ev.booking_id).slice(0, 8)) + '…' : '—'}</code></td>
+      <td>${statusBadge(ev.from_status || 'initial')}</td>
+      <td>${statusBadge(ev.to_status)}</td>
+      <td><code>${ev.actor_id ? esc(String(ev.actor_id).slice(0, 8)) + '…' : 'Sistem'}</code></td>
+    </tr>
+  `).join('');
+}
+
+function renderChart(trendData) {
+  const canvas = document.getElementById('bookingLineChart');
+  if (!canvas || typeof Chart === 'undefined') return;
+  if (_chartInstance) {
+    _chartInstance.destroy();
+  }
+  const days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+  const values = days.map(d => trendData[d] || 0);
+
+  _chartInstance = new Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: days,
+      datasets: [{
+        label: 'Pesanan Masuk (Aktual)',
+        data: values,
+        borderColor: '#800020',
+        backgroundColor: 'rgba(128,0,32,.075)',
+        fill: true,
+        tension: 0.42,
+        borderWidth: 3,
+        pointBackgroundColor: '#C89234',
+        pointBorderColor: '#800020',
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: { backgroundColor: '#590019', padding: 11, displayColors: false }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { stepSize: 1, color: '#82777a', precision: 0 },
+          grid: { color: 'rgba(128,0,32,.06)' },
+          border: { display: false }
+        },
+        x: {
+          ticks: { color: '#82777a' },
+          grid: { display: false },
+          border: { display: false }
+        }
+      }
+    }
+  });
+}
+
+async function loadSupabaseData(client) {
+  try {
+    // 1. Caregivers
+    let { data: cgData, error: cgErr } = await client
+      .from('caregivers')
+      .select('id, legacy_caregiver_id, name, role, category, city, area, languages, price_per_shift, rating, reviews_count, is_active, user_id')
+      .order('legacy_caregiver_id', { ascending: true });
+    
+    // Fallback via RPC get_public_caregivers if direct SELECT is empty or error
+    if ((cgErr || !cgData || !cgData.length) && client.rpc) {
+      const { data: rpcCg, error: rpcErr } = await client.rpc('get_public_caregivers');
+      if (!rpcErr && Array.isArray(rpcCg) && rpcCg.length) {
+        cgData = rpcCg.map(r => ({
+          ...r,
+          legacy_caregiver_id: r.legacy_caregiver_id || r.id,
+          is_active: r.is_active ?? true
+        }));
+        cgErr = null;
+      }
+    }
+    
+    if (cgErr) {
+      console.warn('Query caregivers error:', cgErr.message);
+      document.getElementById('metricCgSub').textContent = 'RLS: ' + cgErr.message;
+      document.getElementById('caregiverRows').innerHTML = `<tr><td colspan="6" class="muted" style="text-align:center;padding:24px;color:var(--red)">Gagal membaca caregivers: ${esc(cgErr.message)}</td></tr>`;
+    } else {
+      _rawCaregivers = cgData || [];
+      const activeCount = _rawCaregivers.filter(c => c.is_active).length;
+      document.getElementById('metricCgActive').textContent = activeCount;
+      document.getElementById('metricCgSub').textContent = `${_rawCaregivers.length} total caregiver terdaftar`;
+      renderCaregivers();
+    }
+
+    // 2. Bookings
+    const { data: bData, error: bErr } = await client
+      .from('bookings')
+      .select('id, customer_id, caregiver_id, start_at, end_at, status, total_amount, created_at, caregivers(name, role), customers(profiles(full_name))')
+      .order('created_at', { ascending: false });
+
+    if (bErr) {
+      console.warn('Query bookings error:', bErr.message);
+      document.getElementById('bookingRows').innerHTML = `<tr><td colspan="6" class="muted" style="text-align:center;padding:24px;color:var(--red)">Gagal membaca bookings: ${esc(bErr.message)}</td></tr>`;
+    } else {
+      _rawBookings = bData || [];
+      renderBookings();
+
+      // Today's sessions calculation (Asia/Jakarta UTC+7)
+      const nowJakarta = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(new Date());
+      const sessionsToday = _rawBookings.filter(b => {
+        if (!b.start_at) return false;
+        const bDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(new Date(b.start_at));
+        return bDate === nowJakarta;
+      }).length;
+      document.getElementById('metricSessionsToday').textContent = sessionsToday;
+      document.getElementById('metricSessionsSub').textContent = `Jadwal hari ini (${nowJakarta})`;
+
+      // Monitoring counts
+      document.getElementById('monUnpaid').textContent = _rawBookings.filter(b => b.status === 'pending').length;
+      document.getElementById('monConfirmed').textContent = _rawBookings.filter(b => b.status === 'confirmed').length;
+      document.getElementById('monInProgress').textContent = _rawBookings.filter(b => b.status === 'in_progress').length;
+      document.getElementById('monCompleted').textContent = _rawBookings.filter(b => b.status === 'completed').length;
+
+      // Trend chart calculation
+      const dayMap = { 0: 'Min', 1: 'Sen', 2: 'Sel', 3: 'Rab', 4: 'Kam', 5: 'Jum', 6: 'Sab' };
+      const trendCounts = { Sen: 0, Sel: 0, Rab: 0, Kam: 0, Jum: 0, Sab: 0, Min: 0 };
+      _rawBookings.forEach(b => {
+        if (b.created_at) {
+          const d = new Date(b.created_at).getDay();
+          const name = dayMap[d];
+          if (name) trendCounts[name] = (trendCounts[name] || 0) + 1;
+        }
+      });
+      renderChart(trendCounts);
+      const noteEl = document.getElementById('trendNote');
+      if (noteEl) noteEl.textContent = `Dihitung dari total ${_rawBookings.length} pemesanan riil di Supabase.`;
+    }
+
+    // 3. Customers (Authoritative Source: public.customers joined with public.profiles)
+    try {
+      const { data: cData, error: cErr } = await client
+        .from('customers')
+        .select('id, customer_name, emergency_contact_name, emergency_contact_phone, created_at')
+        .order('created_at', { ascending: false });
+
+      if (cErr) {
+        console.error('Query public.customers error from Supabase:', cErr);
+        const isForbidden = cErr.code === '42501' || String(cErr.message).toLowerCase().includes('permission denied');
+        const hintText = isForbidden ? 'Akses ditolak (RLS / permission denied)' : 'Gagal memuat customer dari database';
+        document.getElementById('customerRows').innerHTML = `<tr><td colspan="5" class="muted" style="text-align:center;padding:24px;color:var(--red)">Gagal membaca data customer dari Supabase:<br><small style="margin-top:6px;display:block">${esc(cErr.message)} (${esc(cErr.code || 'ERR')})</small></td></tr>`;
+        document.getElementById('customerCountHint').textContent = hintText;
+        return;
+      }
+
+      const customersList = cData || [];
+      const customerIds = customersList.map(c => c.id).filter(Boolean);
+
+      // Fetch profiles for contact info and fallback name using customers.id = profiles.id
+      const profileMap = new Map();
+      if (customerIds.length > 0) {
+        const { data: pData, error: pErr } = await client
+          .from('profiles')
+          .select('id, full_name, phone, created_at')
+          .in('id', customerIds);
+        if (pErr) {
+          console.error('Warning fetching public.profiles for customers:', pErr);
+        } else if (pData) {
+          pData.forEach(p => profileMap.set(p.id, p));
+        }
+      }
+
+      // Map every authoritative customer from public.customers
+      // Display rules:
+      // Customer Name: customers.customer_name || profiles.full_name
+      // Customer Phone: profiles.phone
+      // Emergency Contact Name: customers.emergency_contact_name
+      // Emergency Contact Phone: customers.emergency_contact_phone
+      // Registration Date: customers.created_at
+      _rawCustomers = customersList.map(c => {
+        const prof = profileMap.get(c.id) || {};
+        const cName = (c.customer_name || '').trim();
+        const pName = (prof.full_name || '').trim();
+        const resolvedName = cName || pName;
+        const resolvedPhone = (prof.phone || '').trim();
+        const emName = (c.emergency_contact_name || '').trim();
+        const emPhone = (c.emergency_contact_phone || '').trim();
+
+        return {
+          id: c.id,
+          customer_name: cName,
+          full_name: resolvedName,
+          phone: resolvedPhone,
+          emergency_contact_name: (emName && emName !== '—') ? emName : '',
+          emergency_contact_phone: emPhone,
+          created_at: c.created_at
+        };
+      });
+
+      renderCustomers();
+    } catch (errCust) {
+      console.error('Customer load exception:', errCust);
+      document.getElementById('customerRows').innerHTML = `<tr><td colspan="5" class="muted" style="text-align:center;padding:24px;color:var(--red)">Error memuat customer: ${esc(errCust.message)}</td></tr>`;
+      document.getElementById('customerCountHint').textContent = 'Terjadi kesalahan sistem';
+    }
+
+    // 4. Payments
+    try {
+      const { data: pData, error: pErr } = await client
+        .from('payments')
+        .select('id, booking_id, method, amount, status, paid_at, created_at')
+        .order('created_at', { ascending: false });
+
+      if (pErr) {
+        console.warn('Query payments error:', pErr.message);
+        document.getElementById('paymentRows').innerHTML = `<tr><td colspan="7" class="muted" style="text-align:center;padding:24px;color:var(--red)">Gagal membaca payments: ${esc(pErr.message)}</td></tr>`;
+        const hint = document.getElementById('paymentCountHint');
+        if (hint) hint.textContent = 'Gagal memuat transaksi: ' + esc(pErr.message);
+      } else {
+        _rawPayments = Array.isArray(pData) ? pData : [];
+        const paidDemoRows = _rawPayments.filter(p => String(p.status || '').toLowerCase().trim() === 'paid_demo');
+        const unpaidRows = _rawPayments.filter(p => String(p.status || '').toLowerCase().trim() === 'unpaid');
+        const totalAmount = paidDemoRows.reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
+
+        document.getElementById('metricQrisPaid').textContent = paidDemoRows.length;
+        document.getElementById('metricQrisSub').textContent = `Total: ${money(totalAmount)} (demo)`;
+
+        document.getElementById('payUnpaid').textContent = unpaidRows.length;
+        document.getElementById('payPaidDemo').textContent = paidDemoRows.length;
+        document.getElementById('payTotalAmount').textContent = money(totalAmount);
+        renderPayments();
+      }
+    } catch (errPayments) {
+      console.error('Payment load exception:', errPayments);
+      document.getElementById('paymentRows').innerHTML = `<tr><td colspan="7" class="muted" style="text-align:center;padding:24px;color:var(--red)">Error memuat payments: ${esc(errPayments.message)}</td></tr>`;
+      const hint = document.getElementById('paymentCountHint');
+      if (hint) hint.textContent = 'Terjadi kesalahan sistem';
+    }
+
+    // 5. Monitoring: live_reports & sos_events
+    const { data: lrData, error: lrErr } = await client
+      .from('live_reports')
+      .select('id, booking_id, report_date, content, created_at')
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    const lrWrap = document.getElementById('liveReportWrap');
+    if (lrWrap) {
+      if (lrErr) {
+        lrWrap.innerHTML = `<div class="empty" style="color:var(--red)"><i data-lucide="alert-circle"></i>Gagal membaca live_reports: ${esc(lrErr.message)}</div>`;
+      } else if (!lrData || !lrData.length) {
+        lrWrap.innerHTML = `<div class="empty"><i data-lucide="clipboard-list"></i>Belum ada laporan live report dari caregiver di database.</div>`;
+      } else {
+        lrWrap.innerHTML = lrData.map(r => `
+          <div class="activity">
+            <div class="bullet"><i data-lucide="clipboard-check"></i></div>
+            <div style="flex:1">
+              <strong>Laporan Sesi: <code>${esc(String(r.booking_id).slice(0, 8))}…</code></strong>
+              <p>${esc(typeof r.content === 'object' ? JSON.stringify(r.content) : r.content || 'Tidak ada catatan.')}</p>
+              <span class="muted" style="font-size:10px">${formatDate(r.created_at)}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    const { data: sosData, error: sosErr } = await client
+      .from('sos_events')
+      .select('id, customer_id, booking_id, emergency_number, status, triggered_at')
+      .order('triggered_at', { ascending: false })
+      .limit(10);
+
+    const sosWrap = document.getElementById('sosEventWrap');
+    if (sosWrap) {
+      if (sosErr) {
+        sosWrap.innerHTML = `<div class="empty" style="color:var(--red)"><i data-lucide="alert-circle"></i>Gagal membaca sos_events: ${esc(sosErr.message)}</div>`;
+      } else if (!sosData || !sosData.length) {
+        sosWrap.innerHTML = `<div class="empty"><i data-lucide="shield-check"></i>Tidak ada laporan panggilan darurat aktif di database.</div>`;
+      } else {
+        sosWrap.innerHTML = sosData.map(s => `
+          <div class="activity">
+            <div class="bullet" style="background:#fee2e2;color:var(--red)"><i data-lucide="siren"></i></div>
+            <div style="flex:1">
+              <strong>Panggilan SOS: ${esc(s.emergency_number || '112')}</strong>
+              <p>Booking: <code>${esc(String(s.booking_id).slice(0, 8))}…</code> · Status: ${statusBadge(s.status)}</p>
+              <span class="muted" style="font-size:10px">${formatDate(s.triggered_at)}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // SOS Banner in Dashboard
+    const sosBannerTitle = document.getElementById('sosBannerTitle');
+    const sosBannerSub = document.getElementById('sosBannerSub');
+    const sosBannerNote = document.getElementById('sosBannerNote');
+    if (sosData && sosData.length) {
+      const openSos = sosData.filter(s => s.status === 'open' || s.status === 'triggered');
+      if (openSos.length && sosBannerTitle) {
+        sosBannerTitle.textContent = `${openSos.length} Panggilan Darurat Memerlukan Perhatian!`;
+        if (sosBannerSub) sosBannerSub.textContent = `Nomor darurat terakhir: ${openSos[0].emergency_number || '112'}`;
+        if (sosBannerNote) sosBannerNote.textContent = `Waktu panggilan: ${formatDate(openSos[0].triggered_at)}`;
+      } else if (sosBannerTitle) {
+        sosBannerTitle.textContent = 'Semua Panggilan Darurat Telah Ditangani';
+        if (sosBannerSub) sosBannerSub.textContent = `Total riwayat: ${sosData.length} panggilan darurat tercatat di tabel sos_events.`;
+        if (sosBannerNote) sosBannerNote.textContent = 'Tidak ada panggilan darurat aktif saat ini.';
+      }
+    } else if (sosBannerTitle) {
+      sosBannerTitle.textContent = 'Tidak Ada Panggilan SOS Aktif';
+      if (sosBannerSub) sosBannerSub.textContent = 'Data dipantau secara langsung dari tabel sos_events.';
+      if (sosBannerNote) sosBannerNote.textContent = 'Sistem siaga darurat beroperasi normal.';
+    }
+
+    // 6. Audit Trail (booking_events)
+    const { data: beData, error: beErr } = await client
+      .from('booking_events')
+      .select('id, booking_id, from_status, to_status, actor_id, created_at')
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    if (beErr) {
+      console.warn('Query booking_events error:', beErr.message);
+      document.getElementById('auditRows').innerHTML = `<tr><td colspan="5" class="muted" style="text-align:center;padding:32px;color:var(--red)">Gagal membaca booking_events: ${esc(beErr.message)}</td></tr>`;
+    } else {
+      _rawAudit = beData || [];
+      renderAudit();
+    }
+
+    iconRefresh();
+  } catch (globalErr) {
+    console.error('Error in loadSupabaseData:', globalErr);
+  }
+}
+
+// Filter and search listeners
+document.getElementById('caregiverSearch')?.addEventListener('input', renderCaregivers);
+document.getElementById('caregiverFilter')?.addEventListener('change', renderCaregivers);
+document.getElementById('customerSearch')?.addEventListener('input', renderCustomers);
+document.getElementById('bookingSearch')?.addEventListener('input', renderBookings);
+document.getElementById('bookingFilter')?.addEventListener('change', renderBookings);
+
+async function checkAdminAuth() {
+  const isPreview = new URLSearchParams(window.location.search).get('preview') === '1';
+  const deniedScreen = document.getElementById('deniedScreen');
+  const adminApp = document.getElementById('adminApp');
+  const deniedMsg = document.getElementById('deniedMsg');
+
+  if (isPreview) {
+    if (deniedScreen) deniedScreen.classList.add('hidden');
+    if (adminApp) adminApp.classList.remove('hidden');
+
+    // In preview mode: load the 100 public caregivers via RPC so the table is not empty
+    try {
+      if (window.TemanLansiaSupabase) {
+        const cgCatalog = await window.TemanLansiaSupabase.getCaregivers();
+        if (Array.isArray(cgCatalog) && cgCatalog.length) {
+          _rawCaregivers = cgCatalog.map(c => ({
+            id: c.uuid || c.id,
+            legacy_caregiver_id: c.id,
+            name: c.name,
+            role: c.role || c.tagline,
+            category: c.category || c.skillType,
+            city: c.city || c.location,
+            area: c.area || c.areaDetail,
+            price_per_shift: c.pricePerShift || c.price_val,
+            rating: c.rating,
+            reviews_count: c.reviewsCount || c.reviews,
+            is_active: true
+          }));
+          document.getElementById('metricCgActive').textContent = _rawCaregivers.length;
+          document.getElementById('metricCgSub').textContent = `${_rawCaregivers.length} caregiver terdaftar di katalog`;
+          renderCaregivers();
+        }
+      }
+    } catch (e) {
+      console.warn('Preview mode getCaregivers error:', e.message);
+      document.getElementById('caregiverRows').innerHTML = `<tr><td colspan="6" class="muted" style="text-align:center;padding:24px">Katalog caregiver memerlukan koneksi Supabase: ${esc(e.message)}</td></tr>`;
+    }
+
+    // Customer privat: beri notifikasi sesi admin sah diperlukan
+    const custRows = document.getElementById('customerRows');
+    if (custRows) {
+      custRows.innerHTML = '<tr><td colspan="5" class="muted" style="text-align:center;padding:28px"><strong style="color:var(--wine)">Sesi Admin Diperlukan</strong><br><span style="font-size:12px">Data customer privat dilindungi RLS database Supabase. Silakan masuk sebagai administrator.</span></td></tr>';
+    }
+    const custHint = document.getElementById('customerCountHint');
+    if (custHint) custHint.textContent = 'Akses dibatasi (memerlukan sesi login admin)';
+
+    // Metric placeholders for preview
+    document.getElementById('metricSessionsToday').textContent = '—';
+    document.getElementById('metricSessionsSub').textContent = 'Memerlukan sesi admin';
+    document.getElementById('metricQrisPaid').textContent = '—';
+    document.getElementById('metricQrisSub').textContent = 'Memerlukan sesi admin';
+    document.getElementById('sosBannerTitle').textContent = 'Pusat Pemantauan Siaga (Mode Pratinjau)';
+    document.getElementById('sosBannerSub').textContent = 'Data panggilan SOS aktual dibaca dari Supabase setelah masuk dengan akun admin.';
+    document.getElementById('sosBannerNote').textContent = 'Tidak ada panggilan darurat aktif dalam pratinjau.';
+
+    document.getElementById('bookingRows').innerHTML = '<tr><td colspan="6" class="muted" style="text-align:center;padding:24px">Memerlukan sesi admin sah untuk membaca data pesanan dari Supabase.</td></tr>';
+    document.getElementById('paymentRows').innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:24px">Memerlukan sesi admin sah untuk membaca data transaksi dari Supabase.</td></tr>';
+    document.getElementById('auditRows').innerHTML = '<tr><td colspan="5" class="muted" style="text-align:center;padding:32px">Memerlukan sesi admin sah untuk membaca catatan booking_events dari Supabase.</td></tr>';
+
+    renderChart({ Sen: 0, Sel: 0, Rab: 0, Kam: 0, Jum: 0, Sab: 0, Min: 0 });
+    const noteEl = document.getElementById('trendNote');
+    if (noteEl) noteEl.textContent = 'Mode pratinjau offline. Data tren pemesanan aktual memerlukan sesi admin.';
+
+    iconRefresh();
+    return;
+  }
+
+  if (!window.TemanLansiaSupabase) {
+    if (adminApp) adminApp.classList.remove('hidden');
+    iconRefresh();
+    return;
+  }
+
+  try {
+    const { client, session } = await window.TemanLansiaSupabase.getSession();
+    const { data: userData, error: userError } = await client.auth.getUser();
+    const currentUser = userData?.user || session?.user;
+    if (userError || !currentUser?.id) {
+      throw new Error('Login admin diperlukan. Silakan masuk terlebih dahulu.');
+    }
+    const verified = await window.TemanLansiaSupabase.getVerifiedRole();
+    if (verified.role !== 'admin') {
+      throw new Error(`Akses ditolak. Sesi aktif (${currentUser.email || currentUser.id}) terverifikasi role '${verified.role || 'non-admin'}', bukan role 'admin'.`);
+    }
+    const email = currentUser.email || 'admin@temanlansia.com';
+    const adminUid = currentUser.id;
+    const nameEl = document.querySelector('.sidefoot .name strong');
+    const roleEl = document.querySelector('.sidefoot .name small');
+    if (nameEl) nameEl.textContent = email.split('@')[0];
+    if (roleEl) roleEl.textContent = `Administrator (${adminUid.slice(0, 8)}…)`;
+    if (deniedScreen) deniedScreen.classList.add('hidden');
+    if (adminApp) adminApp.classList.remove('hidden');
+
+
+    const prevNotice = document.getElementById('previewNotice');
+    if (prevNotice) {
+      prevNotice.style.display = 'none';
+    }
+
+    // Load actual data from Supabase for all 7 sections
+    await loadSupabaseData(client);
+  } catch (err) {
+    if (adminApp) adminApp.classList.add('hidden');
+    if (deniedScreen) {
+      deniedScreen.classList.remove('hidden');
+      if (deniedMsg) deniedMsg.textContent = err.message || 'Sesi harus memiliki role admin pada database.';
+    }
+  }
+  iconRefresh();
+}
+
+function openLogoutModal() {
+  const modal = document.getElementById('logoutModal');
+  if (!modal) return;
+  modal.classList.add('open');
+  const confirmBtn = document.getElementById('confirmLogout');
+  if (confirmBtn && typeof confirmBtn.focus === 'function') confirmBtn.focus();
+}
+
+function closeLogoutModal() {
+  const modal = document.getElementById('logoutModal');
+  if (!modal) return;
+  modal.classList.remove('open');
+}
+
+document.getElementById('logout')?.addEventListener('click', () => {
+  openLogoutModal();
+});
+
+document.getElementById('closeLogoutModal')?.addEventListener('click', closeLogoutModal);
+document.getElementById('cancelLogout')?.addEventListener('click', closeLogoutModal);
+
+const adminLogoutModalEl = document.getElementById('logoutModal');
+if (adminLogoutModalEl) {
+  adminLogoutModalEl.addEventListener('click', event => {
+    if (event.target === adminLogoutModalEl) closeLogoutModal();
+  });
+}
+
+if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+  window.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && adminLogoutModalEl && adminLogoutModalEl.classList.contains('open')) {
+      closeLogoutModal();
+    }
+  });
+}
+
+let isAdminLoggingOut = false;
+document.getElementById('confirmLogout')?.addEventListener('click', async () => {
+  if (isAdminLoggingOut) return;
+  isAdminLoggingOut = true;
+  const confirmBtn = document.getElementById('confirmLogout');
+  const cancelBtn = document.getElementById('cancelLogout');
+  if (confirmBtn) {
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'Memproses...';
+  }
+  if (cancelBtn) cancelBtn.disabled = true;
+
+  try {
+    if (window.TemanLansiaSupabase?.signOut) {
+      await window.TemanLansiaSupabase.signOut();
+    }
+    window.location.replace('login.html');
+  } catch (e) {
+    isAdminLoggingOut = false;
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = 'Ya, Keluar';
+    }
+    if (cancelBtn) cancelBtn.disabled = false;
+    closeLogoutModal();
+    console.error('Logout error:', e);
+    showToast(e.message || 'Logout gagal.');
+  }
+});
+
+checkAdminAuth();
+iconRefresh();
+</script>
+</body>
